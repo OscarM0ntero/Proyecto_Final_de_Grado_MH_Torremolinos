@@ -1,0 +1,67 @@
+// Fuente para títulos
+@font-face {
+    font-family: 'Gistesy';
+    src: url('fonts/gistesy.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// Fuente para texto
+@font-face {
+    font-family: 'TTHazelnuts';
+    src: url('fonts/tt-hazelnuts.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// Colores para el tema claro
+:root {
+    /* Light Theme */
+    --color-primary: #3F4B3A;
+    --color-secondary: #AABD99;
+    --color-tertiary: #33741D;
+    --color-warn: #FF8B41;
+    --color-accent: #00C3B2;
+    --color-neutral: #eeeeee;
+    --color-neutral-dark: #1E1E1E;
+
+    --color-background: #ffffff;
+    --color-surface: #f4f4f4;
+    --color-text: #1e1e1e;
+}
+
+// Colores para el tema oscuro
+.dark-theme {
+    /* Dark Theme Overrides */
+    --color-primary: #AABD99;
+    --color-secondary: #3F4B3A;
+    --color-tertiary: #65b34e;
+    --color-warn: #FFAD73;
+    --color-accent: #00F3D9;
+    --color-neutral: #2b2b2b;
+    --color-neutral-dark: #f1f1f1;
+
+    --color-background: #1E1E1E;
+    --color-surface: #2b2b2b;
+    --color-text: #f1f1f1;
+}
+
+.spacer-smoll {
+	width: 25px;
+}
+
+html,
+body {
+    height: 100%;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+body {
+    margin: 0;
+    font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
+}
+
+h1 {
+    font-family: 'Gistesy';
+}

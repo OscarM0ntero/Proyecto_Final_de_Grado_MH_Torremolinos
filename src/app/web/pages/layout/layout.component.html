@@ -1,0 +1,46 @@
+<div class="layout">
+	<!--<section class="header">
+
+	</section>-->
+
+	<section class="navbar-container">
+		<div class="navbar-section left">
+			<a class="nav-item" [routerLink]="['']">INICIO</a>
+			<a class="nav-item" [routerLink]="['apartamento']">EL APARTAMENTO</a>
+			<a class="nav-item" [routerLink]="['apartamento']">SERVICIOS</a>
+		</div>
+
+		<div class="navbar-section center" [routerLink]="['']">
+			<img class="logo" src="assets/logo.png" alt="M&H Logo">
+		</div>
+
+		<div class="navbar-section right">
+			<a class="nav-item" [routerLink]="['apartamento']">RESERVAR</a>
+			<a class="nav-item" [routerLink]="['apartamento']">CONTACTO</a>
+			<a class="nav-item" [routerLink]="['apartamento']">INICIAR SESIÓN</a>
+			<!--
+		<button mat-raised-button color="warn" style="margin-left: 8px"> (click)="onLogout()"
+			Logout
+		</button>
+		-->
+		</div>
+	</section>
+
+
+	<div class="container">
+		<router-outlet></router-outlet>
+	</div>
+
+	<section class="footer" color="primary">
+		<div class="footer-section left">
+
+		</div>
+
+		<div class="footer-section center">
+			<p>&copy; Copyright M&H Torremolinos {{currentYear}}</p>
+		</div>
+
+		<div class="footer-section right">
+		</div>
+	</section>
+</div>
