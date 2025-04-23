@@ -1,7 +1,6 @@
 .section-vertical {
     display: flex;
     flex-direction: row;
-    border: 2px solid black;
     padding: 0;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -26,7 +25,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid green;
 }
 
 .section-image-vertical img {
@@ -38,13 +36,11 @@
 .section-horizontal {
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
 .section-image-horizontal {
-    border: 2px solid green;
     display: flex;
     justify-content: center;
     align-items: center;
