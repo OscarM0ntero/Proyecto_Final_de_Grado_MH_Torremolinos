@@ -1,3 +1,5 @@
+@import 'primeicons/primeicons.css';
+
 // Fuente para títulos
 @font-face {
     font-family: 'Gistesy';
@@ -47,7 +49,7 @@
 }
 
 .spacer-smoll {
-	width: 25px;
+    width: 25px;
 }
 
 html,
@@ -63,5 +65,20 @@ body {
 }
 
 h1 {
-    font-family: 'Gistesy';
+    font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
+    /*font-family: 'Gistesy';*/
+}
+
+.p-galleria .p-galleria-nav-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    transition: background-color 0.3s ease;
+    transform: translateY(-20px);
+}
+
+.p-galleria .p-galleria-nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+
 }
