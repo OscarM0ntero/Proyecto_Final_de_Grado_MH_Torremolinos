@@ -1,7 +1,41 @@
-<app-img-vertical></app-img-vertical>
-<app-img-horizontal></app-img-horizontal>
-<app-img-horizontal
-    [titulo]="'Bienvenido a M&H Torremolinos'"
-    [texto]="'Disfruta de una experiencia única en la Costa del Sol, a solo unos minutos de la playa.'"
-    [imagen]="'assets/logo.png'">
-</app-img-horizontal>
+
+<p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true" [transitionInterval]="5000" 
+    [showThumbnails]="false"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
+    baseZIndex="1" >
+    <ng-template #item let-item>
+        <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
+
+<div class="content">
+    <div class="spacer"></div>
+    <h1>Bienvenido a M&H Torremolinos</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit
+        amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a,
+        semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum
+        diam nisl sit amet erat.</p>
+
+    <div class="spacer"></div>
+
+    <img-text [titulo]="'Title'"
+        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+        [imagen]="'assets/IMG_02.jpg'" [horizontal]="false">
+    </img-text>
+
+    <div class="spacer"></div>
+
+    <img-text [titulo]="'Title'"
+        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+        [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
+    </img-text>
+
+    <div class="spacer"></div>
+
+    <img-text [titulo]="'Title'"
+        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+        [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
+    </img-text>
+
+</div>
