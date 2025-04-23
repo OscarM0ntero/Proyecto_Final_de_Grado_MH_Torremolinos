@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImgVerticalComponent } from './img-vertical.component';
+import { ImgTextComponent } from './img-text.component';
 
-describe('ImgVerticalComponent', () => {
-  let component: ImgVerticalComponent;
-  let fixture: ComponentFixture<ImgVerticalComponent>;
+describe('ImgTextComponent', () => {
+  let component: ImgTextComponent;
+  let fixture: ComponentFixture<ImgTextComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImgVerticalComponent]
+      declarations: [ImgTextComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ImgVerticalComponent);
+    fixture = TestBed.createComponent(ImgTextComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
