@@ -9,9 +9,8 @@ import { MaterialModule } from '../material/material.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
-import { ImgVerticalComponent } from './pages/home/components/img-vertical/img-vertical.component';
-import { ImgHorizontalComponent } from './pages/home/components/img-horizontal/img-horizontal.component';
-
+import { PrimeNgModule } from '../common/primeng.module';
+import { ImgTextComponent } from './pages/home/components/img-text/img-text.component';
 
 
 @NgModule({
@@ -19,8 +18,7 @@ import { ImgHorizontalComponent } from './pages/home/components/img-horizontal/i
     HomeComponent,
     //BookingComponent,
     LayoutComponent,
-    ImgVerticalComponent,
-    ImgHorizontalComponent,
+    ImgTextComponent,
     //GalleryComponent
   ],
   imports: [
@@ -29,7 +27,8 @@ import { ImgHorizontalComponent } from './pages/home/components/img-horizontal/i
     MaterialModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    FormsModule
+    FormsModule,
+    PrimeNgModule,
   ]
 })
 export class WebModule { }
