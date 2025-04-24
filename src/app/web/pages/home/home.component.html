@@ -1,9 +1,8 @@
-
 <p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
-    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true" [transitionInterval]="5000" 
-    [showThumbnails]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
+    [transitionInterval]="5000" [showThumbnails]="false"
     [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
-    baseZIndex="1" >
+    baseZIndex="1">
     <ng-template #item let-item>
         <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
     </ng-template>
@@ -19,23 +18,54 @@
 
     <div class="spacer"></div>
 
-    <img-text [titulo]="'Title'"
-        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-        [imagen]="'assets/IMG_02.jpg'" [horizontal]="false">
-    </img-text>
+    <div class="divider">
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
+        </img-text>
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false">
+        </img-text>
+    </div>
 
     <div class="spacer"></div>
 
-    <img-text [titulo]="'Title'"
-        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-        [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
-    </img-text>
+    <div class="divider">
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
+        </img-text>
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
+        </img-text>
+    </div>
 
     <div class="spacer"></div>
 
-    <img-text [titulo]="'Title'"
-        [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-        [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
-    </img-text>
+    <div class="divider">
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
+        </img-text>
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="true">
+        </img-text>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="divider">
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="true">
+        </img-text>
+        <img-text [titulo]="'Title'"
+            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
+            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
+        </img-text>
+    </div>
 
 </div>
