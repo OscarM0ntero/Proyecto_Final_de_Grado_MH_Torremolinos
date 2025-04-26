@@ -28,3 +28,9 @@
 img-text {
     min-width: 49%;
 }
+
+.empty-space {
+    flex: 1;
+    min-width: 49%;
+    align-self: stretch;
+}
