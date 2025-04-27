@@ -71,6 +71,7 @@ h1 {
 
 .p-galleria .p-galleria-nav-button {
     background-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-neutral-dark);
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -79,10 +80,34 @@ h1 {
 }
 
 .p-galleria .p-galleria-nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    color: var(--color-neutral-dark) !important;
 }
 
 .p-galleria-content {       // Hace que las imagenes del slider del home se ajusten al tamaño de la pagina
     width: 100%;
+}
+
+.p-galleria .p-galleria-close-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-neutral-dark);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.p-galleria-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    color: var(--color-neutral-dark) !important;
+}
+
+.p-galleria-mask {
+    top: 125px !important;
+    height: calc(100% - 125px) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.p-galleria {
+    border: 0 !important;
 }
