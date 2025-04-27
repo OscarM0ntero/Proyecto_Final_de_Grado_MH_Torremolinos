@@ -11,6 +11,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../common/primeng.module';
 import { ImgTextComponent } from './pages/home/components/img-text/img-text.component';
+import { GalleryComponent } from './pages/gallery/gallery.component';
+import { LocationComponent } from './pages/location/location.component';
+import { BookingComponent } from './pages/booking/booking.component';
+import { ContactComponent } from './pages/contact/contact.component';
+import { LoginComponent } from './pages/login/login.component';
 
 
 @NgModule({
@@ -19,6 +24,11 @@ import { ImgTextComponent } from './pages/home/components/img-text/img-text.comp
     //BookingComponent,
     LayoutComponent,
     ImgTextComponent,
+    GalleryComponent,
+    LocationComponent,
+    BookingComponent,
+    ContactComponent,
+    LoginComponent,
     //GalleryComponent
   ],
   imports: [
