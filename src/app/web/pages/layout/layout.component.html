@@ -4,7 +4,10 @@
 	</section>-->
 
 	<section class="navbar-container">
-		<div class="navbar-section left">
+		<button class="hamburger" (click)="toggleMobileMenu()" aria-label="Menú">
+			&#9776;
+		</button>
+		<div class="navbar-section left desktop-only">
 			<a class="nav-item" [routerLink]="['']">INICIO</a>
 			<a class="nav-item" [routerLink]="['galeria']">GALERÍA</a>
 			<a class="nav-item" [routerLink]="['localizacion']">LOCALIZACIÓN</a>
@@ -14,7 +17,7 @@
 			<img class="logo" src="assets/logo.png" alt="M&H Logo">
 		</div>
 
-		<div class="navbar-section right">
+		<div class="navbar-section right desktop-only">
 			<a class="nav-item" [routerLink]="['reservar']">RESERVAR</a>
 			<a class="nav-item" [routerLink]="['contacto']">CONTACTO</a>
 			<a class="nav-item" [routerLink]="['iniciar-sesion']">INICIAR SESIÓN</a>
@@ -26,6 +29,14 @@
 		</div>
 	</section>
 
+	<nav class="mobile-menu" [class.open]="mobileMenuOpen">
+		<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">INICIO</a>
+		<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">GALERÍA</a>
+		<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">LOCALIZACIÓN</a>
+		<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">RESERVAR</a>
+		<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">CONTACTO</a>
+		<a class="nav-item" [routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">INICIAR SESIÓN</a>
+	</nav>
 
 	<div class="content-container">
 		<router-outlet></router-outlet>
@@ -33,11 +44,11 @@
 
 	<section class="footer" color="primary">
 		<div class="footer-section left">
-			
+
 		</div>
 
 		<div class="footer-section center">
-			<p>&copy; Copyright M&H Torremolinos {{currentYear}}</p>
+			<p>M&H Torremolinos &copy; 2024 - {{currentYear}}</p>
 		</div>
 
 		<div class="footer-section right">

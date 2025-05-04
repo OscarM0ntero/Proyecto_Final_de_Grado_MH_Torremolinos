@@ -17,11 +17,27 @@
 	grid-template-columns: 1fr 0fr 1fr;
 	font-family: "TTHazelnuts";
 	font-weight: bold;
+	height: var(--navbar-height);
 	background-color: var(--color-background);
 	padding-top: 5px;
 	padding-bottom: 5px;
 	z-index: 1000;
 	box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.2);
+	align-items: center;
+
+	// 🔸 Añadido: botón hamburguesa
+	.hamburger {
+		display: none;
+		font-size: 30px;
+		background: none;
+		border: none;
+		color: inherit;
+		position: absolute;
+		right: 20px;
+		top: 15px;
+		z-index: 1100;
+		cursor: pointer;
+	}
 }
 
 .navbar-section {
@@ -29,6 +45,7 @@
 	align-items: end;
 	margin-left: 20px;
 	margin-right: 20px;
+	height: 100%;
 }
 
 .right {
@@ -48,16 +65,53 @@
 	margin-bottom: 4px;
 }
 
-
-
 .nav-item {
 	padding: 10px;
+	padding-bottom: 7px;
 	cursor: pointer;
 	text-decoration: none;
 }
 
+.logo {
+	max-height: 100px;
+	cursor: pointer;
+}
+
+// 🔸 Añadido: menú móvil
+.mobile-menu {
+	position: fixed;
+	top: var(--navbar-height);
+	right: -100%;
+	/* oculto inicialmente */
+	width: 80%;
+	/* ancho del menú desplegable */
+	height: 100%;
+	font-weight: bold;
+	background-color: var(--color-background);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	z-index: 1010;
+	transition: right 0.3s ease-in-out;
+
+	&.open {
+		right: 0;
+	}
+
+	.nav-item {
+		padding: 15px;
+		font-size: 18px;
+		width: 100%;
+		text-align: center;
+		border-top: 1px solid var(--color-neutral);
+	}
+}
+
 .content-container {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
+	min-height: 100%;
 }
 
 .footer {
@@ -73,7 +127,6 @@
 	font-weight: bold;
 	background-color: var(--color-primary);
 	color: var(--color-neutral);
-	margin-top: 50px;
 }
 
 .footer-section {
@@ -92,6 +145,27 @@ a:hover {
 	cursor: pointer;
 }
 
-.logo {
-	max-height: 100px;
+@media (max-width: 768px) {
+	
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .navbar-section.left,
+	.navbar-section.right {
+		display: none;
+	}
+
+	.navbar-container .hamburger {
+		display: block;
+		justify-content: center;
+	}
+
+	.navbar-container {
+		display: flex !important;
+		justify-content: center;
+	}
+}
+
+@media (min-width: 1024px) {
+    
 }
