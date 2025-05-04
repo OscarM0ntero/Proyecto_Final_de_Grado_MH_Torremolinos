@@ -145,12 +145,13 @@ a:hover {
 	cursor: pointer;
 }
 
-@media (max-width: 768px) {
-	
-}
+@media (max-width: 768px) {}
 
-@media (min-width: 768px) and (max-width: 1024px) {
-    .navbar-section.left,
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+
+	.navbar-section.left,
 	.navbar-section.right {
 		display: none;
 	}
@@ -166,6 +167,4 @@ a:hover {
 	}
 }
 
-@media (min-width: 1024px) {
-    
-}
+@media (min-width: 1024px) {}

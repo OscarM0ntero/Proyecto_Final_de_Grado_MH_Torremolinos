@@ -117,12 +117,14 @@ img-text {
 }
 
 @media (max-width: 768px) {
-    .content-home {
-        margin: 0 var(--phone-margin);
-    }
+    
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
+
+}
+
+@media (max-width: 1024px) {
     .content-home {
         margin: 0 var(--tablet-margin);
     }
