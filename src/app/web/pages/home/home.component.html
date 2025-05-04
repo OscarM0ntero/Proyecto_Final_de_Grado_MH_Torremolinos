@@ -1,15 +1,31 @@
+<video muted onloadedmetadata="this.muted = true" playsinline autoplay loop preload="auto" class="vid">
+    <source src="assets/VIDEO_01_silent.mp4" type="video/mp4" />
+</video>
+
+<div class="vid-opacity">
+    <button class="book-button" [routerLink]="['reservar']">RESERVAR AHORA</button>
+</div>
+
+<!--
+
 <p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
     [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
     [transitionInterval]="5000" [showThumbnails]="false"
-    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '600px', 'align-items': 'center' }"
     baseZIndex="1">
     <ng-template #item let-item>
         <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
     </ng-template>
 </p-galleria>
 
-<div class="content">
+<video src="assets/VIDEO_04_silent.mp4" autoplay loop muted playsinline style="width: 100%; height: 400px; object-fit: cover;"></video>
+
+-->
+
+<div class="content-home">
+
     <div class="spacer"></div>
+
     <h1>Bienvenido a M&H Torremolinos</h1>
     <p> Disfruta de una estancia única en nuestro moderno apartamento, ubicado en el
         corazón de Torremolinos, a pocos minutos de la playa. Ideal para escapadas
@@ -18,6 +34,28 @@
 
     <div class="spacer"></div>
 
+    <div class="capacity-container">
+        <div class="capacity-info side">
+            <img src="assets/icons/double-bed.png" alt="Cama doble">
+            1 Cama<br>Doble
+        </div>
+        <div class="capacity-info center">
+            <img src="assets/icons/bed.png" alt="Cama individual">
+            3 Camas<br>Individuales
+        </div>
+        <div class="capacity-info side">
+            <img src="assets/icons/crib.png" alt="Cuna">
+            1 Cuna
+        </div>
+    </div>
+
+    <div class="spacer-big"></div>
+
+    <div class="main">
+        
+    </div>
+
+    <!--
     <div class="divider">
         <img-text [titulo]="'Title'"
             [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
@@ -87,5 +125,5 @@
         </img-text>
         <div class="empty-space"></div>
     </div>
-
+    -->
 </div>
