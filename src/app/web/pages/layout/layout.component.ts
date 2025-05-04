@@ -4,31 +4,30 @@ import { Router } from '@angular/router';
 //import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
-  selector: 'app-layout',
-  standalone: false,
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+	selector: 'app-layout',
+	standalone: false,
+	templateUrl: './layout.component.html',
+	styleUrls: ['./layout.component.scss']
 })
 
 export class LayoutComponent {
 
 	currentYear = new Date().getFullYear();
-/*
-	public sidebarItems = [
-		{ label: 'Buscar', icon: 'search', url: '/peliculas/search/' },
-		{ label: 'Favoritos', icon: 'label', url: '/peliculas/fav-list' },
-		...(localStorage.getItem('permisos') === '1'
-			? [{ label: 'Usuarios', icon: 'manage_accounts', url: '/usuarios' }]
-			: [])
-	];
-*/
-
 
 	constructor(
 		private router: Router,
 		//private authService: AuthService
 	) { }
 
+	mobileMenuOpen = false;
+
+	toggleMobileMenu() {
+		this.mobileMenuOpen = !this.mobileMenuOpen;
+	}
+
+	closeMobileMenu() {
+		this.mobileMenuOpen = false;
+	}
 
 	//onLogout(): void {
 	//	this.authService.doLogout();
