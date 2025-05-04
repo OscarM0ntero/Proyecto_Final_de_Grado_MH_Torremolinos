@@ -1,38 +1,17 @@
-.container {
-    padding-top: 50px;
-}
-
-img {
-    object-fit: cover;
-    max-width: 100%;
-    height: auto;
+.content-gallery {
+    margin: 0 var(--desktop-margin);
 }
 
 .grid {
     display: grid;
-}
 
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-        /* Para móviles, solo una columna */
+    img {
+        object-fit: cover;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
     }
 }
-
-@media (min-width: 768px) and (max-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-        /* Para tabletas, dos columnas */
-    }
-}
-
-@media (min-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(3, 1fr);
-        /* Para escritorios, tres columnas */
-    }
-}
-
 
 .p-galleria .p-galleria-nav-button {
     background-color: rgba(255, 255, 255, 0.2);
@@ -48,6 +27,37 @@ img {
 
 }
 
-.p-galleria-content {       // Hace que las imagenes del slider del home se ajusten al tamaño de la pagina
+.p-galleria-content {
+    // Hace que las imagenes del slider del home se ajusten al tamaño de la pagina
     width: 100%;
+}
+
+img.ng-star-inserted {
+    max-height: calc(80vh - var(--navbar-height));
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content-gallery {
+        margin: 0 var(--phone-margin);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .content-gallery {
+        margin: 0 var(--tablet-margin);
+    }
+
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
