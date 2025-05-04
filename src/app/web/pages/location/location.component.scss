@@ -1,0 +1,19 @@
+.content-location {
+    margin: 0 var(--desktop-margin);
+}
+
+@media (max-width: 768px) {
+    .content-location {
+        margin: 0 var(--phone-margin);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .content-location {
+        margin: 0 var(--tablet-margin);
+    }
+}
+
+@media (min-width: 1024px) {
+    
+}
