@@ -117,17 +117,19 @@ img-text {
 }
 
 @media (max-width: 768px) {
-    
+    .content-home {
+        margin: 0 var(--mobile-margin);
+    }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-
-}
-
-@media (max-width: 1024px) {
     .content-home {
         margin: 0 var(--tablet-margin);
     }
+}
+
+@media (max-width: 1024px) {
+    
 }
 
 @media (min-width: 1024px) {
