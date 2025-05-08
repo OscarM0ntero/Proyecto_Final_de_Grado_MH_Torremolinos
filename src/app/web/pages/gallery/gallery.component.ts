@@ -34,10 +34,12 @@ export class GalleryComponent {
     { itemImageSrc: 'assets/img/IMG_24.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_24t.jpg', alt: 'Imagen 24', title: 'Foto 24' },
     { itemImageSrc: 'assets/img/IMG_25.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_25t.jpg', alt: 'Imagen 25', title: 'Foto 25' },
     { itemImageSrc: 'assets/img/IMG_26.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_26t.jpg', alt: 'Imagen 26', title: 'Foto 26' },
-    { itemImageSrc: 'assets/img/IMG_27.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_27t.jpg', alt: 'Imagen 27', title: 'Foto 27' },
+    //{ itemImageSrc: 'assets/img/IMG_27.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_27t.jpg', alt: 'Imagen 27', title: 'Foto 27' },
     { itemImageSrc: 'assets/img/IMG_28.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_28t.jpg', alt: 'Imagen 28', title: 'Foto 28' },
     { itemImageSrc: 'assets/img/IMG_29.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_29t.jpg', alt: 'Imagen 29', title: 'Foto 29' },
-    { itemImageSrc: 'assets/img/IMG_30.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_30t.jpg', alt: 'Imagen 30', title: 'Foto 30' },
+    { itemImageSrc: 'assets/img/IMG_31.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_31t.jpg', alt: 'Imagen 31', title: 'Foto 31' },
+    { itemImageSrc: 'assets/img/IMG_32.jpg', itemThumbnailSrc: 'assets/thumbnail/IMG_32t.jpg', alt: 'Imagen 32', title: 'Foto 32' },
+
   ];
 
   displayCustom: boolean = false;
