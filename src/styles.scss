@@ -27,14 +27,17 @@
     --color-neutral: #dddddd;
     --color-neutral-dark: #020101;
 
-    --color-background: #ffffff;
+    --color-header: white;
+    --color-background: #f1eee7;
     --color-surface: #f4f4f4;
     --color-text: #3F4B3A;
 
     --navbar-height: 124px;
     --footer-height: 100px;
-    --desktop-margin: 22%;
+    --desktop-margin: 20%;
+    --desktop-margin-thin: 15%;
     --tablet-margin: 10%;
+    --tiny-margin: 5%;
     --phone-margin: 0;
 }
 
@@ -62,14 +65,19 @@ body {
     padding: 0;
     background-color: var(--color-background);
     color: var(--color-primary);
-    font-size: large;
+    font-size: 24px;
     font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
 
 }
     
-h1 {
-    font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
+h1, h2, h3 {
+    font-family: 'Della Respira', Roboto, "Helvetica Neue", sans-serif;
+    font-weight: bold;
     /*font-family: 'Gistesy';*/
+}
+
+h1 {
+    font-size: 50px;
 }
 
 .spacer {
@@ -148,4 +156,33 @@ h1 {
 
 .p-galleria {
     border: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .mobile-hide {
+        display: none;
+    }
+
+    h1 {
+        font-size: 35px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+}
+
+@media (max-width: 1024px) {
+    .tablet-hide {
+        display: none;
+    }
+    .tablet-show {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tablet-show {
+        display: none;
+    }
 }
