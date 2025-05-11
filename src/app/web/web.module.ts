@@ -15,7 +15,18 @@ import { BookingComponent } from './pages/booking/booking.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { LoginComponent } from './pages/login/login.component';
 import { GridOverlayComponent } from './pages/home/components/grid-overlay/grid-overlay.component';
+import { Error404Component } from './pages/error404/error404.component';
+import { ApartmentComponent } from './pages/apartment/apartment.component';
 
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { environment } from '../../environments/environment';
+
+// Función de carga de traducciones compatible con SSR
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http, environment.webUrl + 'assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -28,6 +39,8 @@ import { GridOverlayComponent } from './pages/home/components/grid-overlay/grid-
     ContactComponent,
     LoginComponent,
     GridOverlayComponent,
+    Error404Component,
+    ApartmentComponent,
   ],
   imports: [
     CommonModule,
@@ -37,6 +50,15 @@ import { GridOverlayComponent } from './pages/home/components/grid-overlay/grid-
     MatSlideToggleModule,
     FormsModule,
     PrimeNgModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'es',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ]
 })
 export class WebModule { }
