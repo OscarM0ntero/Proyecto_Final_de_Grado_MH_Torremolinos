@@ -26,8 +26,8 @@ p {
     height: calc(100vh - var(--navbar-height));
     background-color: rgba(0, 0, 0, 0);
     animation: fadeBg 3s forwards;
-    animation-delay: 1s;
-    z-index: 10;
+    animation-delay: 2s;
+    z-index: 2;
 }
 
 // Animacion fade del video del home
@@ -55,7 +55,7 @@ p {
     cursor: pointer;
     text-decoration: none;
     font-size: 20px;
-    z-index: 100 !important;
+    z-index: 3;
 
 }
 
@@ -148,68 +148,6 @@ p {
     }
 }
 
-.apartament-section {
-    display: flex;
-    flex-direction: row;
-    max-width: 100vw;
-
-    margin-left: var(--tablet-margin);
-    margin-right: 0;
-
-    .apartament-img {
-        position: relative;
-        width: 69% !important;
-        object-fit: cover;
-        right: 0 !important;
-        margin-right: 0;
-        margin-left: auto;
-        z-index: 1;
-
-        img {
-            object-fit: cover;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            max-height: 75vw;
-        }
-
-    }
-
-    .apartament-content {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        z-index: 2;
-        width: 40%;
-
-        h1,
-        h2 {
-            text-align: left;
-        }
-
-        .apartament-text {
-            position: relative;
-            padding: 20px;
-            background-color: var(--color-primary);
-            color: var(--color-neutral);
-        }
-    }
-}
-
-.apartment-grid {
-    display: grid;
-
-    grid-template-rows: repeat(24, minmax(calc(min(var(1400px, 1500px), calc(100vw - 4vw * 2)) * 0.0215), auto));
-    grid-template-columns: minmax(calc(4vw - 11px), 1fr) repeat(24, minmax(0, calc((var(1400px, 1500px) - (11.0px * (24 - 1))) / 24))) minmax(calc(4vw - 11.0px), 1fr);
-
-
-    .apartment-grid-img {
-        grid-area: 4 / 11 / 22 / 27;
-        z-index: 20;
-
-    }
-
-}
-
 .grid-overlay {
     display: grid;
     grid-template-columns:
@@ -223,9 +161,7 @@ p {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 9999;
-
-
+    z-index: 1;
 }
 
 .grid-overlay div {
@@ -234,55 +170,6 @@ p {
     border: 1px solid rgba(0, 0, 255, 0.2);
 }
 
-
-.custom-image {
-    grid-area: 4 / 11 / 22 / 26;
-    z-index: 20;
-    object-fit: cover;
-    img {
-        display: block;
-        object-fit: cover;
-        
-        width: auto;
-        height: auto;
-    }
-}
-
-
-
-/*
-.apartment-grid {
-    --sqs-site-gutter: 4vw;
-    --sqs-mobile-site-gutter: 6vw;
-    --sqs-site-max-width: 1400px;
-    --sqs-focus-outline-width: 2px;
-    --sqs-focus-outline-style: solid;
-    --sqs-focus-outline-offset-default: 4px;
-    --sqs-focus-outline-offset-zero: 0;
-    --sqs-focus-outline-offset-flush: -2px;
-    --sqs-focus-outline-offset-inset: -4px;
-
-    --grid-gutter: calc(var(--sqs-site-gutter, 4vw) - 11.0px);
-    --cell-max-width: calc((var(--sqs-site-max-width, 1500px) - (11.0px * (24 - 1))) / 24);
-    --inset-padding: 0vw;
-    --row-height-scaling-factor: 0.0215;
-    --container-width: min(var(--sqs-site-max-width, 1500px), calc(100vw - var(--sqs-site-gutter, 4vw) * 2 - var(--inset-padding)));
-
-    display: grid;
-
-    grid-template-rows: repeat(24, minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto));
-    grid-template-columns: minmax(var(--grid-gutter), 1fr) repeat(24, minmax(0, var(--cell-max-width))) minmax(var(--grid-gutter), 1fr);
-    
-    
-
-    .apartment-grid-img {
-        grid-area: 4 / 11 / 22 / 27;
-        z-index: 20;
-
-    }
-
-}
-*/
 .divider {
     display: flex;
     justify-content: space-between;
@@ -355,50 +242,6 @@ img-text {
             padding: var(--tiny-margin);
             width: 100%;
         }
-    }
-
-    .apartament-section {
-        display: flex;
-        flex-direction: column-reverse;
-        max-width: 100vw;
-
-        margin: 0 var(--mobile-margin);
-
-        .apartament-img {
-            position: relative;
-            width: 100% !important;
-            margin: 0;
-            z-index: 1;
-
-            img {
-                object-fit: cover;
-                width: 100%;
-                aspect-ratio: 16 / 9;
-            }
-
-        }
-
-        .apartament-content {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-
-            h1,
-            h2 {
-                text-align: center;
-            }
-
-            .apartament-text {
-                position: relative;
-                padding: var(--mar);
-                background-color: var(--color-primary);
-                color: var(--color-neutral);
-
-            }
-        }
-
-
     }
 }
 
