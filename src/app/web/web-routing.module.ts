@@ -7,6 +7,8 @@ import { BookingComponent } from './pages/booking/booking.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { LocationComponent } from './pages/location/location.component';
 import { LoginComponent } from './pages/login/login.component';
+import { Error404Component } from './pages/error404/error404.component';
+import { ApartmentComponent } from './pages/apartment/apartment.component';
 
 const routes: Routes = [
   {
@@ -14,18 +16,14 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', component: HomeComponent},
+      { path: 'apartamento', component: ApartmentComponent},
       { path: 'galeria', component: GalleryComponent},
       { path: 'localizacion', component: LocationComponent},
       { path: 'reservar', component: BookingComponent},
       { path: 'contacto', component: ContactComponent},
       { path: 'iniciar-sesion', component: LoginComponent},
-      //{ path: 'galeria/:id', component: HomeComponent},
-      { path: '**', redirectTo: ''}
+      { path: '**', component: Error404Component}
     ]
-  },
-  {
-    path: '**',
-    redirectTo: ''
   }
 ];
 

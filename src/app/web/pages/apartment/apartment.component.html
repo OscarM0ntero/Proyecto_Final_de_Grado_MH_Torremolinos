@@ -1,0 +1,19 @@
+<!-- Solo  -->
+<p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
+    [transitionInterval]="5000" [showThumbnails]="false"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
+    baseZIndex="1" class="mobile-hide">
+    <ng-template #item let-item>
+        <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
+<p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
+    [transitionInterval]="5000" [showThumbnails]="false"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '200px', 'align-items': 'center' }"
+    baseZIndex="1" class="mobile-show" style="display: none;">
+    <ng-template #item let-item>
+        <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
