@@ -3,7 +3,7 @@
 </video>
 
 <div class="vid-opacity">
-    <button class="book-button" [routerLink]="['reservar']">RESERVAR AHORA</button>
+    <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
 </div>
 
 <!--
@@ -24,9 +24,9 @@
 <div class="spacer"></div>
 
 <section class="welcome-section">
-    <h1>Bienvenido a <a style="font-family: 'Gistesy';">M&H</a> Torremolinos</h1>
+    <h1>{{ 'HOME.WELCOME' | translate }} <a style="font-family: 'Gistesy';">M&H</a> Torremolinos</h1>
     <div class="spacer-small"></div>
-    <p>Para unas vacaciones ideales.</p>
+    <p>{{ 'HOME.VACATION' | translate }}</p>
 </section>
 
 <div class="spacer"></div>
@@ -58,7 +58,7 @@
         <div class="spacer-big tablet-hide"></div>
         <h1>RELAJATE. DISFRUTA.</h1>
         <div class="spacer"></div>
-        <p>Vive una estancia única en nuestro moderno apartamento, ubicado en el
+        <p>Vive una estancia única en nuestro bonito apartamento, ubicado en el
             corazón de Torremolinos, a pocos minutos de la playa. </p>
         <p>Ideal para escapadas familiares o en pareja, con todas las comodidades necesarias para hacer de
             tu visita una experiencia inolvidable.</p>
@@ -68,139 +68,8 @@
 <div class="spacer-big"></div>
 <div class="spacer-big tablet-hide"></div>
 
-<!--
-<section class="apartament-section">
-    <div class="apartament-content">
-        <h2>EL APARTAMENTO</h2>
-        <div class="spacer-big"></div>
-        <div class="apartament-text">
-            <p>Situado en la zona suroeste de Torremolinos, junto al Parque La Batería, nuestro
-                apartamento en planta baja cuenta con entrada independiente de la calle y acceso directo a la piscina.
-            </p>
-            <p>
-                Es un lugar único, donde se combinan la tranquilidad del descanso y la comodidad.
-                Un paraíso a descubrir entre Málaga y Marbella en la Costa del Sol.
-            </p>
-            <p>Un alojamiento amplio, acogedor y confortable de 90m², que cuenta con tres dormitorios, dos baños,
-                un amplio salón, comedor, cocina, y todo rodeado de un paisaje idílico.
-            </p>
-            <p>
-                Desde la terraza podrá disfrutar de las vistas, los jardines, y la piscina.
-                Al atardecer, en el cenador del jardín de entrada y con el minigolf.
-            </p>
-            <p>
-                Tendrá la oportunidad de divertirse en la piscina o de bajar a la playa, coger las hamacas y tomar el
-                sol,
-                relajarse en el salón o la terraza, o pasear por los jardines.
-            </p>
-        </div>
-
-    </div>
-
-    <div class="apartament-img">
-        <div class="spacer-big tablet-hide"></div>
-        <img src="assets/img/IMG_31.jpg" alt="Foto Intro">
-        <div class="spacer-big"></div>
-    </div>
-</section>
--->
-
-<!--
-<div class="grid-overlay">
-
-    <div class="custom-image">
-        <img src="assets/img/IMG_31.jpg">
-    </div>
-
-    <script>
-        for (let i = 0; i < 26 * 24; i++) {
-            document.write('<div></div>');
-        }
-    </script>
-</div>
--->
-
 <app-grid-overlay></app-grid-overlay>
 
 <div class="spacer-big"></div>
 
-<!--
-<section class="apartament-grid">
-    <div class="apartment-grid-img">
-        <img src="assets/img/IMG_31.jpg" alt="Foto Intro">
-    </div>
-</section>
--->
 <div class="spacer-big"></div>
-
-<!--
-    <div class="divider">
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
-        </img-text>
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false">
-        </img-text>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div class="divider">
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
-        </img-text>
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
-        </img-text>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div class="divider">
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
-        </img-text>
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="true">
-        </img-text>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div class="divider">
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="true">
-        </img-text>
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="false">
-        </img-text>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div class="divider">
-        <div class="empty-space"></div>
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_05.jpg'" [horizontal]="true" [imgRight]="false">
-        </img-text>
-    </div>
-
-    <div class="spacer"></div>
-
-    <div class="divider">
-        <img-text [titulo]="'Title'"
-            [texto]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.'"
-            [imagen]="'assets/IMG_02.jpg'" [horizontal]="false" [imgRight]="true">
-        </img-text>
-        <div class="empty-space"></div>
-    </div>
-    -->
