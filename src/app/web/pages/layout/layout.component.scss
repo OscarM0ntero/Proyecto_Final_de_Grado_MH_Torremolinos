@@ -4,10 +4,45 @@
 	min-height: 100vh;
 }
 
-.header {
-	background-color: var(--color-primary);
+.toolbar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 60px;
+	width: 100%;
+	max-width: 100vw;
+	padding: 5px;
+	display: flex;
+	justify-content: flex-end;
+	align-content: start;
 	color: var(--color-neutral);
-	height: 30px;
+	font-size: 14px;
+	z-index: 101;
+
+	gap: 30px;
+
+	button {
+		background-color: var(--color-primary);
+		color: var(--color-neutral);
+		border: none;
+		border-radius: 25px;
+		margin: 5px;
+		width: 120px;
+		font-weight: bold;
+	}
+
+	img {
+		width: 25px;
+		height: 25px;
+		cursor: pointer;
+	}
+}
+
+.lang {
+	width: 25px;
+	height: 25px;
+	margin: 0;
+	padding: 0;
 }
 
 .navbar-container {
@@ -21,7 +56,7 @@
 	background-color: var(--color-header);
 	padding-top: 5px;
 	padding-bottom: 5px;
-	z-index: 1000;
+	z-index: 100;
 	box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.2);
 	align-items: center;
 
@@ -35,7 +70,7 @@
 		position: absolute;
 		right: 15px;
 		top: 15px;
-		z-index: 1100;
+		z-index: 103;
 		cursor: pointer;
 	}
 }
@@ -50,10 +85,12 @@
 
 .right {
 	justify-content: flex-start;
+	min-width: 390px;
 }
 
 .left {
 	justify-content: flex-end;
+	min-width: 362px;
 }
 
 .center {
@@ -70,6 +107,7 @@
 	padding-bottom: 7px;
 	cursor: pointer;
 	text-decoration: none;
+	font-size: 20px;
 }
 
 .logo {
@@ -83,7 +121,7 @@
 	top: var(--navbar-height);
 	right: -100%;
 	/* oculto inicialmente */
-	width: 80%;
+	width: 70%;
 	/* ancho del menú desplegable */
 	height: 100%;
 	font-weight: bold;
@@ -91,8 +129,9 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	z-index: 1010;
+	z-index: 102;
 	transition: right 0.3s ease-in-out;
+	box-shadow: -7px 0 15px rgba(0, 0, 0, 0.2);
 
 	&.open {
 		right: 0;
@@ -105,6 +144,27 @@
 		text-align: center;
 		border-top: 1px solid var(--color-neutral);
 	}
+}
+
+.mat-mdc-option {
+    padding: 0 !important;
+    min-height: 25px !important;
+}
+
+.mat-mdc-option-active {
+    display: none !important;
+}
+
+.mat-mdc-select-arrow-wrapper {
+    display: none !important;
+}
+
+.mat-mdc-select {
+    width: 25px !important;
+}
+
+div.mat-mdc-select-panel {
+    padding: 0 !important;
 }
 
 .content-container {
@@ -121,7 +181,7 @@
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	z-index: 1000;
+	z-index: 100;
 	align-items: center;
 	justify-content: center;
 	height: 100px;
@@ -140,12 +200,12 @@
 		text-decoration: underline;
 		cursor: pointer;
 	}
-	
+
 	a:hover {
 		text-decoration: underline;
 		cursor: pointer;
 	}
-	
+
 }
 
 .footer-section {
@@ -185,6 +245,12 @@ a:hover {
 		display: flex !important;
 		justify-content: center;
 	}
+
+	.right,
+	.left {
+		min-width: none;
+	}
+
 }
 
 @media (min-width: 1024px) {}

@@ -1,16 +1,26 @@
 <div class="layout">
-	<!--<section class="header">
-
-	</section>-->
-
 	<section class="navbar-container">
+		<div class="toolbar tablet-hide">
+			<mat-select class="lang-select" [value]="selectedLang" (selectionChange)="cambiarIdioma($event.value)"
+				disableRipple>
+				<mat-select-trigger>
+					<img [src]="banderaActual" width="25" height="25" alt="Idioma actual" />
+				</mat-select-trigger>
+
+				<mat-option *ngFor="let lang of idiomas" [value]="lang.codigo">
+					<img [src]="lang.bandera" width="25" height="25" alt="{{ lang.nombre }}" />
+				</mat-option>
+			</mat-select>
+
+			<button [routerLink]="['iniciar-sesion']">{{ 'NAVBAR.LOGIN' | translate }}</button>
+		</div>
 		<button class="hamburger" (click)="toggleMobileMenu()" aria-label="Menú">
 			&#9776;
 		</button>
 		<div class="navbar-section left desktop-only">
-			<a class="nav-item" [routerLink]="['']">INICIO</a>
-			<a class="nav-item" [routerLink]="['galeria']">GALERÍA</a>
-			<a class="nav-item" [routerLink]="['localizacion']">LOCALIZACIÓN</a>
+			<a class="nav-item" [routerLink]="['']">{{ 'NAVBAR.HOME' | translate }}</a>
+			<a class="nav-item" [routerLink]="['apartamento']">{{ 'NAVBAR.APARTMENT' | translate }}</a>
+			<a class="nav-item" [routerLink]="['galeria']">{{ 'NAVBAR.GALLERY' | translate }}</a>
 		</div>
 
 		<div class="navbar-section center" [routerLink]="['']">
@@ -18,9 +28,10 @@
 		</div>
 
 		<div class="navbar-section right desktop-only">
-			<a class="nav-item" [routerLink]="['reservar']">RESERVAR</a>
-			<a class="nav-item" [routerLink]="['contacto']">CONTACTO</a>
-			<a class="nav-item" [routerLink]="['iniciar-sesion']">INICIAR SESIÓN</a>
+			<a class="nav-item" [routerLink]="['localizacion']">{{ 'NAVBAR.LOCATION' | translate }}</a>
+			<a class="nav-item" [routerLink]="['reservar']">{{ 'NAVBAR.BOOKING' | translate }}</a>
+			<a class="nav-item" [routerLink]="['contacto']">{{ 'NAVBAR.CONTACT' | translate }}</a>
+			<!--<a class="nav-item" [routerLink]="['iniciar-sesion']">INICIAR SESIÓN</a>-->
 			<!--
 		<button mat-raised-button color="warn" style="margin-left: 8px"> (click)="onLogout()"
 			Logout
@@ -30,12 +41,25 @@
 	</section>
 
 	<nav class="mobile-menu" [class.open]="mobileMenuOpen">
-		<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">INICIO</a>
-		<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">GALERÍA</a>
-		<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">LOCALIZACIÓN</a>
-		<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">RESERVAR</a>
-		<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">CONTACTO</a>
-		<a class="nav-item" [routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">INICIAR SESIÓN</a>
+		<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">{{ 'NAVBAR.HOME' | translate }}</a>
+		<a class="nav-item" [routerLink]="['apartamento']" (click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' | translate }}</a>
+		<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">{{ 'NAVBAR.GALLERY' | translate }}</a>
+		<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' | translate }}</a>
+		<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">{{ 'NAVBAR.BOOKING' | translate }}</a>
+		<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">{{ 'NAVBAR.CONTACT' | translate }}</a>
+		<a class="nav-item" [routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOGIN' | translate }}</a>
+		<div class="spacer-small"></div>
+		<mat-select class="lang-select" [value]="selectedLang" (selectionChange)="cambiarIdioma($event.value)"
+			disableRipple>
+			<mat-select-trigger>
+				<img [src]="banderaActual" width="25" height="25" alt="Idioma actual" />
+			</mat-select-trigger>
+
+			<mat-option *ngFor="let lang of idiomas" [value]="lang.codigo">
+				<img [src]="lang.bandera" width="25" height="25" alt="{{ lang.nombre }}" />
+			</mat-option>
+		</mat-select>
+
 	</nav>
 
 	<div class="content-container">

@@ -1,0 +1,16 @@
+{
+    "NAVBAR": {
+      "HOME": "HJEM",
+      "APARTMENT": "LEILIGHETEN",
+      "GALLERY": "GALLERI",
+      "LOCATION": "BELIGGENHET",
+      "BOOKING": "BESTILLING",
+      "CONTACT": "KONTAKT",
+      "LOGIN": "LOGG INN"
+    },
+    "HOME": {
+      "BOOK": "BESTILL NÅ",
+      "WELCOME": "Velkommen til",
+      "VACATION": "For en ideell ferie."
+    }
+  }
