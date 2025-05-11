@@ -22,7 +22,7 @@
     --color-primary: #3F4B3A;
     --color-secondary: #AABD99;
     --color-tertiary: #b5beac;
-    --color-warn: #FF8B41;
+    --color-warn: #AD6B49;
     --color-accent: #00C3B2;
     --color-neutral: #dddddd;
     --color-neutral-dark: #020101;
@@ -53,8 +53,10 @@ body {
     font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
 
 }
-    
-h1, h2, h3 {
+
+h1,
+h2,
+h3 {
     font-family: 'Della Respira', Roboto, "Helvetica Neue", sans-serif;
     font-weight: bold;
     /*font-family: 'Gistesy';*/
@@ -121,7 +123,7 @@ h1 {
     left: 0;
     height: calc(100% - var(--navbar-height)) !important;
     background-color: var(--color-tertiary) !important;
-    z-index: 1001 !important;
+    z-index: 200 !important;
 
     svg {
         width: 50px !important;
@@ -144,7 +146,11 @@ h1 {
 
 @media (max-width: 768px) {
     .mobile-hide {
-        display: none;
+        display: none !important;
+    }
+
+    .mobile-show {
+        display: block !important;
     }
 
     h1 {
@@ -152,21 +158,20 @@ h1 {
     }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-    
-}
+@media (min-width: 768px) and (max-width: 1024px) {}
 
 @media (max-width: 1024px) {
     .tablet-hide {
-        display: none;
+        display: none !important;
     }
+
     .tablet-show {
-        display: block;
+        display: block !important;
     }
 }
 
 @media (min-width: 1024px) {
     .tablet-show {
-        display: none;
+        display: none !important;
     }
 }
