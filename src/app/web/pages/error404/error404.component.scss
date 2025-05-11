@@ -1,0 +1,13 @@
+.error {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+    align-items: center;
+    color: var(--color-warn);
+
+    p {
+        font-size: 80px !important;
+    }
+}
