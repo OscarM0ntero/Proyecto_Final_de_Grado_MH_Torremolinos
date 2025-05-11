@@ -1,0 +1,16 @@
+{
+    "NAVBAR": {
+        "HOME": "HOME",
+        "APARTMENT": "THE APARTMENT",
+        "GALLERY": "GALLERY",
+        "LOCATION": "LOCATION",
+        "BOOKING": "BOOKING",
+        "CONTACT": "CONTACT",
+        "LOGIN": "LOGIN"
+    },
+    "HOME": {
+        "BOOK": "BOOK NOW",
+        "WELCOME": "Welcome to",
+        "VACATION": "For an ideal vacation."
+    }
+}

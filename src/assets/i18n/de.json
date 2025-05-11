@@ -1,0 +1,16 @@
+{
+    "NAVBAR": {
+        "HOME": "STARTSEITE",
+        "APARTMENT": "DAS APARTMENT",
+        "GALLERY": "GALERIE",
+        "LOCATION": "LAGE",
+        "BOOKING": "BUCHUNG",
+        "CONTACT": "KONTAKT",
+        "LOGIN": "ANMELDEN"
+    },
+    "HOME": {
+        "BOOK": "JETZT BUCHEN",
+        "WELCOME": "Willkommen bei",
+        "VACATION": "Für einen idealen Urlaub."
+    }
+}
