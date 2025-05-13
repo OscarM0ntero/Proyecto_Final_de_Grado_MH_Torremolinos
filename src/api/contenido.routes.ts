@@ -4,7 +4,7 @@ import { pool } from '../db.js';
 const router = Router();
 const idiomasPermitidos = ['es', 'en', 'de', 'no'];
 
-router.get('/contenido', async (req, res) => {
+router.get('/', async (req, res) => {
     const { lang, pagina } = req.query;
 
     if (!pagina) {
