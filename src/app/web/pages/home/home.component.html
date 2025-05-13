@@ -26,7 +26,9 @@
 <section class="welcome-section">
     <h1>{{ 'HOME.WELCOME' | translate }} <a style="font-family: 'Gistesy';">M&H</a> Torremolinos</h1>
     <div class="spacer-small"></div>
-    <p>{{ 'HOME.VACATION' | translate }}</p>
+    <!--<p>{{ 'HOME.VACATION' | translate }}</p>-->
+    <p>{{ itemLema }}</p>
+
 </section>
 
 <div class="spacer"></div>
@@ -34,15 +36,15 @@
 <section class="capacity-section">
     <div class="info side">
         <img src="assets/icons/double-bed.png" alt="Cama doble">
-        1 Cama<br>Doble
+        {{ itemCamaDoble }}
     </div>
     <div class="info center">
         <img src="assets/icons/bed.png" alt="Cama individual">
-        3 Camas<br>Individuales
+        {{ itemCamasInd }}
     </div>
     <div class="info side">
         <img src="assets/icons/crib.png" alt="Cuna">
-        1 Cuna
+        {{ itemCuna }}
     </div>
 </section>
 
@@ -54,21 +56,19 @@
         <img src="assets/img/IMG_28.jpg" alt="Foto Intro 1" class="main">
         <img src="assets/thumbnail/IMG_04t.jpg" alt="Foto Intro 2" class="secondary">
     </div>
-    <div class="intro-content">
+    <div class="intro-content" *ngIf="itemApartado1">
         <div class="spacer-big tablet-hide"></div>
-        <h1>RELAJATE. DISFRUTA.</h1>
+        <h1>{{ itemApartado1.titulo }}</h1>
         <div class="spacer"></div>
-        <p>Vive una estancia única en nuestro bonito apartamento, ubicado en el
-            corazón de Torremolinos, a pocos minutos de la playa. </p>
-        <p>Ideal para escapadas familiares o en pareja, con todas las comodidades necesarias para hacer de
-            tu visita una experiencia inolvidable.</p>
+        <div [innerHTML]="itemApartado1.texto"></div>
+
     </div>
 </section>
 
 <div class="spacer-big"></div>
 <div class="spacer-big tablet-hide"></div>
 
-<app-grid-overlay></app-grid-overlay>
+<app-grid-overlay [contenido]="itemApartado2"></app-grid-overlay>
 
 <div class="spacer-big"></div>
 
