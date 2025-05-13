@@ -8,7 +8,8 @@ import {
   writeResponseToNodeResponse
 } from '@angular/ssr/node';
 
-import contenidoRouter from './api/contenido.routes.js'; // 👈 .js obligatorio
+import contenidoRouter from './api/contenido.routes.js';
+import disponibilidadRoutes from './api/disponibilidad.routes.js';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -17,13 +18,20 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 console.log('[SSR] Cargando rutas backend...');
-app.use('/api', contenidoRouter); // 👈 aquí se activa tu API
+app.use('/api/contenido', contenidoRouter); // 👈 aquí se activa tu API
+app.use('/api/disponibilidad', disponibilidadRoutes);
+
 
 app.use(express.static(browserDistFolder, {
   maxAge: '1y',
   index: false,
   redirect: false,
 }));
+
+app.use((req, res, next) => {
+  console.log('[SSR] Petición recibida:', req.url);
+  next();
+});
 
 app.use('/**', (req, res, next) => {
   angularApp

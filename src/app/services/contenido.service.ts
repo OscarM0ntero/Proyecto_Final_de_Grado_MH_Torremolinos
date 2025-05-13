@@ -16,7 +16,7 @@ export type Contenido = {
   providedIn: 'root'
 })
 export class ContenidoService {
-  private apiUrl = environment.webUrl + '/api/contenido';
+  private apiUrl = environment.webUrl + 'api/contenido';
 
   constructor(private http: HttpClient) {}
 
