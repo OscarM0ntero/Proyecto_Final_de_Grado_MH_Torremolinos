@@ -1,31 +1,48 @@
 import { Router } from 'express';
 import { pool } from '../db.js';
 
-console.log('[API] contenido.routes.ts incluido');
-
 const router = Router();
+const idiomasPermitidos = ['es', 'en', 'de', 'no'];
 
 router.get('/contenido', async (req, res) => {
-  const lang = String(req.query['lang'] || 'es').toLowerCase();
-  const pagina = String(req.query['pagina'] || '').toLowerCase();
+    const { lang, pagina } = req.query;
 
-  const idiomas = ['es', 'en', 'de', 'no'];
-  if (!idiomas.includes(lang)) return res.status(400).json({ error: 'Idioma inválido' });
-  if (!pagina) return res.status(400).json({ error: 'Falta el parámetro "pagina"' });
+    if (!pagina) {
+        return res.status(400).json({ error: 'Falta parámetro: pagina' });
+    }
 
-  const campoTitulo = `titulo_${lang}`;
-  const campoTexto = `texto_${lang}`;
+    const idioma = String(lang);
 
-  try {
-    const [rows] = await pool.query(
-      `SELECT id_contenido, ?? AS titulo, ?? AS texto FROM contenido WHERE pagina = ?`,
-      [campoTitulo, campoTexto, pagina]
-    );
-    return res.json(rows);
-  } catch (error) {
-    console.error('[ERROR /api/contenido]:', error);
-    return res.status(500).json({ error: 'Error en el servidor' });
-  }
+    if (lang && !idiomasPermitidos.includes(idioma)) {
+        return res.status(400).json({
+            error: `Idioma no válido: ${idioma}`,
+            idiomas_validos: idiomasPermitidos
+        });
+    }
+
+    try {
+        const [rows]: [any[], any] = await pool.query(
+            'SELECT * FROM contenido WHERE pagina = ?',
+            [pagina]
+        );
+
+        if (!lang) {
+            console.log(rows);
+            return res.json(rows);
+        }
+
+        const respuesta = rows.map((row) => ({
+            id_contenido: row.id_contenido,
+            pagina: row.pagina,
+            titulo: row[`titulo_${idioma}`],
+            texto: row[`texto_${idioma}`],
+        }));
+        console.log(respuesta);
+        return res.json(respuesta);
+    } catch (error) {
+        console.error('[ERROR /api/contenido]:', error);
+        return res.status(500).json({ error: 'Error al obtener contenido' });
+    }
 });
 
 export default router;
