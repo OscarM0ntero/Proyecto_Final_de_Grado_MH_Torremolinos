@@ -75,16 +75,18 @@ p {
 }
 
 .capacity-section {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     justify-content: center;
     gap: 20px;
     margin: auto;
-    width: fit-content;
+    width: 400px;
+    max-width: 90vw;
 
     .info {
         display: flex;
         flex-direction: column;
-        width: 90px;
+        max-width: auto;
         text-align: center;
 
         img {
@@ -95,7 +97,6 @@ p {
     }
 
     .info.center {
-        width: 135px;
     }
 }
 
@@ -189,7 +190,11 @@ img-text {
     align-self: stretch;
 }
 
-@media (max-width: 768px) {}
+@media (max-width: 768px) {
+    .capacity-section {
+        font-size: 18px;
+    }
+}
 
 @media (min-width: 768px) and (max-width: 1024px) {
     .welcome-section {
