@@ -1,26 +1,30 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-export interface Contenido {
+export type Contenido = {
+  [key in `texto_${'es' | 'en' | 'de' | 'no'}`]: string;
+} & {
+  [key in `titulo_${'es' | 'en' | 'de' | 'no'}`]: string;
+} & {
   id_contenido: number;
-  titulo: string;
-  texto: string;
-}
+  pagina: string;
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContenidoService {
+  private apiUrl = environment.webUrl + '/api/contenido';
 
-  private readonly apiUrl = '/api/contenido'; // Angular SSR usa proxy relativo
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getContenido(lang: string, pagina: string): Observable<Contenido[]> {
-    const params = new HttpParams()
-      .set('lang', lang)
-      .set('pagina', pagina);
+  getContenido(pagina: string, lang?: string): Observable<Contenido[]> {
+    let params = new HttpParams().set('pagina', pagina);
+    if (lang) {
+      params = params.set('lang', lang);
+    }
 
     return this.http.get<Contenido[]>(this.apiUrl, { params });
   }
