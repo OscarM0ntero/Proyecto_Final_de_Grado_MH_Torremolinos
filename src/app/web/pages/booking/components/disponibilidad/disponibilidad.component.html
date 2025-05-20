@@ -1,0 +1,178 @@
+<form #reservaForm="ngForm" (ngSubmit)="enviarReserva()" class="form">
+
+    <!-- Paso 1: Formulario -->
+    <ng-container *ngIf="!mostrarResumen">
+        <h1>Solicitud de reserva</h1>
+        <h3>Datos de reserva</h3>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Número de huéspedes</mat-label>
+            <mat-select name="huespedes" [(ngModel)]="reserva.huespedes" required class="guest"
+                [panelClass]="'guest-panel'">
+                <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">{{ i }} {{ i > 1 ? 'huéspedes' : 'huésped'
+                    }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Selecciona las fechas</mat-label>
+            <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter">
+                <input matStartDate name="fechaInicio" placeholder="Check-in" [(ngModel)]="fechaInicio"
+                    (ngModelChange)="onRangoModelChanged()" required />
+                <input matEndDate name="fechaFin" placeholder="Check-out" [(ngModel)]="fechaFin"
+                    (ngModelChange)="onRangoModelChanged()" required />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker [dateClass]="dateClass"></mat-date-range-picker>
+        </mat-form-field>
+
+        <div>
+            <mat-checkbox [(ngModel)]="reserva.conBebe" name="conBebe">
+                ¿Necesita cuna (< 2 años)? </mat-checkbox>
+                    <mat-checkbox [(ngModel)]="reserva.conMascota" name="conMascota"
+                        (ngModelChange)="onRangoModelChanged()">
+                        ¿Mascota? +10€/noche
+                    </mat-checkbox>
+        </div>
+
+        <div class="data">
+            <div class="data-content">
+                <strong>Noches</strong>
+                ~{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} x {{ numeroNoches }}
+            </div>
+            <div class="data-content">
+                <strong>Precio Total</strong>
+                {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}
+            </div>
+        </div>
+
+        <div class="oneColumn">
+            <h3>Datos del cliente</h3>
+            <p style="font-size: 18px;" *ngIf="camposBloqueados">Para modificar estos datos, cambielos en su cuenta.</p>
+        </div>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput name="nombre" [(ngModel)]="reserva.nombre" required [disabled]="camposBloqueados" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Apellidos</mat-label>
+            <input matInput name="apellidos" [(ngModel)]="reserva.apellidos" required [disabled]="camposBloqueados" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" name="email" [(ngModel)]="reserva.email" required #emailRef="ngModel" email
+                [disabled]="camposBloqueados" />
+
+            <mat-error *ngIf="emailRef.invalid && emailRef.touched">
+                <ng-container *ngIf="emailRef.errors?.['required']">
+                    El email es obligatorio
+                </ng-container>
+                <ng-container *ngIf="emailRef.errors?.['email']">
+                    El formato del email no es válido
+                </ng-container>
+            </mat-error>
+        </mat-form-field>
+
+        <div style="display: flex; align-items: flex-end; gap: 10px;">
+            <mat-form-field appearance="fill" style="width: 100px !important;">
+                <mat-label>+</mat-label>
+                <mat-select [(ngModel)]="reserva.prefijo" name="prefijo" required [disabled]="camposBloqueados">
+                    <mat-option *ngFor="let p of prefijos" [value]="p">
+                        {{ p }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" style="width: 240px !important;">
+                <mat-label>Teléfono</mat-label>
+                <input matInput name="telefono" [(ngModel)]="reserva.telefono" required [disabled]="camposBloqueados" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill" class="oneColumn">
+            <mat-label>Nota adicional</mat-label>
+            <textarea matInput name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
+        </mat-form-field>
+        <div class="oneColumn data-content">
+            <button class="submitButton" mat-raised-button color="primary" type="button"
+                (click)="mostrarResumen = true;" [disabled]="!reservaForm.valid || precioTotal === 0">
+                Siguiente
+            </button>
+        </div>
+
+    </ng-container>
+
+    <!-- Paso 2: Resumen -->
+    <ng-container *ngIf="mostrarResumen">
+        <h3>Resumen</h3>
+
+        <div class="summary-info">
+            <div class="data">
+                <div style="display: flex; flex-direction: column;">
+                    <strong>Check-in</strong>
+                    <strong>Check-out</strong>
+                    <strong>Huéspedes</strong>
+                    <strong>Necesita cuna</strong>
+                    <strong>Trae mascota</strong>
+                </div>
+                <div class="data-content">
+                    <p>{{ fechaInicio | date:'dd-MM-yyyy' }}</p>
+                    <p>{{ fechaFin | date:'dd-MM-yyyy' }}</p>
+
+                    <p>{{ reserva.huespedes }}</p>
+                    <p>{{ reserva.conBebe ? 'Sí' : 'No' }}</p>
+                    <p>{{ reserva.conMascota ? 'Sí' : 'No' }}</p>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="summary-info data-content threeRows">
+            <strong>Noches y precios</strong>
+            <div *ngFor="let dia of dias">
+                <p class="price">{{ dia.fecha | date:'dd-MM-yyyy' }}&nbsp;&nbsp;x&nbsp;&nbsp;{{ dia.precio |
+                    currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
+            </div>
+            <p *ngIf="reserva.conMascota" class="price">
+                <strong>Mascota: </strong>{{ numeroNoches }} x 10€ = {{ numeroNoches * 10 |
+                currency:'EUR':'symbol':'1.2-2':'es-ES' }}
+            </p>
+            <p><strong>Total:</strong> {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
+        </div>
+
+
+        <div class="summary-info">
+            <strong>Cliente</strong>
+            <div>
+                <p>{{ reserva.nombre }} {{ reserva.apellidos }}</p>
+                <p>{{ reserva.email }}</p>
+                <p>{{ reserva.prefijo }} {{ reserva.telefono }}</p>
+            </div>
+
+        </div>
+
+        <div *ngIf="!reserva.nota"></div>
+
+        <div class="summary-info" *ngIf="reserva.nota">
+            <strong>Nota adicional</strong>
+            <p>{{ reserva.nota }}</p>
+        </div>
+
+
+        <button mat-stroked-button type="button" (click)="mostrarResumen = false" class="submitButton">
+            Volver
+        </button>
+
+        <button mat-raised-button type="button" class="submitButton" (click)="verificarCaptcha()">
+            Enviar solicitud
+        </button>
+
+    </ng-container>
+</form>
+
+<re-captcha #captchaRef [siteKey]="siteKey"  (resolved)="onCaptchaResuelto($event)">
+</re-captcha>
