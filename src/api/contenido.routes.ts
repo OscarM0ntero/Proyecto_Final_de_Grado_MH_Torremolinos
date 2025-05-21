@@ -27,7 +27,6 @@ router.get('/', async (req, res) => {
         );
 
         if (!lang) {
-            console.log(rows);
             return res.json(rows);
         }
 
@@ -37,7 +36,6 @@ router.get('/', async (req, res) => {
             titulo: row[`titulo_${idioma}`],
             texto: row[`texto_${idioma}`],
         }));
-        console.log(respuesta);
         return res.json(respuesta);
     } catch (error) {
         console.error('[ERROR /api/contenido]:', error);
