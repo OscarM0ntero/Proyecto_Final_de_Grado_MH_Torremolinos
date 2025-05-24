@@ -20,16 +20,11 @@
     "types": [
       "node"
     ],
-    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ]
   }
 }
