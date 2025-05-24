@@ -8,6 +8,8 @@ export abstract class ContenidoBaseComponent implements OnInit {
 
   contenidos: Contenido[] = [];
 
+  lang: string = 'es';
+
   constructor(
     private readonly contenidoWeb: ContenidoWebService,
     private readonly translate: TranslateService,
@@ -22,22 +24,26 @@ export abstract class ContenidoBaseComponent implements OnInit {
     this.translate.onLangChange.subscribe(() => {
       this.actualizarContenido();
     });
+
+    const lang = localStorage.getItem('lang');
+    if(lang)
+      this.lang = lang;
   }
 
   protected getTexto(id: number): string {
-    const lang = this.translate.currentLang || 'es';
+    const lang = this.translate.currentLang || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return (item as any)?.[`texto_${lang}`] ?? '';
   }
 
   protected getTitulo(id: number): string {
-    const lang = this.translate.currentLang || 'es';
+    const lang = this.translate.currentLang || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return (item as any)?.[`titulo_${lang}`] ?? '';
   }
 
   protected getContenido(id: number): { titulo: string; texto: string } {
-    const lang = this.translate.currentLang || 'es';
+    const lang = this.translate.currentLang || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return {
       titulo: (item as any)?.[`titulo_${lang}`] ?? '',
