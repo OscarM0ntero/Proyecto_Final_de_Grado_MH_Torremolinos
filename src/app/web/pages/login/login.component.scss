@@ -1,0 +1,25 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: calc(100vh - var(--navbar-height) - var(--footer-height));
+    min-height: fit-content;
+}
+
+.login-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 300px;
+    margin: auto;
+    position: relative;
+}
+
+h1 {
+    text-align: center;
+}
+
+.forgot {
+    font-size: 16px;
+    margin-top: 10px;
+}
