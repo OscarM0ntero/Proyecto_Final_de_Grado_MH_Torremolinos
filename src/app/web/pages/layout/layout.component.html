@@ -1,8 +1,8 @@
 <div class="layout">
 	<section class="navbar-container">
 		<div class="toolbar tablet-hide">
-			<mat-select class="lang-select" [value]="selectedLang" (selectionChange)="cambiarIdioma($event.value)"
-				disableRipple>
+			<mat-select class="lang-select" [panelClass]="'lang-panel'" [value]="selectedLang"
+				(selectionChange)="cambiarIdioma($event.value)" disableRipple>
 				<mat-select-trigger>
 					<img [src]="banderaActual" width="25" height="25" alt="Idioma actual" />
 				</mat-select-trigger>
@@ -12,58 +12,91 @@
 				</mat-option>
 			</mat-select>
 
-			<button [routerLink]="['iniciar-sesion']">{{ 'NAVBAR.LOGIN' | translate }}</button>
+			<button [routerLink]="['iniciar-sesion']" class="login-button">{{ botonLoginLabel | translate }}</button>
 		</div>
 		<button class="hamburger" (click)="toggleMobileMenu()" aria-label="Menú">
 			&#9776;
 		</button>
+
 		<div class="navbar-section left desktop-only">
-			<a class="nav-item" [routerLink]="['']">{{ 'NAVBAR.HOME' | translate }}</a>
-			<a class="nav-item" [routerLink]="['apartamento']">{{ 'NAVBAR.APARTMENT' | translate }}</a>
-			<a class="nav-item" [routerLink]="['galeria']">{{ 'NAVBAR.GALLERY' | translate }}</a>
+			<a class="nav-item" [routerLink]="['']" routerLinkActive="active-nav"
+				[routerLinkActiveOptions]="{ exact: true }">
+				{{ 'NAVBAR.HOME' | translate }}
+			</a>
+			<a class="nav-item" [routerLink]="['apartamento']" routerLinkActive="active-nav">
+				{{ 'NAVBAR.APARTMENT' | translate }}
+			</a>
+			<a class="nav-item" [routerLink]="['galeria']" routerLinkActive="active-nav">
+				{{ 'NAVBAR.GALLERY' | translate }}
+			</a>
 		</div>
 
-		<div class="navbar-section center" [routerLink]="['']">
-			<img class="logo" src="assets/logo.png" alt="M&H Logo">
+		<div class="navbar-section center" [routerLink]="['']" (click)="closeMobileMenu()">
+			<img class="logo" src="assets/logo.png" alt="M&H Logo" />
 		</div>
 
 		<div class="navbar-section right desktop-only">
-			<a class="nav-item" [routerLink]="['localizacion']">{{ 'NAVBAR.LOCATION' | translate }}</a>
-			<a class="nav-item" [routerLink]="['reservar']">{{ 'NAVBAR.BOOKING' | translate }}</a>
-			<a class="nav-item" [routerLink]="['contacto']">{{ 'NAVBAR.CONTACT' | translate }}</a>
-			<!--<a class="nav-item" [routerLink]="['iniciar-sesion']">INICIAR SESIÓN</a>-->
-			<!--
-		<button mat-raised-button color="warn" style="margin-left: 8px"> (click)="onLogout()"
-			Logout
-		</button>
-		-->
+			<a class="nav-item" [routerLink]="['localizacion']" routerLinkActive="active-nav">
+				{{ 'NAVBAR.LOCATION' | translate }}
+			</a>
+			<a class="nav-item" [routerLink]="['reservar']" routerLinkActive="active-nav">
+				{{ 'NAVBAR.BOOKING' | translate }}
+			</a>
+			<a class="nav-item" [routerLink]="['contacto']" routerLinkActive="active-nav">
+				{{ 'NAVBAR.CONTACT' | translate }}
+			</a>
 		</div>
+
 	</section>
 
-	<nav class="mobile-menu" [class.open]="mobileMenuOpen">
-		<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">{{ 'NAVBAR.HOME' | translate }}</a>
-		<a class="nav-item" [routerLink]="['apartamento']" (click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' | translate }}</a>
-		<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">{{ 'NAVBAR.GALLERY' | translate }}</a>
-		<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' | translate }}</a>
-		<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">{{ 'NAVBAR.BOOKING' | translate }}</a>
-		<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">{{ 'NAVBAR.CONTACT' | translate }}</a>
-		<a class="nav-item" [routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOGIN' | translate }}</a>
-		<div class="spacer-small"></div>
-		<mat-select class="lang-select" [value]="selectedLang" (selectionChange)="cambiarIdioma($event.value)"
-			disableRipple>
-			<mat-select-trigger>
-				<img [src]="banderaActual" width="25" height="25" alt="Idioma actual" />
-			</mat-select-trigger>
+	<div class="mobile-menu-container" [class.open]="mobileMenuOpen">
+		<div style="width: 30%;" (click)="closeMobileMenu()"></div>
 
-			<mat-option *ngFor="let lang of idiomas" [value]="lang.codigo">
-				<img [src]="lang.bandera" width="25" height="25" alt="{{ lang.nombre }}" />
-			</mat-option>
-		</mat-select>
+		<nav class="mobile-menu">
+			<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">{{ 'NAVBAR.HOME' | translate }}</a>
+			<a class="nav-item" [routerLink]="['apartamento']" (click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' |
+				translate
+				}}</a>
+			<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">{{ 'NAVBAR.GALLERY' | translate
+				}}</a>
+			<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' |
+				translate
+				}}</a>
+			<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">{{ 'NAVBAR.BOOKING' | translate
+				}}</a>
+			<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">{{ 'NAVBAR.CONTACT' | translate
+				}}</a>
+			<a class="nav-item" style="color: var(--color-neutral); background-color: var(--color-primary)"
+				[routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">{{ botonLoginLabel | translate }}</a>
+			<div class="spacer-small"></div>
+			<mat-select class="lang-select" [panelClass]="'lang-panel'" [value]="selectedLang"
+				(selectionChange)="cambiarIdioma($event.value)" disableRipple>
+				<mat-select-trigger>
+					<img [src]="banderaActual" width="25" height="25" alt="Idioma actual" />
+				</mat-select-trigger>
 
-	</nav>
+				<mat-option *ngFor="let lang of idiomas" [value]="lang.codigo">
+					<img [src]="lang.bandera" width="25" height="25" alt="{{ lang.nombre }}" />
+				</mat-option>
+			</mat-select>
+
+		</nav>
+	</div>
+
 
 	<div class="content-container">
-		<router-outlet></router-outlet>
+		<ng-container *ngIf="cargando; else contenido">
+			<div class="loader-container">
+				<mat-spinner></mat-spinner>
+			</div>
+		</ng-container>
+
+		<ng-template #contenido>
+			<div class="content-container">
+				<router-outlet></router-outlet>
+			</div>
+		</ng-template>
+
 	</div>
 
 	<section class="footer" color="primary">
@@ -77,3 +110,6 @@
 		</div>
 	</section>
 </div>
+
+<re-captcha #captchaRef [siteKey]="siteKey" [size]="'invisible'" (resolved)="onCaptchaResuelto($event)">
+</re-captcha>
