@@ -8,6 +8,8 @@ import { LoaderService } from '../../../../../services/loader.service';
 import { ReservaConfirmadaComponent } from './dialogs/reserva-confirmada.component';
 import { ReservaRequiereLoginComponent } from './dialogs/reserva-requiere-login.component';
 import { environment } from '../../../../../../environments/environment';
+import { LayoutComponent } from '../../../layout/layout.component';
+import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -42,20 +44,7 @@ export class DisponibilidadComponent implements OnInit {
     nota: ''
   };
 
-  prefijos = [
-    '+1', '+7', '+20', '+27', '+30', '+31', '+32', '+33', '+34', '+36',
-    '+39', '+40', '+41', '+43', '+44', '+45', '+46', '+47', '+48', '+49',
-    '+51', '+52', '+53', '+54', '+55', '+56', '+57', '+58', '+60', '+61',
-    '+62', '+63', '+64', '+65', '+66', '+81', '+82', '+84', '+86', '+90',
-    '+91', '+92', '+93', '+94', '+98', '+212', '+213', '+216', '+218', '+229',
-    '+234', '+237', '+244', '+251', '+254', '+267', '+351', '+352', '+353', '+354',
-    '+355', '+356', '+357', '+358', '+359', '+370', '+371', '+372', '+374', '+375',
-    '+376', '+377', '+380', '+381', '+382', '+385', '+386', '+387', '+389', '+420',
-    '+421', '+423', '+501', '+502', '+503', '+504', '+505', '+506', '+507', '+591',
-    '+593', '+595', '+598', '+673', '+852', '+855', '+880', '+886', '+961', '+962',
-    '+963', '+964', '+965', '+966', '+967', '+971', '+972', '+973', '+974', '+975',
-    '+976', '+992', '+994', '+995', '+998'
-  ];
+  prefijos = PREFIJOS_TELEFONO;
 
   dias: any = [];
   precioPorNoche = 0;
@@ -64,7 +53,8 @@ export class DisponibilidadComponent implements OnInit {
     private disponibilidadService: DisponibilidadService,
     private http: HttpClient,
     private dialog: MatDialog,
-    private loader: LoaderService
+    private loader: LoaderService,
+    public layout: LayoutComponent
   ) { }
 
   ngOnInit(): void {
@@ -93,21 +83,27 @@ export class DisponibilidadComponent implements OnInit {
         }
       });
     }
+
+    this.layout.captchaResuelto$.subscribe(token => {
+      this.tokenCaptcha = token;
+      this.enviarReserva();
+    });
+  }
+
+  verDialog1(): void {
+    this.dialog.open(ReservaConfirmadaComponent);
+  }
+  verDialog2(): void {
+    this.dialog.open(ReservaRequiereLoginComponent);
   }
 
   verificarCaptcha(): void {
-    this.captchaRef?.execute();
-  }
-
-  onCaptchaResuelto(token: string | null): void {
-    if (!token) return;
-    this.tokenCaptcha = token;
-    this.enviarReserva();
+    this.layout.captchaRef?.execute();
   }
 
   resetCaptcha(): void {
     try {
-      this.captchaRef?.reset();
+      this.layout.captchaRef?.reset();
     } catch (e) {
       console.warn('No se pudo reiniciar reCAPTCHA:', e);
     }
@@ -151,7 +147,7 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   enviarReserva(): void {
-    if (!this.fechaInicio || !this.fechaFin || !this.tokenCaptcha) return;
+    if (!this.fechaInicio || !this.fechaFin || !this.layout.tokenCaptcha) return;
 
     const payload = {
       ...this.reserva,
@@ -159,7 +155,7 @@ export class DisponibilidadComponent implements OnInit {
       fechaFin: this.formatearFechaLocal(this.fechaFin),
       numeroNoches: this.numeroNoches,
       precio_total: this.precioTotal,
-      recaptcha: this.tokenCaptcha
+      recaptcha: this.layout.tokenCaptcha // 👈 capturado desde Layout
     };
 
     this.loader.mostrar();
@@ -168,13 +164,14 @@ export class DisponibilidadComponent implements OnInit {
       next: () => {
         this.dialog.open(ReservaConfirmadaComponent);
         this.mostrarResumen = false;
-        this.tokenCaptcha = '';
+        this.layout.tokenCaptcha = '';      // 🔁 limpia token
         this.loader.ocultar();
-        this.resetCaptcha();
+        this.layout.resetCaptcha();         // 🔁 reinicia captcha desde layout
       },
       error: err => {
         this.loader.ocultar();
-        this.resetCaptcha();
+        this.layout.resetCaptcha();         // 🔁 también en error
+
         if (err.status === 409 && err.error?.requiereLogin) {
           this.dialog.open(ReservaRequiereLoginComponent);
         } else {
