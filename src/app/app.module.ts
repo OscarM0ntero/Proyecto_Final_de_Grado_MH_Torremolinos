@@ -6,15 +6,14 @@ import { AppComponent } from './app.component';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { environment } from '../environments/environment';
 import { createTranslateLoader } from './translate-loader';
+import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,12 +25,12 @@ import { createTranslateLoader } from './translate-loader';
         useFactory: createTranslateLoader,
         deps: [HttpClient, PLATFORM_ID]
       }
-    })
-
+    }),
   ],
   providers: [
     provideClientHydration(withEventReplay()),
     provideAnimations(),
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
