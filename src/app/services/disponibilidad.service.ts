@@ -1,11 +1,20 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class DisponibilidadService {
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-    getDisponibilidad(mes: string) {
-        return this.http.get<any[]>(`/api/disponibilidad?mes=${mes}`);
-    }
+  // Nuevo: disponibilidad global
+  getDisponibilidad(): Observable<{ fecha: string; precio: number; estado: string }[]> {
+    return this.http.get<{ fecha: string; precio: number; estado: string }[]>(`/api/disponibilidad`);
+  }
+
+  // El original por mes (sin cambiar ruta)
+  getDisponibilidadPorMes(mes: string): Observable<{ fecha: string; precio: number; estado: string }[]> {
+    return this.http.get<{ fecha: string; precio: number; estado: string }[]>(`/api/disponibilidad?mes=${mes}`);
+  }
 }
