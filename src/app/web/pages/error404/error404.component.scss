@@ -5,9 +5,14 @@
     margin-top: auto;
     margin-bottom: auto;
     align-items: center;
-    color: var(--color-warn);
+    color: var(--color-primary);
+
+    h1 {
+        font-size: 100px !important;
+    }
+
 
     p {
-        font-size: 80px !important;
+        font-size: 70px !important;
     }
 }
