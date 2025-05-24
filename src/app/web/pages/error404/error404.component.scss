@@ -5,14 +5,14 @@
     margin-top: auto;
     margin-bottom: auto;
     align-items: center;
-    color: var(--color-primary);
+    color: var(--color-warn);
 
     h1 {
         font-size: 100px !important;
     }
 
-
     p {
         font-size: 70px !important;
+        color: var(--color-primary);
     }
 }
