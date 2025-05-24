@@ -11,3 +11,5 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
 });
+
+export const secret = process.env['SECRET'];
