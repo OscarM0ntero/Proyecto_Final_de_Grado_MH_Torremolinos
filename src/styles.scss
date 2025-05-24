@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @import 'primeicons/primeicons.css';
 
 // Fuente para títulos
@@ -22,8 +23,8 @@
     --color-primary: #3F4B3A;
     --color-secondary: #AABD99;
     --color-tertiary: #b5beac;
-    --color-warn: #AD6B49;
-    --color-accent: #00C3B2;
+    --color-warn: #8f0000;
+    --color-accent: #d8e4ce;
     --color-neutral: #dddddd;
     --color-neutral-dark: #020101;
 
@@ -39,6 +40,12 @@
     --tablet-margin: 10%;
     --tiny-margin: 5%;
     --phone-margin: 0;
+
+
+}
+
+.hide-until-translate-loaded {
+    visibility: hidden;
 }
 
 html,
@@ -81,6 +88,12 @@ h1 {
     height: 50px;
 }
 
+// Recaptcha
+.grecaptcha-badge {
+    z-index: 3000 !important;
+}
+
+// Galleria
 .p-galleria .p-galleria-nav-button {
     background-color: rgba(255, 255, 255, 0.2);
     color: var(--color-primary);
@@ -144,7 +157,72 @@ h1 {
     border: 0 !important;
 }
 
+// Material
+
+// Color del texto de los campos mat-form
+.mat-mdc-form-field-infix {
+    label {
+        color: var(--color-primary) !important;
+    }
+}
+
+//Color del fondo de los campos mat-form
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: var(--color-tertiary) !important;
+}
+
+.mat-calendar-body-in-range::before {
+    background-color: var(--color-tertiary) !important;
+}
+
+// Color del botones
+.mat-mdc-raised-button:not(:disabled) {
+    color: var(--color-neutral) !important;
+    background-color: var(--color-primary) !important;
+}
+
+.mat-mdc-outlined-button:not(:disabled),
+.mat-mdc-button {
+    color: var(--color-primary) !important;
+    background-color: var(--color-tertiary) !important;
+    border-color: var(--color-secondary) !important;
+}
+
+.mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,
+.mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+
+.mat-mdc-snackbar-surface {
+    border-radius: 30px !important;
+    text-align: center;
+}
+
+.mat-mdc-snack-bar-container {
+    margin-bottom: 20px !important;
+}
+
+.snackbar-success .mat-mdc-snackbar-surface {
+    background-color: var(--color-primary) !important;
+    color: var(--color-neutral) !important;
+
+}
+
+.snackbar-error .mat-mdc-snackbar-surface {
+    background-color: var(--color-neutral) !important;
+    color: var(--color-warn) !important;
+}
+
+
 @media (max-width: 768px) {
+
+    html,
+    body {
+        font-size: 20px !important;
+    }
+
     .mobile-hide {
         display: none !important;
     }
@@ -154,7 +232,15 @@ h1 {
     }
 
     h1 {
-        font-size: 35px;
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 24px;
     }
 }
 
