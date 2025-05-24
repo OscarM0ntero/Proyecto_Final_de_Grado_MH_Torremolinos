@@ -1,0 +1,23 @@
+<div class="spacer-big"></div>
+<div class="client-panel-container">
+    <nav mode="client-side-navbar" opened>
+        <a routerLink="/cliente/cuenta" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>person</mat-icon>
+            Mi cuenta
+        </a>
+        <a routerLink="/cliente/reservas" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>event</mat-icon>
+            Reservas
+        </a>
+        <a class="logout client-nav-item" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Cerrar sesión
+        </a>
+    </nav>
+
+    <div class="client-panel-content">
+        <router-outlet></router-outlet>
+        
+    </div>
+</div>
+<div class="spacer-big"></div>
