@@ -1,0 +1,35 @@
+<div class="spacer-big"></div>
+<div class="client-panel-container">
+    <nav>
+        <a routerLink="/admin/cuenta" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>person</mat-icon>
+            Mi cuenta
+        </a>
+        <a routerLink="/admin/reservas" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>event</mat-icon>
+            Reservas
+        </a>
+        <a routerLink="/admin/usuarios" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>manage_accounts</mat-icon>
+            Usuarios
+        </a>
+        <a routerLink="/admin/textos" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>edit_note</mat-icon>
+            Textos
+        </a>
+        <a routerLink="/admin/imagenes" routerLinkActive="active" class="client-nav-item">
+            <mat-icon>add_photo_alternate</mat-icon>
+            Imágenes
+        </a>
+        <a class="logout client-nav-item" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Cerrar sesión
+        </a>
+    </nav>
+
+    <div class="client-panel-content">
+        <router-outlet></router-outlet>
+
+    </div>
+</div>
+<div class="spacer-big"></div>
