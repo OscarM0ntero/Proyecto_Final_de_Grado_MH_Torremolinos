@@ -1,0 +1,130 @@
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .mat-mdc-text-field-wrapper {
+        width: 350px !important;
+    }
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 4/3;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+}
+
+.gallery-item-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+
+    p {
+        margin: 0 !important;
+    }
+
+    .oneColumn {
+        grid-column: 1 / 3;
+        width: 100% !important;
+    }
+
+    button {
+        background-color: var(--color-warn) !important;
+        color: var(--color-neutral) !important;
+        padding: 0 !important;
+    }
+
+    .mat-mdc-button>.mat-icon {
+        margin: 0;
+    }
+
+    .mdc-button {
+        min-width: 0;
+        width: 40px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    h1,
+    h2,
+    h3 {
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: calc(100vw - 80px) !important;
+        margin: 0;
+        justify-content: center;
+        text-align: center;
+
+        .submitButton {
+            width: 90%;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        .tlf-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+
+
+            .pre {
+                width: 65px !important;
+                margin-right: 0;
+
+                .mdc-text-field {
+                    padding: 0 !important;
+                }
+            }
+
+            .tlf {
+                width: calc(90% - 75px) !important;
+                margin-left: 0;
+            }
+        }
+
+        .mat-mdc-form-field,
+        .mat-mdc-form-field-infix {
+            width: 90% !important;
+            margin: auto;
+        }
+
+        input {
+            width: 90% !important;
+            margin: auto;
+            font-size: 11px;
+        }
+    }
+}
+
+@media (min-width: 1024px) {}
