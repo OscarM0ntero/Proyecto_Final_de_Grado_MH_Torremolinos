@@ -1,0 +1,21 @@
+<h2>Gestión de textos</h2>
+<div class="content-manager-container">
+    <nav class="content-manager-nav">
+        <a routerLink="/admin/textos/inicio" routerLinkActive="active" class="content-manager-nav-item">
+            <mat-icon>home</mat-icon>
+            Inicio
+        </a>
+        <a routerLink="/admin/textos/apartamento" routerLinkActive="active" class="content-manager-nav-item">
+            <mat-icon>chair</mat-icon>
+            Apartamento
+        </a>
+        <a routerLink="/admin/textos/galeria" routerLinkActive="active" class="content-manager-nav-item">
+            <mat-icon>photo_library</mat-icon>
+            Galería
+        </a>
+    </nav>
+
+    <div class="content-manager-content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+@media (max-width: 768px) {
+
+    h1,
+    h2,
+    h3 {
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: calc(100vw - 80px) !important;
+        margin: 0;
+        justify-content: center;
+        text-align: center;
+
+        .submitButton {
+            width: 90%;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        .tlf-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+
+
+            .pre {
+                width: 65px !important;
+                margin-right: 0;
+
+                .mdc-text-field {
+                    padding: 0 !important;
+                }
+            }
+
+            .tlf {
+                width: calc(90% - 75px) !important;
+                margin-left: 0;
+            }
+        }
+
+        .mat-mdc-form-field,
+        .mat-mdc-form-field-infix {
+            width: 90% !important;
+            margin: auto;
+        }
+
+        input {
+            width: 90% !important;
+            margin: auto;
+            font-size: 11px;
+        }
+    }
+}
+
+@media (min-width: 1024px) {}

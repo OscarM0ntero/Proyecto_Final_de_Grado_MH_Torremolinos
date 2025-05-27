@@ -17,6 +17,11 @@ import { ClientComponent } from './pages/client/client.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { ClientAccountComponent } from './pages/client/components/client-account/client-account.component';
 import { ClientBookingsComponent } from './pages/client/components/client-bookings/client-bookings.component';
+import { AdminImagesManagerComponent } from './pages/admin/components/admin-images-manager/admin-images-manager.component';
+import { ImagesListComponent } from './pages/admin/components/images-list/images-list.component';
+import { UploadImageComponent } from './pages/admin/components/upload-image/upload-image.component';
+import { AdminContentManagerComponent } from './pages/admin/components/admin-content-manager/admin-content-manager.component';
+import { ContentEditorComponent } from './pages/admin/components/content-editor/content-editor.component';
 
 const routes: Routes = [
   {
@@ -41,7 +46,40 @@ const routes: Routes = [
           { path: 'reservas', component: ClientBookingsComponent },
         ]
       },
-      { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
+      {
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AdminGuard],
+        children: [
+          { path: '', redirectTo: 'cuenta', pathMatch: 'full' },
+          { path: 'cuenta', component: ClientAccountComponent },
+          { path: 'calendario', component: ClientAccountComponent },
+          { path: 'reservas', component: ClientAccountComponent },
+          { path: 'usuarios', component: ClientAccountComponent },
+          {
+            path: 'textos',
+            component: AdminContentManagerComponent,
+            children: [
+              { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+              { path: 'inicio', component: ContentEditorComponent, data: { page: 'home' } },
+              { path: 'apartamento', component: ContentEditorComponent, data: { page: 'apartment' } },
+              { path: 'galeria', component: ContentEditorComponent, data: { page: 'gallery' } },
+            ]
+          },
+          {
+            path: 'imagenes',
+            component: AdminImagesManagerComponent,
+            children: [
+              { path: '', redirectTo: 'subir-imagen', pathMatch: 'full' },
+              { path: 'subir-imagen', component: UploadImageComponent },
+              { path: 'inicio', component: ImagesListComponent, data: { page: 'home' } },
+              { path: 'apartamento', component: ImagesListComponent, data: { page: 'apartment' } },
+              { path: 'galeria', component: ImagesListComponent, data: { page: 'gallery' } },
+            ]
+          },
+
+        ]
+      },
       { path: '**', component: Error404Component }
     ]
   }
