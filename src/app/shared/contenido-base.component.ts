@@ -1,17 +1,22 @@
 import { OnInit, Directive } from '@angular/core';
 import { ContenidoWebService } from '../services/contenido-web.service';
-import { Contenido } from '../services/contenido.service';
+import { Contenido, ContenidoService } from '../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ImagenesService } from '../services/imagenes.service';
 
 @Directive()
 export abstract class ContenidoBaseComponent implements OnInit {
 
   contenidos: Contenido[] = [];
 
+  images: any[] = [];
+
   lang: string = 'es';
 
   constructor(
+    private readonly contenido: ContenidoService,
     private readonly contenidoWeb: ContenidoWebService,
+    private readonly imagenes: ImagenesService,
     private readonly translate: TranslateService,
     private readonly nombrePagina: string
   ) { }
@@ -25,8 +30,22 @@ export abstract class ContenidoBaseComponent implements OnInit {
       this.actualizarContenido();
     });
 
+    this.imagenes.loadImages(this.nombrePagina).subscribe((imgs) => {
+      this.images = imgs;
+    });
+
+    this.contenido.recarga$.subscribe(async (pagina) => {
+      console.log('[ContenidoRecarga] Recibido:', pagina);
+
+      if (pagina === this.nombrePagina) {
+        console.log('[ContenidoRecarga] Coincide con', this.nombrePagina);
+        await this.contenidoWeb.cargarContenidoPagina(pagina, true);
+        this.actualizarContenido();
+      }
+    });
+
     const lang = localStorage.getItem('lang');
-    if(lang)
+    if (lang)
       this.lang = lang;
   }
 

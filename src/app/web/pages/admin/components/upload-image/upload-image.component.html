@@ -1,0 +1,31 @@
+<h3>Subir nueva imagen</h3>
+<div class="spacer-small"></div>
+<form (ngSubmit)="uploadImage()" #uploadForm="ngForm" class="form">
+
+    <div class="oneColumn" style="font-size: 20px;">
+        <input type="file" (change)="onFileChange($event)" required />
+    </div>
+
+    <mat-form-field>
+        <mat-label>Texto alternativo (alt)</mat-label>
+        <input matInput [(ngModel)]="newAlt" name="alt" />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Orden</mat-label>
+        <input matInput type="number" [(ngModel)]="newOrden" name="orden" required />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Página</mat-label>
+        <mat-select [(ngModel)]="newPage" name="page" required>
+            <mat-option *ngFor="let p of pages" [value]="p.value">
+                {{ p.label }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div class="oneColumn data-content">
+        <button mat-raised-button type="submit" class="submitButton">Subir</button>
+    </div>
+</form>

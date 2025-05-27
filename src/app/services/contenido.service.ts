@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export type Contenido = {
@@ -17,8 +17,11 @@ export type Contenido = {
 })
 export class ContenidoService {
   private apiUrl = environment.webUrl + 'api/contenido';
+  private recargaSubject = new Subject<string>();
 
-  constructor(private http: HttpClient) {}
+  recarga$ = this.recargaSubject.asObservable();
+
+  constructor(private http: HttpClient) { }
 
   getContenido(pagina: string, lang?: string): Observable<Contenido[]> {
     let params = new HttpParams().set('pagina', pagina);
@@ -28,4 +31,13 @@ export class ContenidoService {
 
     return this.http.get<Contenido[]>(this.apiUrl, { params });
   }
+
+  updateContenido(id: number, datos: Partial<Contenido>): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, datos);
+  }
+
+  recargarContenido(pagina: string): void {
+    this.recargaSubject.next(pagina);
+  }
+
 }

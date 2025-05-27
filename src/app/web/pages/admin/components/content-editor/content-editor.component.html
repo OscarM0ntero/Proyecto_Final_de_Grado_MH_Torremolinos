@@ -1,0 +1,29 @@
+<div *ngFor="let contenido of contenidos">
+    <h3>Contenido ID: {{ contenido.id_contenido }}</h3>
+
+    <div class="form">
+        <div *ngFor="let lang of idiomas" class="item">
+            <mat-form-field>
+                <mat-label>Título ({{ lang }})</mat-label>
+                <input matInput [ngModel]="getValor(contenido, 'titulo_' + lang)"
+                    (ngModelChange)="setValor(contenido, 'titulo_' + lang, $event)" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Texto ({{ lang }})</mat-label>
+                <textarea matInput rows="3" [ngModel]="getValor(contenido, 'texto_' + lang)"
+                    (ngModelChange)="setValor(contenido, 'texto_' + lang, $event)">
+            </textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="oneColumn">
+            <button mat-raised-button class="submitButton data-content" (click)="guardarCambios(contenido)">
+                Guardar
+            </button>
+        </div>
+
+    </div>
+
+    <hr class="oneColumn">
+</div>

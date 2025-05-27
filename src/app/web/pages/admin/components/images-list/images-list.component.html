@@ -1,0 +1,14 @@
+<div class="spacer"></div>
+<div class="images-grid">
+    <div class="images-item" *ngFor="let img of images">
+        <img [src]="img.url_thumbnail" [alt]="img.alt" />
+        <div class="images-item-info">
+            <div class="oneColumn">
+                <p>{{ img.alt }}</p>
+            </div>
+            <p style="flex-grow: 1;"><strong>Orden:</strong> {{ img.orden }}</p>
+            <div style="display: flex; flex-grow: 1; justify-content: center;"><button mat-button
+                    (click)="deleteImage(img.id)"><mat-icon>delete</mat-icon></button></div>
+        </div>
+    </div>
+</div>

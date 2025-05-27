@@ -43,4 +43,30 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { pagina, ...campos } = req.body;
+
+    try {
+        await pool.query(
+            `UPDATE contenido
+       SET titulo_es = ?, titulo_en = ?, titulo_de = ?, titulo_no = ?,
+           texto_es = ?, texto_en = ?, texto_de = ?, texto_no = ?,
+           pagina = ?
+       WHERE id_contenido = ?`,
+            [
+                campos.titulo_es, campos.titulo_en, campos.titulo_de, campos.titulo_no,
+                campos.texto_es, campos.texto_en, campos.texto_de, campos.texto_no,
+                pagina, id
+            ]
+        );
+
+        res.json({ mensaje: 'Contenido actualizado correctamente' });
+    } catch (error) {
+        console.error('[ERROR PUT /api/contenido/:id]:', error);
+        res.status(500).json({ error: 'Error al actualizar contenido' });
+    }
+});
+
+
 export default router;

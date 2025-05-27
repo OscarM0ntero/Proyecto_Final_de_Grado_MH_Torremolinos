@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ContenidoWebService implements OnInit{
+export class ContenidoWebService implements OnInit {
 
   private contenidosPorPagina = new Map<string, Contenido[]>();
 
@@ -18,12 +18,12 @@ export class ContenidoWebService implements OnInit{
 
   ngOnInit(): void {
     const lang = localStorage.getItem('lang');
-    if(lang)
+    if (lang)
       this.lang = lang;
   }
 
-  async cargarContenidoPagina(pagina: string): Promise<void> {
-    if (!this.contenidosPorPagina.has(pagina)) {
+  async cargarContenidoPagina(pagina: string, forzar = false): Promise<void> {
+    if (forzar || !this.contenidosPorPagina.has(pagina)) {
       const datos = await this.contenidoService.getContenido(pagina).toPromise();
       if (datos) {
         this.contenidosPorPagina.set(pagina, datos);
@@ -31,9 +31,10 @@ export class ContenidoWebService implements OnInit{
     }
   }
 
+
   getContenidosPagina(pagina: string): Contenido[] {
     return this.contenidosPorPagina.get(pagina) ?? [];
-  }  
+  }
 
   getTexto(id_contenido: number, pagina: string): string {
     const lang = this.translate.currentLang || this.lang;
