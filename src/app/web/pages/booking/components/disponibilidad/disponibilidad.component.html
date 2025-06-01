@@ -2,21 +2,23 @@
 
     <!-- Paso 1: Formulario -->
     <ng-container *ngIf="!mostrarResumen">
-        <h1>Solicitud de reserva</h1>
-        <h3>Datos de reserva</h3>
+        <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
+        <h3>{{ 'BOOKING.TITLE2' | translate }}</h3>
 
         <mat-form-field>
-            <mat-label>Número de huéspedes</mat-label>
+            <mat-label>{{ 'BOOKING.GUEST-NUM' | translate }}</mat-label>
             <mat-select name="huespedes" [(ngModel)]="reserva.huespedes" required class="guest"
                 [panelClass]="'guest-panel'">
-                <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">{{ i }} {{ i > 1 ? 'huéspedes' : 'huésped'
-                    }}</mat-option>
+                <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">
+                    {{ i }} {{ i | i18nPlural: pluralMap | translate }}
+                </mat-option>
+
             </mat-select>
         </mat-form-field>
 
         <mat-form-field floatLabel="always">
-            <mat-label>Selecciona las fechas</mat-label>
-            <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter">
+            <mat-label>{{ 'BOOKING.DATES' | translate }}</mat-label>
+            <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" required>
                 <input matStartDate name="fechaInicio" placeholder="Check-in" [(ngModel)]="fechaInicio"
                     (ngModelChange)="onRangoModelChanged()" required />
                 <input matEndDate name="fechaFin" placeholder="Check-out" [(ngModel)]="fechaFin"
@@ -28,36 +30,36 @@
 
         <div>
             <mat-checkbox [(ngModel)]="reserva.conBebe" name="conBebe">
-                ¿Necesita cuna (< 2 años)? </mat-checkbox>
-                    <mat-checkbox [(ngModel)]="reserva.conMascota" name="conMascota"
-                        (ngModelChange)="onRangoModelChanged()">
-                        ¿Mascota? +10€/noche
-                    </mat-checkbox>
+                {{ 'BOOKING.CRIB' | translate }}
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="reserva.conMascota" name="conMascota" (ngModelChange)="onRangoModelChanged()">
+                {{ 'BOOKING.PET' | translate }}
+            </mat-checkbox>
         </div>
 
         <div class="data">
             <div class="data-content">
-                <strong>Noches</strong>
+                <strong>{{ 'BOOKING.NIGHTS' | translate }}</strong>
                 ~{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} x {{ numeroNoches }}
             </div>
             <div class="data-content">
-                <strong>Precio Total</strong>
+                <strong>{{ 'BOOKING.PRICE' | translate }}</strong>
                 {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}
             </div>
         </div>
 
         <div class="oneColumn">
-            <h3>Datos del cliente</h3>
-            <p style="font-size: 18px;" *ngIf="camposBloqueados">Para modificar estos datos, cambielos en su cuenta.</p>
+            <h3>{{ 'BOOKING.TITLE3' | translate }}</h3>
+            <p style="font-size: 18px;" *ngIf="camposBloqueados">{{ 'BOOKING.MODIFY' | translate }}</p>
         </div>
 
         <mat-form-field>
-            <mat-label>Nombre</mat-label>
+            <mat-label>{{ 'BOOKING.NAME' | translate }}</mat-label>
             <input matInput name="nombre" [(ngModel)]="reserva.nombre" required [disabled]="camposBloqueados" />
         </mat-form-field>
 
         <mat-form-field>
-            <mat-label>Apellidos</mat-label>
+            <mat-label>{{ 'BOOKING.LAST-NAME' | translate }}</mat-label>
             <input matInput name="apellidos" [(ngModel)]="reserva.apellidos" required [disabled]="camposBloqueados" />
         </mat-form-field>
 
@@ -68,16 +70,16 @@
 
             <mat-error *ngIf="emailRef.invalid && emailRef.touched">
                 <ng-container *ngIf="emailRef.errors?.['required']">
-                    El email es obligatorio
+                    {{ 'BOOKING.EMAIL-WARN1' | translate }}
                 </ng-container>
                 <ng-container *ngIf="emailRef.errors?.['email']">
-                    El formato del email no es válido
+                    {{ 'BOOKING.EMAIL-WARN2' | translate }}
                 </ng-container>
             </mat-error>
         </mat-form-field>
 
-        <div style="display: flex; align-items: flex-end; gap: 10px;">
-            <mat-form-field style="width: 100px !important;">
+        <div class="tlf-container">
+            <mat-form-field class="pre">
                 <mat-label>+</mat-label>
                 <mat-select [(ngModel)]="reserva.prefijo" name="prefijo" required [disabled]="camposBloqueados">
                     <mat-option *ngFor="let p of prefijos" [value]="p">
@@ -86,20 +88,20 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field style="width: 240px !important;">
-                <mat-label>Teléfono</mat-label>
+            <mat-form-field class="tlf">
+                <mat-label>{{ 'BOOKING.PHONE' | translate }}</mat-label>
                 <input matInput name="telefono" [(ngModel)]="reserva.telefono" required [disabled]="camposBloqueados" />
             </mat-form-field>
         </div>
 
         <mat-form-field class="oneColumn">
-            <mat-label>Nota adicional</mat-label>
+            <mat-label>{{ 'BOOKING.NOTE' | translate }}</mat-label>
             <textarea matInput name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
         </mat-form-field>
         <div class="oneColumn data-content">
             <button class="submitButton" mat-raised-button type="button" (click)="mostrarResumen = true;"
                 [disabled]="!reservaForm.valid || precioTotal === 0">
-                Siguiente
+                {{ 'BOOKING.NEXT' | translate }}
             </button>
         </div>
 
@@ -107,24 +109,25 @@
 
     <!-- Paso 2: Resumen -->
     <ng-container *ngIf="mostrarResumen">
-        <h3>Resumen</h3>
+        <h3>{{ 'BOOKING.TITLE4' | translate }}</h3>
 
         <div class="summary-info">
             <div class="data">
-                <div style="display: flex; flex-direction: column;">
+                <div class="data-content">
                     <strong>Check-in</strong>
                     <strong>Check-out</strong>
-                    <strong>Huéspedes</strong>
-                    <strong>Necesita cuna</strong>
-                    <strong>Trae mascota</strong>
+                    <strong>{{ 'BOOKING.GUESTS2' | translate }}</strong>
+                    <strong>{{ 'BOOKING.NEED-CRIB' | translate }}</strong>
+                    <strong>{{ 'BOOKING.BRING-PET' | translate }}</strong>
                 </div>
                 <div class="data-content">
                     <p>{{ fechaInicio | date:'dd-MM-yyyy' }}</p>
                     <p>{{ fechaFin | date:'dd-MM-yyyy' }}</p>
 
                     <p>{{ reserva.huespedes }}</p>
-                    <p>{{ reserva.conBebe ? 'Sí' : 'No' }}</p>
-                    <p>{{ reserva.conMascota ? 'Sí' : 'No' }}</p>
+                    <p>{{ reserva.conBebe ? ('BOOKING.YES' | translate) : ('BOOKING.NO' | translate) }}</p>
+                    <p>{{ reserva.conMascota ? ('BOOKING.YES' | translate) : ('BOOKING.NO' | translate) }}</p>
+
                 </div>
             </div>
 
@@ -132,21 +135,21 @@
         </div>
 
         <div class="summary-info data-content threeRows">
-            <strong>Noches y precios</strong>
+            <strong>{{ 'BOOKING.NIGHTS-PRICES' | translate }}</strong>
             <div *ngFor="let dia of dias">
                 <p class="price">{{ dia.fecha | date:'dd-MM-yyyy' }}&nbsp;&nbsp;x&nbsp;&nbsp;{{ dia.precio |
                     currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
             </div>
             <p *ngIf="reserva.conMascota" class="price">
-                <strong>Mascota: </strong>{{ numeroNoches }} x 10€ = {{ numeroNoches * 10 |
+                <strong>{{ 'BOOKING.PET2' | translate }}: </strong>{{ numeroNoches }} x 10€ = {{ numeroNoches * 10 |
                 currency:'EUR':'symbol':'1.2-2':'es-ES' }}
             </p>
-            <p><strong>Total:</strong> {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
+            <p><strong>{{ 'BOOKING.TOTAL' | translate }}:</strong> {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
         </div>
 
 
         <div class="summary-info">
-            <strong>Cliente</strong>
+            <strong>{{ 'BOOKING.CLIENT' | translate }}</strong>
             <div>
                 <p>{{ reserva.nombre }} {{ reserva.apellidos }}</p>
                 <p>{{ reserva.email }}</p>
@@ -158,16 +161,16 @@
         <div *ngIf="!reserva.nota"></div>
 
         <div class="summary-info" *ngIf="reserva.nota">
-            <strong>Nota adicional</strong>
+            <strong>{{ 'BOOKING.NOTE' | translate }}</strong>
             <p>{{ reserva.nota }}</p>
         </div>
 
         <button mat-stroked-button type="button" (click)="mostrarResumen = false" class="submitButton">
-            Volver
+            {{ 'BOOKING.RETURN' | translate }}
         </button>
 
         <button mat-raised-button type="button" class="submitButton" (click)="verificarCaptcha()">
-            Enviar solicitud
+            {{ 'BOOKING.SEND' | translate }}
         </button>
 
 
