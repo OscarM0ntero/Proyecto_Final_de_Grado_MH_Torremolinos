@@ -10,6 +10,8 @@ import { ReservaRequiereLoginComponent } from './dialogs/reserva-requiere-login.
 import { environment } from '../../../../../../environments/environment';
 import { LayoutComponent } from '../../../layout/layout.component';
 import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
+import { ReservasService } from '../../../../../services/reservas.service';
+import { UsuariosService } from '../../../../../services/usuarios.service';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -49,8 +51,16 @@ export class DisponibilidadComponent implements OnInit {
   dias: any = [];
   precioPorNoche = 0;
 
+  pluralMap = {
+    '=1': 'BOOKING.GUEST',
+    'other': 'BOOKING.GUESTS'
+  };
+
+
   constructor(
     private disponibilidadService: DisponibilidadService,
+    private reservasService: ReservasService,
+    private usuariosService: UsuariosService,
     private http: HttpClient,
     private dialog: MatDialog,
     private loader: LoaderService,
@@ -68,8 +78,8 @@ export class DisponibilidadComponent implements OnInit {
 
     const token = localStorage.getItem('token');
     if (token) {
-      this.http.get('/api/usuarios/me').subscribe({
-        next: (usuario: any) => {
+      this.usuariosService.getUsuarioActual().subscribe({
+        next: (usuario) => {
           this.reserva.nombre = usuario.nombre;
           this.reserva.apellidos = usuario.apellidos;
           this.reserva.email = usuario.email;
@@ -155,22 +165,22 @@ export class DisponibilidadComponent implements OnInit {
       fechaFin: this.formatearFechaLocal(this.fechaFin),
       numeroNoches: this.numeroNoches,
       precio_total: this.precioTotal,
-      recaptcha: this.layout.tokenCaptcha // 👈 capturado desde Layout
+      recaptcha: this.layout.tokenCaptcha
     };
 
     this.loader.mostrar();
 
-    this.http.post('/api/reservas', payload).subscribe({
+    this.reservasService.enviarReserva(payload).subscribe({
       next: () => {
         this.dialog.open(ReservaConfirmadaComponent);
         this.mostrarResumen = false;
-        this.layout.tokenCaptcha = '';      // 🔁 limpia token
+        this.layout.tokenCaptcha = '';
         this.loader.ocultar();
-        this.layout.resetCaptcha();         // 🔁 reinicia captcha desde layout
+        this.layout.resetCaptcha();
       },
       error: err => {
         this.loader.ocultar();
-        this.layout.resetCaptcha();         // 🔁 también en error
+        this.layout.resetCaptcha();
 
         if (err.status === 409 && err.error?.requiereLogin) {
           this.dialog.open(ReservaRequiereLoginComponent);
@@ -180,6 +190,7 @@ export class DisponibilidadComponent implements OnInit {
       }
     });
   }
+
 
   dateClass: MatCalendarCellClassFunction<Date> = (date: Date) => {
     const fechaStr = this.formatearFechaLocal(date);
