@@ -1,0 +1,51 @@
+<h2>Gestión de reservas</h2>
+
+<mat-form-field appearance="fill">
+    <mat-label>Filtrar por estado</mat-label>
+    <mat-select [(value)]="estadoFiltro" (selectionChange)="cargarReservas()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<div *ngFor="let r of reservas" class="reserva-card">
+    <h3>{{ r.fecha_inicio | date:'dd/MM/yyyy'}} → {{ r.fecha_fin | date:'dd/MM/yyyy' }}</h3>
+    <div class="booking-content">
+        <div class="booking-column">
+            <p><strong>Cliente</strong></p>
+            <p> {{ r.nombre }} {{ r.apellidos }}</p>
+            <p>{{ r.email }}</p>
+            <p>{{ r.prefijo }} {{ r.telefono }}</p>
+        </div>
+        <div class="booking-column">
+            <p><strong>Datos reserva</strong></p>
+            <p>Personas: {{ r.n_personas }}</p>
+            <p>Bebé: {{ r.bebe ? 'Sí' : 'No' }} | Mascota: {{ r.mascota ? 'Sí' : 'No' }}
+            </p>
+            <p>Total: {{ r.precio_total | number:'1.2-2' }} € (Anticipo: {{ calcularAnticipo(r.precio_total) |
+                number:'1.2-2' }}€)</p>
+        </div>
+    </div>
+    <div class="booking-content">
+        <div class="booking-column">
+            <p><strong>Estado</strong></p>
+
+            <div>
+                <mat-form-field>
+                    <mat-label>Estado</mat-label>
+                    <mat-select [(value)]="r.estado_reserva" (selectionChange)="confirmarCambioEstado(r)">
+                        <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="booking-column">
+            <div *ngIf="r.nota_adicional">
+                <p style="text-align: center;"><strong>Nota adicional</strong></p>
+            <p style="padding-left: 5%; padding-right: 5%;">{{ r.nota_adicional }}</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+</div>

@@ -1,0 +1,30 @@
+h3 {
+    text-align: center;
+    text-decoration: underline;
+}
+
+.booking-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.booking-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    text-align: center;
+}
+
+
+@media (max-width: 768px) {}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+    .booking-content {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 1024px) {}
