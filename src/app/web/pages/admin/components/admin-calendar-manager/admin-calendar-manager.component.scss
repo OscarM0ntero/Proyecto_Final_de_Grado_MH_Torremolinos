@@ -1,0 +1,146 @@
+.calendar-header {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	justify-content: center;
+
+	.date {
+		width: 200px !important;
+		text-transform: capitalize;
+	}
+
+	.button {
+		border-radius: 50%;
+	}
+}
+
+.cal-month-view .cal-cell-row .cal-cell:hover {
+	background-color: none;
+}
+
+.cal-month-view .cal-header .cal-cell {
+	text-transform: capitalize;
+}
+
+
+.cal-month-view {
+	background-color: var(--color-background);
+}
+
+.cal-month-view .cal-day-cell {
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+	height: 100px;
+}
+
+.cal-month-view .day-number {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	font-weight: bold;
+	font-size: 20px;
+	color: var(--color-background);
+}
+
+.cal-month-view .disponible .day-number,
+.cal-month-view .reservada .day-number {
+	color: var(--color-primary) !important;
+}
+
+
+.cerrada .cal-day-number,
+.reservada .cal-day-number,
+.booking .cal-day-number,
+.airbnb .cal-day-number {
+	font-weight: bold;
+	color: var(--color-background);
+	/* Color del número */
+}
+
+.cal-month-view .cal-day-cell.cal-weekend .cal-day-number {
+	font-weight: bold;
+	color: var(--color-background);
+}
+
+.cerrada .cal-day-cell.cal-weekend,
+.reservada .cal-day-cell.cal-weekend,
+.booking .cal-day-cell.cal-weekend,
+.airbnb .cal-day-cell.cal-weekend {
+	font-weight: bold;
+	color: var(--color-background);
+}
+
+.disponible {
+	background-color: var(--color-neutral) !important;
+	display: flex !important;
+	justify-content: center !important;
+	text-align: center;
+
+	.cal-day-number {
+		color: var(--color-dark) !important;
+		font-weight: bold;
+	}
+}
+
+.reservada {
+	background-color: var(--color-tertiary) !important;
+}
+
+.cerrada {
+	background-color: var(--color-primary) !important;
+	color: var(--color-accent);
+}
+
+.booking {
+	background-color: var(--color-booking) !important;
+	opacity: 0.6;
+}
+
+.airbnb {
+	background-color: var(--color-airbnb) !important;
+	opacity: 0.6;
+}
+
+/* Para que los días seleccionados se vean */
+.cal-day-selected {
+	border: 3px solid black;
+}
+
+.cal-month-view .day-badge {
+	position: absolute;
+	bottom: 5px;
+	left: 30%;
+	right: 30%;
+	width: 40%;
+	font-weight: bold;
+	color: var(--color-dark);
+	font-size: 16px;
+}
+
+.cal-month-view .day-icon,
+.cal-month-view .day-mat-icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.cal-month-view .day-icon img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.cal-month-view .day-mat-icon {
+	.mat-icon {
+		padding-top: 5px;
+		width: 50px !important;
+		height: 50px !important;
+	}
+
+	.material-icons {
+		font-size: 50px !important;
+	}
+}
