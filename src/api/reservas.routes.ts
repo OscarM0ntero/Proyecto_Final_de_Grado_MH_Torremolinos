@@ -5,8 +5,8 @@ import { enviarCorreo } from './utils/mailer.js';
 import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 
-function formatearFecha(fecha: string): string {
-    const d = new Date(fecha);
+function formatearFecha(fecha: string | Date): string {
+    const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
     const dia = d.getDate().toString().padStart(2, '0');
     const mes = (d.getMonth() + 1).toString().padStart(2, '0');
     const año = d.getFullYear();
@@ -17,6 +17,73 @@ function formatearFecha(fecha: string): string {
 dotenv.config();
 
 const router = express.Router();
+
+router.get('/', async (req, res) => {
+    const estado = req.query['estado'] as string;
+    const estadosPermitidos = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
+    if (estado) {
+        if (!estadosPermitidos.includes(estado)) {
+            return res.status(400).json({ error: 'Estado no válido' });
+        }
+
+        try {
+            const [rows] = await pool.query(
+                `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
+             FROM reservas r
+             JOIN usuarios u ON r.id_usuario = u.id_usuario
+             WHERE r.estado_reserva = ?
+             ORDER BY r.fecha_inicio ASC`,
+                [estado]
+            );
+            res.json(rows);
+        } catch (err) {
+            console.error('[GET /api/reservas/?estado=]' + estado, err);
+            res.status(500).json({ error: 'Error al obtener reservas por estado' });
+        }
+    } else {
+        try {
+            const [rows] = await pool.query(
+                `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
+             FROM reservas r
+             JOIN usuarios u ON r.id_usuario = u.id_usuario
+             ORDER BY r.fecha_inicio ASC`
+            );
+            res.json(rows);
+        } catch (err) {
+            console.error('[GET /api/reservas]', err);
+            res.status(500).json({ error: 'Error al obtener las reservas' });
+        }
+    }
+    return;
+});
+
+
+router.get('/cliente', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return res.status(401).json({ error: 'No autorizado' });
+
+    try {
+        const token = authHeader.split(' ')[1];
+        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        const id_usuario = payload.id;
+
+        const [rows] = await pool.query(
+            `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
+             FROM reservas r
+             JOIN usuarios u ON r.id_usuario = u.id_usuario
+             WHERE r.id_usuario = ?
+             ORDER BY r.fecha_inicio ASC`,
+            [id_usuario]
+        );
+
+        res.json(rows);
+    } catch (err) {
+        console.error('[GET /api/reservas/cliente]', err);
+        res.status(500).json({ error: 'Error al obtener tus reservas' });
+    }
+    return;
+});
+
 
 // Configuración desde .env
 const IBAN = process.env['RESERVA_IBAN'] || 'IBAN_NO_CONFIGURADO';
@@ -150,6 +217,151 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error('Error al procesar la reserva:', err);
         return res.status(500).json({ error: 'Error interno al procesar la reserva' });
+    }
+});
+
+router.put('/:id/estado', async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    const estadosPermitidos = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
+    if (!estadosPermitidos.includes(estado)) {
+        return res.status(400).json({ error: 'Estado no válido' });
+    }
+
+    try {
+        // 1. Obtener datos de la reserva
+        const [rows] = await pool.query(`
+            SELECT r.*, u.nombre, u.apellidos, u.email
+            FROM reservas r
+            JOIN usuarios u ON r.id_usuario = u.id_usuario
+            WHERE r.id_reserva = ?
+        `, [id]) as any[];
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Reserva no encontrada' });
+        }
+
+        const reserva = rows[0];
+        const fechaInicio = new Date(reserva.fecha_inicio);
+        const fechaFin = new Date(reserva.fecha_fin);
+        const nombre = reserva.nombre;
+        const apellidos = reserva.apellidos;
+        const email = reserva.email;
+
+        // 2. Actualizar el estado
+        await pool.query(`UPDATE reservas SET estado_reserva = ? WHERE id_reserva = ?`, [estado, id]);
+
+        // 3. Si se confirma
+        if (estado === 'Confirmada') {
+            // Generar array de días
+            const dias = [];
+            const actual = new Date(fechaInicio);
+            while (actual <= fechaFin) {
+                dias.push(actual.toISOString().split('T')[0]);
+                actual.setDate(actual.getDate() + 1);
+            }
+
+            // 3.1 Verificar disponibilidad
+            const placeholders = dias.map(() => '?').join(',');
+            const [disponibles] = await pool.query(`
+                SELECT id_disponibilidad FROM disponibilidad
+                WHERE fecha IN (${placeholders}) AND estado = 'disponible'
+            `, dias) as any[];
+
+            if (disponibles.length !== dias.length) {
+                return res.status(400).json({ error: 'Uno o más días no están disponibles para reservar.' });
+            }
+
+            // 3.2 Marcar como reservados
+            for (const fecha of dias) {
+                await pool.query(`
+                    UPDATE disponibilidad
+                    SET estado = 'reservada', fuente = 'local', id_reserva = ?
+                    WHERE fecha = ? AND estado = 'disponible'
+                `, [id, fecha]);
+            }
+
+            // 3.3 Email al cliente
+            const fechaInicioFmt = formatearFecha(fechaInicio);
+            const fechaFinFmt = formatearFecha(fechaFin);
+
+            await enviarCorreo(email, 'Reserva confirmada', `
+                <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
+                    <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
+                    <p>Tu reserva ha sido <strong>confirmada</strong>.</p>
+                    <ul>
+                        <li><strong>Entrada:</strong> ${fechaInicioFmt}</li>
+                        <li><strong>Salida:</strong> ${fechaFinFmt}</li>
+                    </ul>
+                    <p>Gracias por confiar en M&H Torremolinos.</p>
+                </body>
+            `);
+        }
+
+        // 4. Si se rechaza
+        if (estado === 'Rechazada') {
+            const dias = [];
+            const actual = new Date(fechaInicio);
+            while (actual <= fechaFin) {
+                dias.push(actual.toISOString().split('T')[0]);
+                actual.setDate(actual.getDate() + 1);
+            }
+
+            for (const fecha of dias) {
+                await pool.query(`
+                    UPDATE disponibilidad
+                    SET estado = 'disponible', fuente = 'local', id_reserva = NULL
+                    WHERE fecha = ? AND id_reserva = ?
+                `, [fecha, id]);
+            }
+
+            await enviarCorreo(email, 'Reserva rechazada', `
+                <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
+                    <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
+                    <p>Lamentamos informarte que tu solicitud de reserva ha sido <strong>rechazada</strong>.</p>
+                    <p>Sentimos los inconvenientes. Puedes volver a intentarlo en otras fechas disponibles.</p>
+                    <p>Atentamente,<br/>M&H Torremolinos</p>
+                </body>
+            `);
+        }
+
+        // 5. Si se cancela
+        if (estado === 'Cancelada') {
+            const dias = [];
+            const actual = new Date(fechaInicio);
+            while (actual <= fechaFin) {
+                dias.push(actual.toISOString().split('T')[0]);
+                actual.setDate(actual.getDate() + 1);
+            }
+
+            for (const fecha of dias) {
+                await pool.query(`
+            UPDATE disponibilidad
+            SET estado = 'disponible', fuente = 'local', id_reserva = NULL
+            WHERE fecha = ? AND id_reserva = ?
+        `, [fecha, id]);
+            }
+
+            await enviarCorreo(email, 'Reserva cancelada', `
+            <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
+                <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
+                <p>Como solicitaste, tu reserva ha sido <strong>cancelada</strong>.</p>
+                <ul>
+                    <li><strong>Entrada:</strong> ${formatearFecha(fechaInicio)}</li>
+                    <li><strong>Salida:</strong> ${formatearFecha(fechaFin)}</li>
+                </ul>
+                <p>Esperamos poder atenderte en otra ocasión.</p>
+                <p>Atentamente,<br/>M&H Torremolinos</p>
+            </body>
+    `);
+        }
+
+
+        return res.json({ mensaje: 'Estado actualizado correctamente' });
+    } catch (err) {
+        console.error('[PUT /api/reservas/:id/estado]', err);
+        return res.status(500).json({ error: 'Error al actualizar el estado de la reserva' });
     }
 });
 

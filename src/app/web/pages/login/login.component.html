@@ -2,12 +2,12 @@
     <div class="login-items">
         <h1>Iniciar sesión</h1>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field>
             <mat-label>Email</mat-label>
             <input matInput type="email" [(ngModel)]="email" required (keydown.enter)="login()" />
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field>
             <mat-label>Contraseña</mat-label>
             <input matInput type="password" [(ngModel)]="contrasena" required (keydown.enter)="login()" />
         </mat-form-field>

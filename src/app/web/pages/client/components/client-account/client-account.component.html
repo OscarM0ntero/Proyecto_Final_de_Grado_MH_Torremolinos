@@ -1,7 +1,5 @@
+<h2>Datos personales</h2>
 <form #reservaForm="ngForm" (ngSubmit)="guardarCambios()" class="form">
-    <div class="oneColumn">
-        <h2>Datos personales</h2>
-    </div>
 
     <mat-form-field>
         <mat-label>Nombre</mat-label>
@@ -44,18 +42,14 @@
     </div>
 
     <div class="oneColumn">
-        <button mat-raised-button type="submit" class="submitButton data-content">Guardar cambios</button>
-        <p *ngIf="mensaje" style="color: green;" class="data-content">{{ mensaje }}</p>
-        <p *ngIf="error" style="color: red;" class="data-content">{{ error }}</p>
+        <button mat-raised-button type="submit" class="submitButton data-content">Guardar</button>
     </div>
 
 </form>
-<div class="spacer"></div>
 
+<hr />
+<h2>Cambiar contraseña</h2>
 <form (ngSubmit)="cambiarContrasena()" class="form" #passForm="ngForm">
-    <div class="oneColumn">
-        <h2>Cambiar contraseña</h2>
-    </div>
 
     <div class="oneColumn data" style="justify-content: center;">
         <mat-form-field>
@@ -76,11 +70,8 @@
 
     <div class="oneColumn">
         <button mat-raised-button type="submit" class="submitButton data-content">
-            Cambiar contraseña
+            Guardar
         </button>
-        <p *ngIf="mensajePass" style="color: green;" class="data-content">{{ mensajePass }}</p>
-        <p *ngIf="errorPass" style="color: red;" class="data-content">{{ errorPass }}</p>
     </div>
 
 </form>
-<div class="spacer-small"></div>

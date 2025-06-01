@@ -6,11 +6,51 @@
         "LOCATION": "LOCALIZACIÓN",
         "BOOKING": "RESERVAR",
         "CONTACT": "CONTACTO",
-        "LOGIN": "INICIAR SESIÓN"
+        "LOGIN": "INICIAR SESIÓN",
+        "CLIENT": "MI CUENTA",
+        "ADMIN": "ADMIN"
     },
     "HOME": {
         "BOOK": "RESERVAR AHORA",
         "WELCOME": "Bienvenido a",
-        "VACATION": "Para unas vacaciones ideales."
+        "VACATION": "Para unas vacaciones ideales.",
+        "MORE": "VER MÁS"
+    },
+    "BOOKING": {
+        "TITLE": "Solicitud de reserva",
+        "TITLE2": "Datos de reserva",
+        "TITLE3": "Datos del cliente",
+        "TITLE4": "Resumen",
+        "GUEST-NUM": "Número de huéspedes",
+        "GUESTS": "huéspedes",
+        "GUEST": "huésped",
+        "DATES": "Selecciona las fechas",
+        "CRIB": "¿Necesita cuna (< 2 años)?",
+        "PET": "¿Mascota? +10€/noche",
+        "NIGHTS": "Noches",
+        "PRICE": "Precio Total",
+        "MODIFY": "Para modificar estos datos, cambielos en su cuenta.",
+        "NAME": "Nombre",
+        "LAST-NAME": "Apellidos",
+        "EMAIL-WARN1": "El email es obligatorio",
+        "EMAIL-WARN2": "El formato del email no es válido",
+        "PHONE": "Teléfono",
+        "NOTE": "Nota adicional",
+        "NEXT": "Siguiente",
+        "GUESTS2": "Huéspedes",
+        "NEED-CRIB": "Necesita cuna",
+        "BRING-PET": "Trae mascota",
+        "YES": "Sí",
+        "NO": "No",
+        "NIGHTS-PRICES": "Noches y precios",
+        "PET2": "Mascota",
+        "TOTAL": "Total",
+        "CLIENT": "Cliente",
+        "RETURN": "Volver",
+        "SEND": "Enviar"
+    },
+    "CONTACT": {
+        "TITLE": "Formulario de contacto",
+        "HELP": "¿En que podemos ayudarle?"
     }
 }

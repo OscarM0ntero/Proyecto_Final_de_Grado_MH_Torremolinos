@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @import 'primeicons/primeicons.css';
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 
 // Fuente para títulos
 @font-face {
@@ -32,6 +33,9 @@
     --color-background: #f1eee7;
     --color-surface: #f4f4f4;
     --color-text: #3F4B3A;
+
+    --color-booking: #003580;
+    --color-airbnb: #FE365B;
 
     --navbar-height: 124px;
     --footer-height: 100px;
@@ -207,14 +211,141 @@ h1 {
 .snackbar-success .mat-mdc-snackbar-surface {
     background-color: var(--color-primary) !important;
     color: var(--color-neutral) !important;
-
+    margin-bottom: var(--footer-height);
 }
 
 .snackbar-error .mat-mdc-snackbar-surface {
     background-color: var(--color-neutral) !important;
     color: var(--color-warn) !important;
+    margin-bottom: var(--footer-height);
 }
 
+
+//Form style
+.form {
+    display: grid;
+    width: 730px !important;
+    margin: auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 30px;
+    justify-content: center;
+
+    label {
+        font-size: 24px !important;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .oneColumn,
+    h1,
+    h2,
+    h3 {
+        grid-column: 1 / 3;
+        width: 100% !important;
+    }
+
+    .twoRows {
+        grid-row: span 2;
+    }
+
+    .threeRows {
+        grid-row: span 3;
+    }
+
+    .submitButton {
+        width: 300px;
+        margin: auto;
+    }
+
+    .data {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .data-content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        flex: 1;
+        text-align: center;
+    }
+
+    .summary-info {
+        max-width: 350px !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .price {
+        font-size: 16px !important;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .tlf-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+
+        .pre {
+            width: 100px !important;
+        }
+
+        .tlf {
+            width: 240px !important;
+        }
+    }
+
+}
+
+.mat-mdc-form-field,
+.mat-mdc-form-field-infix {
+    width: 350px;
+}
+
+.horizontal-nav-item {
+    display: flex;
+    flex-direction: column;
+    width: 110px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    padding-left: 5px;
+
+    .mat-icon {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 30px !important;
+    }
+}
+
+.horizontal-nav-item:hover,
+.horizontal-nav-item.active {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border-left: 5px solid var(--color-tertiary);
+    padding-left: 0;
+}
+
+.logout.horizontal-nav-item:hover,
+.logout.horizontal-nav-item.active {
+    background-color: var(--color-warn);
+    color: var(--color-background);
+    border-left: 5px solid var(--color-neutral-dark);
+}
+
+.logout.horizontal-nav-item {
+    background-color: var(--color-background);
+    color: var(--color-warn);
+}
 
 @media (max-width: 768px) {
 
@@ -239,7 +370,7 @@ h1 {
         font-size: 30px;
     }
 
-    h2 {
+    h3 {
         font-size: 24px;
     }
 }
@@ -253,6 +384,76 @@ h1 {
 
     .tablet-show {
         display: block !important;
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: calc(100vw) !important;
+        margin: 0;
+        justify-content: center;
+        text-align: center;
+
+        label {
+            font-size: 16px !important;
+        }
+
+        .submitButton {
+            width: 90%;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        .tlf-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+
+
+            .pre {
+                width: 65px !important;
+                margin-right: 0;
+
+                .mdc-text-field {
+                    padding: 0 !important;
+                }
+            }
+
+            .tlf {
+                width: calc(90% - 75px) !important;
+                margin-left: 0;
+            }
+        }
+    }
+
+    .mat-mdc-form-field,
+    .mat-mdc-form-field-infix {
+        width: 90% !important;
+        margin: auto;
+    }
+
+    .horizontal-nav-item {
+        display: flex;
+        flex-direction: column;
+        width: 80px;
+        height: 60px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        padding-left: 3px;
+
+        .mat-icon {
+            width: 20px !important;
+            height: 20px !important;
+            font-size: 20px !important;
+        }
     }
 }
 

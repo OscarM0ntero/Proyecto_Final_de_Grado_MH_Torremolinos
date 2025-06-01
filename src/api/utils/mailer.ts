@@ -5,8 +5,8 @@ dotenv.config();
 
 export const transporter = nodemailer.createTransport({
     host: process.env['EMAIL_HOST'],
-    port: parseInt(process.env['EMAIL_PORT'] || '587'),
-    secure: false,
+    port: parseInt(process.env['EMAIL_PORT'] || '587', 10),
+    secure: parseInt(process.env['EMAIL_PORT'] || '587', 10) === 465,
     auth: {
         user: process.env['EMAIL_USER'],
         pass: process.env['EMAIL_PASS']
@@ -15,7 +15,7 @@ export const transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
-/*
+
 transporter.verify((err) => {
     if (err) {
         console.error('❌ Error SMTP:', err);
@@ -23,12 +23,19 @@ transporter.verify((err) => {
         console.log('✅ SMTP conectado correctamente');
     }
 });
-*/
-export async function enviarCorreo(destino: string, asunto: string, html: string) {
+
+export async function enviarCorreo(
+    destino: string,
+    asunto: string,
+    html: string,
+    opciones: { replyTo?: string } = {}
+) {
     await transporter.sendMail({
         from: `"M&H Torremolinos" <${process.env['EMAIL_USER']}>`,
         to: destino,
         subject: asunto,
-        html
+        html,
+        replyTo: opciones.replyTo
     });
 }
+

@@ -1,20 +1,20 @@
 <div class="content-gallery">
     <div class="spacer-big"></div>
-    <div *ngIf="images && images.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div *ngFor="let image of images; let index = index" class="col-span-1">
+    <div *ngIf="this.images && this.images.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div *ngFor="let image of this.images; let index = index" class="col-span-1">
             <div>
-                <img [src]="image.itemThumbnailSrc" [alt]="image.alt" class="cursor-pointer w-full h-auto"
+                <img [src]="image.url_thumbnail" [alt]="image.alt" class="cursor-pointer w-full h-auto"
                     (click)="imageClick(index)" />
             </div>
 
         </div>
     </div>
 
-    <p-galleria [value]="images" [(visible)]="displayCustom" [(activeIndex)]="activeIndex"
+    <p-galleria [value]="this.images" [(visible)]="displayCustom" [(activeIndex)]="activeIndex"
         [containerStyle]="{ 'max-width': '40%' }" [numVisible]="7" [circular]="true" [fullScreen]="true"
         [showItemNavigators]="true" [showThumbnails]="false">
         <ng-template #item let-item>
-            <img [src]="item.itemImageSrc" style="width: 100%; display: block;" />
+            <img [src]="item.url" style="width: 100%; display: block;" />
         </ng-template>
     </p-galleria>
     <div class="spacer-big"></div>

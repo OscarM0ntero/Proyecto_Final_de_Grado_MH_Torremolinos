@@ -1,4 +1,4 @@
-import { NgModule, PLATFORM_ID } from '@angular/core';
+import { LOCALE_ID, NgModule, PLATFORM_ID } from '@angular/core';
 import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +10,8 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from './translate-loader';
 import { TokenInterceptor } from './interceptors/token.interceptor';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     provideClientHydration(withEventReplay()),
     provideAnimations(),
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: LOCALE_ID, useValue: 'es' }
   ],
   bootstrap: [AppComponent]
 })

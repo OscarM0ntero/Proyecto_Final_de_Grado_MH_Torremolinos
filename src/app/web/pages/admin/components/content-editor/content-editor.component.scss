@@ -3,3 +3,15 @@ textarea {
     line-height: 20px !important;
     height: 160px !important;
 }
+
+@media (max-width: 768px) {}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+    .form {
+        width: calc(100vw - 80px) !important;
+    }
+}
+
+@media (min-width: 1024px) {}

@@ -1,17 +1,17 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UsuariosService, Usuario } from '../../../../../services/usuarios.service';
 
 @Component({
   selector: 'app-client-account',
   standalone: false,
   templateUrl: './client-account.component.html',
-  styleUrl: './client-account.component.scss',
+  styleUrls: ['./client-account.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ClientAccountComponent implements OnInit {
-  datosUsuario = {
+  datosUsuario: Usuario = {
     nombre: '',
     apellidos: '',
     email: '',
@@ -21,52 +21,40 @@ export class ClientAccountComponent implements OnInit {
 
   prefijos = PREFIJOS_TELEFONO;
 
-
   passwords = {
     actual: '',
     nueva: '',
     confirmar: ''
   };
 
-
-  mensaje = '';
-  error = '';
-
-  mensajePass = '';
-  errorPass = '';
-
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(
+    private usuariosService: UsuariosService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
-    this.http.get('/api/usuarios/me').subscribe({
-      next: (res: any) => {
-        this.datosUsuario = res;
-      },
-      error: () => {
-        this.error = 'Error al cargar los datos del usuario';
-      }
+    this.usuariosService.getUsuarioActual().subscribe({
+      next: (res) => this.datosUsuario = res,
+      error: () => this.snackBar.open('Error al cargar los datos del usuario', undefined, { duration: 3000 })
     });
   }
 
   guardarCambios() {
-    this.http.put('/api/usuarios/me', this.datosUsuario).subscribe({
-      next: () => {
-        this.snackBar.open('Datos actualizados correctamente', undefined, {
-          duration: 3000,
-          panelClass: ['snackbar-success']
-        });
-      },
-      error: () => {
-        this.snackBar.open('No se pudo guardar los cambios', undefined, {
-          duration: 3000,
-          panelClass: ['snackbar-error']
-        });
-      }
+    this.usuariosService.actualizarDatosUsuario(this.datosUsuario).subscribe({
+      next: () => this.snackBar.open('Datos actualizados correctamente', undefined, {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      }),
+      error: () => this.snackBar.open('No se pudo guardar los cambios', undefined, {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      })
     });
   }
 
   cambiarContrasena() {
-    this.http.put('/api/usuarios/me/password', this.passwords).subscribe({
+    const { actual, nueva, confirmar } = this.passwords;
+    this.usuariosService.cambiarPassword(actual, nueva, confirmar).subscribe({
       next: () => {
         this.snackBar.open('Contraseña actualizada correctamente', undefined, {
           duration: 3000,
@@ -82,5 +70,4 @@ export class ClientAccountComponent implements OnInit {
       }
     });
   }
-
 }
