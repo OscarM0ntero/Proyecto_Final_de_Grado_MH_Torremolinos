@@ -8,6 +8,8 @@ import { Component, Input } from '@angular/core';
 })
 export class GridOverlayComponent {
   @Input() contenido?: { titulo: string; texto: string };
+  @Input() imagen?: string;
+
   columns = 26;
   rows = 24;
   totalCells = this.columns * this.rows;

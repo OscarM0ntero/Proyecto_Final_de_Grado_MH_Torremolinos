@@ -53,18 +53,25 @@
 		<div style="width: 30%;" (click)="closeMobileMenu()"></div>
 
 		<nav class="mobile-menu">
-			<a class="nav-item" [routerLink]="['']" (click)="closeMobileMenu()">{{ 'NAVBAR.HOME' | translate }}</a>
-			<a class="nav-item" [routerLink]="['apartamento']" (click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' |
+			<a class="nav-item" [routerLink]="['']" routerLinkActive="active-nav-mobile"
+				[routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">{{ 'NAVBAR.HOME' | translate
+				}}</a>
+			<a class="nav-item" [routerLink]="['apartamento']" routerLinkActive="active-nav-mobile"
+				(click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' |
 				translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['galeria']" (click)="closeMobileMenu()">{{ 'NAVBAR.GALLERY' | translate
+			<a class="nav-item" [routerLink]="['galeria']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+				'NAVBAR.GALLERY' | translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['localizacion']" (click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' |
+			<a class="nav-item" [routerLink]="['localizacion']" routerLinkActive="active-nav-mobile"
+				(click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' |
 				translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['reservar']" (click)="closeMobileMenu()">{{ 'NAVBAR.BOOKING' | translate
+			<a class="nav-item" [routerLink]="['reservar']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+				'NAVBAR.BOOKING' | translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['contacto']" (click)="closeMobileMenu()">{{ 'NAVBAR.CONTACT' | translate
+			<a class="nav-item" [routerLink]="['contacto']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+				'NAVBAR.CONTACT' | translate
 				}}</a>
 			<a class="nav-item" style="color: var(--color-neutral); background-color: var(--color-primary)"
 				[routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">{{ botonLoginLabel | translate }}</a>

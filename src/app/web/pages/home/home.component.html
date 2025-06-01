@@ -16,17 +16,17 @@
 
 <div class="spacer"></div>
 
-<section class="capacity-section">
+<section class="capacity-section" *ngIf="images.length >= 3">
     <div class="info side">
-        <img src="assets/icons/double-bed.png" alt="Cama doble">
+        <img [src]="images[0].url" alt="Cama doble">
         {{ itemCamaDoble }}
     </div>
     <div class="info center">
-        <img src="assets/icons/bed.png" alt="Cama individual">
+        <img [src]="images[1].url" alt="Cama individual">
         {{ itemCamasInd }}
     </div>
     <div class="info side">
-        <img src="assets/icons/crib.png" alt="Cuna">
+        <img [src]="images[2].url" alt="Cuna">
         {{ itemCuna }}
     </div>
 </section>
@@ -34,10 +34,10 @@
 <div class="spacer-big tablet-hide"></div>
 <div class="spacer-big"></div>
 
-<section class="intro-section">
+<section class="intro-section" *ngIf="images.length >= 5">
     <div class="intro-imgs">
-        <img src="assets/img/IMG_28.jpg" alt="Foto Intro 1" class="main">
-        <img src="assets/thumbnail/IMG_04t.jpg" alt="Foto Intro 2" class="secondary">
+        <img [src]="images[3].url" alt="Foto Intro 1" class="main">
+        <img [src]="images[4].url_thumbnail" alt="Foto Intro 2" class="secondary">
     </div>
     <div class="intro-content" *ngIf="itemApartado1">
         <div class="spacer-big tablet-hide"></div>
@@ -58,13 +58,13 @@
 <div class="spacer-big"></div>
 <div class="spacer-big tablet-hide"></div>
 
-<app-grid-overlay [contenido]="itemApartado2"></app-grid-overlay>
+<app-grid-overlay [contenido]="itemApartado2" [imagen]="images[5].url" *ngIf="images.length >= 6"></app-grid-overlay>
 
 <div class="spacer-big tablet-show"></div>
 
 <div class="more-container">
     <button [routerLink]="['apartamento']" class="more">
-        <h3>VER MÁS</h3>
+        <h3>{{ 'HOME.MORE' | translate }}</h3>
     </button>
 </div>
 

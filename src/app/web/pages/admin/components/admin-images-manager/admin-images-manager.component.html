@@ -1,42 +1,26 @@
-<h2>Gestión de galería</h2>
+<h2>Gestión de imágenes</h2>
+<div class="img-list-container">
+    <nav class="img-list-nav">
+        <a routerLink="/admin/imagenes/subir-imagen" routerLinkActive="active" class="horizontal-nav-item">
+            <mat-icon>upload</mat-icon>
+            Subir imágen
+        </a>
+        <a routerLink="/admin/imagenes/inicio" routerLinkActive="active" class="horizontal-nav-item">
+            <mat-icon>home</mat-icon>
+            Inicio
+        </a>
+        <a routerLink="/admin/imagenes/apartamento" routerLinkActive="active" class="horizontal-nav-item">
+            <mat-icon>chair</mat-icon>
+            Apartamento
+        </a>
+        <a routerLink="/admin/imagenes/galeria" routerLinkActive="active" class="horizontal-nav-item">
+            <mat-icon>photo_library</mat-icon>
+            Galería
+        </a>
+    </nav>
 
-<h3>Subir nueva imagen</h3>
-<div class="spacer-small"></div>
-<form (ngSubmit)="uploadImage()" #uploadForm="ngForm" class="form">
+    <div class="img-list-content">
+        <router-outlet></router-outlet>
 
-    <div class="oneColumn" style="font-size: 20px;">
-        <input type="file" (change)="onFileChange($event)" required />
-    </div>
-
-    <mat-form-field>
-        <mat-label>Texto alternativo</mat-label>
-        <input matInput [(ngModel)]="newAlt" name="alt" />
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Orden</mat-label>
-        <input matInput type="number" [(ngModel)]="newOrden" name="orden" required />
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Página</mat-label>
-        <input matInput [(ngModel)]="newPage" name="page" required/>
-    </mat-form-field>
-
-    <div class="oneColumn data-content">
-        <button mat-raised-button type="submit" class="submitButton">Subir</button>
-    </div>
-</form>
-<hr />
-<h3>Lista de imágenes</h3>
-<div class="spacer-small"></div>
-<div class="gallery-grid">
-    <div class="gallery-item" *ngFor="let img of images">
-        <img [src]="'/uploads/' + img.url_thumbnail" [alt]="img.alt" />
-        <div class="gallery-item-info">
-            <div class="oneColumn"><p>{{ img.alt }}</p></div>
-            <p style="flex-grow: 1;"><strong>Orden:</strong> {{ img.orden }}</p>
-            <div style="display: flex; flex-grow: 1; justify-content: center;"><button mat-button (click)="deleteImage(img.id)"><mat-icon>delete</mat-icon></button></div>
-        </div>
     </div>
 </div>

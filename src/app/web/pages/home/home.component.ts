@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
-import { Contenido } from '../../../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
+import { HttpClient } from '@angular/common/http';
+import { ImagenesService } from '../../../services/imagenes.service';
+import { ContenidoService } from '../../../services/contenido.service';
 
 
 @Component({
@@ -13,7 +15,6 @@ import { ContenidoBaseComponent } from '../../../shared/contenido-base.component
   host: { ngSkipHydration: 'true' },
 })
 export class HomeComponent extends ContenidoBaseComponent {
-
   itemLema = '';
   itemCamaDoble = '';
   itemCamasInd = '';
@@ -22,10 +23,12 @@ export class HomeComponent extends ContenidoBaseComponent {
   itemApartado2: any;
 
   constructor(
+    contenido: ContenidoService,
     contenidoWeb: ContenidoWebService,
-    translate: TranslateService
+    imagenes: ImagenesService,
+    translate: TranslateService,
   ) {
-    super(contenidoWeb, translate, 'home');
+    super(contenido, contenidoWeb, imagenes, translate, 'home');
   }
 
   protected actualizarContenido(): void {

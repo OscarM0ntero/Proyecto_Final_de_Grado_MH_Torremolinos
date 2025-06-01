@@ -22,6 +22,9 @@ import { ImagesListComponent } from './pages/admin/components/images-list/images
 import { UploadImageComponent } from './pages/admin/components/upload-image/upload-image.component';
 import { AdminContentManagerComponent } from './pages/admin/components/admin-content-manager/admin-content-manager.component';
 import { ContentEditorComponent } from './pages/admin/components/content-editor/content-editor.component';
+import { AdminBookingManagerComponent } from './pages/admin/components/admin-booking-manager/admin-booking-manager.component';
+import { ClientBookingManagerComponent } from './pages/client/components/client-booking-manager/client-booking-manager.component';
+import { AdminCalendarManagerComponent } from './pages/admin/components/admin-calendar-manager/admin-calendar-manager.component';
 
 const routes: Routes = [
   {
@@ -43,7 +46,7 @@ const routes: Routes = [
         children: [
           { path: '', redirectTo: 'cuenta', pathMatch: 'full' },
           { path: 'cuenta', component: ClientAccountComponent },
-          { path: 'reservas', component: ClientBookingsComponent },
+          { path: 'reservas', component: ClientBookingManagerComponent },
         ]
       },
       {
@@ -53,9 +56,9 @@ const routes: Routes = [
         children: [
           { path: '', redirectTo: 'cuenta', pathMatch: 'full' },
           { path: 'cuenta', component: ClientAccountComponent },
-          { path: 'calendario', component: ClientAccountComponent },
-          { path: 'reservas', component: ClientAccountComponent },
-          { path: 'usuarios', component: ClientAccountComponent },
+          { path: 'calendario', component: AdminCalendarManagerComponent },
+          { path: 'reservas', component: AdminBookingManagerComponent },
+          { path: 'usuarios', component: AdminCalendarManagerComponent },
           {
             path: 'textos',
             component: AdminContentManagerComponent,
@@ -63,7 +66,9 @@ const routes: Routes = [
               { path: '', redirectTo: 'inicio', pathMatch: 'full' },
               { path: 'inicio', component: ContentEditorComponent, data: { page: 'home' } },
               { path: 'apartamento', component: ContentEditorComponent, data: { page: 'apartment' } },
-              { path: 'galeria', component: ContentEditorComponent, data: { page: 'gallery' } },
+              { path: 'localizacion', component: ContentEditorComponent, data: { page: 'location' } },
+              { path: 'contacto', component: ContentEditorComponent, data: { page: 'contact' } },
+              { path: 'legal', component: ContentEditorComponent, data: { page: 'legal' } },
             ]
           },
           {
