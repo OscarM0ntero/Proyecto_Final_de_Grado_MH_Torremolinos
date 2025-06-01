@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DisponibilidadService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Nuevo: disponibilidad global
   getDisponibilidad(): Observable<{ fecha: string; precio: number; estado: string }[]> {
@@ -16,5 +16,9 @@ export class DisponibilidadService {
   // El original por mes (sin cambiar ruta)
   getDisponibilidadPorMes(mes: string): Observable<{ fecha: string; precio: number; estado: string }[]> {
     return this.http.get<{ fecha: string; precio: number; estado: string }[]>(`/api/disponibilidad?mes=${mes}`);
+  }
+
+  actualizarDisponibilidad(data: { fechas: string[], precio?: number, estado: string }) {
+    return this.http.post('/api/disponibilidad/actualizar', data);
   }
 }

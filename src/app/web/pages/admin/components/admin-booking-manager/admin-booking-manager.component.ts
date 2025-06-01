@@ -28,7 +28,7 @@ export class AdminBookingManagerComponent implements OnInit {
   }
 
   calcularAnticipo(precio_total: number): number {
-    return precio_total*0.3;
+    return precio_total * 0.3;
   }
 
   cargarReservas(): void {
@@ -52,11 +52,17 @@ export class AdminBookingManagerComponent implements OnInit {
       if (confirmado) {
         this.reservasService.actualizarEstadoReserva(reserva.id_reserva, reserva.estado_reserva).subscribe({
           next: () => {
-            this.snackBar.open('Estado actualizado correctamente', 'Cerrar', { duration: 3000 });
+            this.snackBar.open('Estado actualizado correctamente', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
             this.cargarReservas();
           },
           error: () => {
-            this.snackBar.open('Error al actualizar estado', 'Cerrar', { duration: 3000 });
+            this.snackBar.open('Error al actualizar estado', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
           }
         });
       } else {

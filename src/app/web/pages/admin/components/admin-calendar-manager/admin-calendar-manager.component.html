@@ -1,24 +1,52 @@
+<!-- CALENDARIO -->
 <div class="calendar-header">
-    <button class="button" (click)="previousMonth()">←</button>
+    <button class="button" (click)="previousMonth()"><mat-icon>arrow_back</mat-icon></button>
     <div class="date">{{ viewDate | date: 'MMMM yyyy' }}</div>
-    <button class="button" (click)="nextMonth()">→</button>
+    <button class="button" (click)="nextMonth()"><mat-icon>arrow_forward</mat-icon></button>
 </div>
+
 <mwl-calendar-month-view [viewDate]="viewDate" [weekStartsOn]="1" [locale]="'es'" [events]="events" [refresh]="refresh"
-    [activeDayIsOpen]="false" [cellTemplate]="customCellTemplate" (beforeViewRender)="beforeMonthViewRender($event)"
-    (dayClicked)="dayClicked($event.day)">
+    [activeDayIsOpen]="false" [cellTemplate]="customCellTemplate" (beforeViewRender)="beforeMonthViewRender($event)">
 </mwl-calendar-month-view>
 
 <ng-template #customCellTemplate let-day="day">
-    <div class="day-number">
-        {{ day.date.getDate() }}
+    <div style="width: 100%; height: 100%;" (mousedown)="startDrag(day)" (mouseover)="dragOver(day)"
+        (mouseup)="endDrag()">
+        <div class="day-number">
+            {{ day.date.getDate() }}
+        </div>
+        <div *ngIf="day.customPrice" class="day-badge">
+            {{ day.customPrice }}
+        </div>
+        <div *ngIf="day.customIcon" class="day-icon">
+            <img [src]="day.customIcon" alt="Icon" />
+        </div>
+        <div *ngIf="day.customMatIcon" class="day-mat-icon">
+            <mat-icon>{{ day.customMatIcon }}</mat-icon>
+        </div>
     </div>
-    <div *ngIf="day.customPrice" class="day-badge">
-        {{ day.customPrice }}
-    </div>
-    <div *ngIf="day.customIcon" class="day-icon">
-        <img [src]="day.customIcon" alt="Icon" />
-    </div>
-    <div *ngIf="day.customMatIcon" class="day-mat-icon">
-        <mat-icon>{{ day.customMatIcon }}</mat-icon>
-    </div>
+
 </ng-template>
+
+
+<!-- FORMULARIO PARA APLICAR CAMBIOS -->
+<div *ngIf="selectedDays.length > 0" class="edit-panel">
+    <h3>Días seleccionados: {{ selectedDays.length }}</h3>
+
+    <form (ngSubmit)="aplicarCambios()" class="form">
+        <div>
+            <label>Nuevo precio (€): </label>
+            <input type="number" [(ngModel)]="nuevoPrecio" name="precio" min="0" />
+        </div>
+
+        <div>
+            <label>Nuevo estado: </label>
+            <select [(ngModel)]="nuevoEstado" name="estado" required>
+                <option value="disponible">Disponible</option>
+                <option value="cerrada">Cerrada</option>
+            </select>
+        </div>
+
+        <button type="submit">Aplicar cambios</button>
+    </form>
+</div>

@@ -8,15 +8,18 @@
 	.date {
 		width: 200px !important;
 		text-transform: capitalize;
+		font-weight: bold;
 	}
 
 	.button {
 		border-radius: 50%;
+		border: 2px solid var(--color-primary) !important;
+		color: var(--color-primary) !important;
+		background-color: var(--color-tertiary) !important;
+		display: flex;
+		align-items: center;
+		font-weight: bold;
 	}
-}
-
-.cal-month-view .cal-cell-row .cal-cell:hover {
-	background-color: none;
 }
 
 .cal-month-view .cal-header .cal-cell {
@@ -26,6 +29,10 @@
 
 .cal-month-view {
 	background-color: var(--color-background);
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 .cal-month-view .cal-day-cell {
@@ -50,6 +57,14 @@
 	color: var(--color-primary) !important;
 }
 
+.cal-month-view .selected {
+	background-color: var(--color-neutral-dark) !important;
+	color: var(--color-background) !important;
+
+	.day-number {
+		color: var(--color-background) !important;
+	}
+}
 
 .cerrada .cal-day-number,
 .reservada .cal-day-number,
@@ -142,5 +157,38 @@
 
 	.material-icons {
 		font-size: 50px !important;
+	}
+}
+
+
+.edit-panel {
+	margin-top: 20px;
+	padding: 20px;
+	background: var(--color-background);
+	border: 1px solid #ccc;
+	border-radius: 8px;
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+
+		label {
+			font-weight: bold;
+		}
+
+		input,
+		select {
+			padding: 5px;
+			font-size: 16px;
+		}
+
+		button {
+			width: fit-content;
+			padding: 5px 10px;
+			font-size: 16px;
+			margin-right: 10px;
+			cursor: pointer;
+		}
 	}
 }
