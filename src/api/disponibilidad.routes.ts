@@ -46,4 +46,43 @@ router.get('/', async (req, res) => {
   }
 });
 
+// POST /api/disponibilidad/actualizar
+router.post('/actualizar', async (req, res) => {
+  const { fechas, precio, estado } = req.body;
+
+  if (!fechas || !Array.isArray(fechas) || !estado) {
+    return res.status(400).json({ error: 'Faltan datos: fechas (array) y estado son obligatorios.' });
+  }
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    for (const fecha of fechas) {
+      if (precio !== undefined && precio !== null) {
+        await connection.query(
+          `UPDATE disponibilidad SET estado = ?, precio = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+          [estado, precio, fecha]
+        );
+      } else {
+        await connection.query(
+          `UPDATE disponibilidad SET estado = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+          [estado, fecha]
+        );
+      }
+    }
+
+    await connection.commit();
+    res.json({ success: true });
+  } catch (err) {
+    await connection.rollback();
+    console.error(err);
+    res.status(500).json({ error: 'Error al actualizar la disponibilidad.' });
+  } finally {
+    connection.release();
+  }
+  return;
+});
+
+
 export default router;
