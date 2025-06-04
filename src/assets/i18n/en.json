@@ -4,13 +4,62 @@
         "APARTMENT": "THE APARTMENT",
         "GALLERY": "GALLERY",
         "LOCATION": "LOCATION",
-        "BOOKING": "BOOKING",
+        "BOOKING": "BOOK NOW",
         "CONTACT": "CONTACT",
-        "LOGIN": "LOGIN"
+        "LOGIN": "LOGIN",
+        "CLIENT": "MY ACCOUNT",
+        "ADMIN": "ADMIN"
+    },
+    "FOOTER": {
+        "LEGAL": "Legal Notice",
+        "PRIVACY": "Privacy Policy",
+        "COOKIES": "Cookies",
+        "CREATED": "Created by"
     },
     "HOME": {
         "BOOK": "BOOK NOW",
         "WELCOME": "Welcome to",
-        "VACATION": "For an ideal vacation."
+        "VACATION": "For an ideal vacation.",
+        "MORE": "SEE MORE"
+    },
+    "BOOKING": {
+        "TITLE": "Booking Request",
+        "TITLE2": "Reservation Details",
+        "TITLE3": "Client Details",
+        "TITLE4": "Summary",
+        "GUEST-NUM": "Number of guests",
+        "GUESTS": "guests",
+        "GUEST": "guest",
+        "DATES": "Select dates",
+        "CRIB": "Need a crib (< 2 years)?",
+        "PET": "Pet? +10€/night",
+        "NIGHTS": "Nights",
+        "PRICE": "Total Price",
+        "MODIFY": "To modify this information, change it in your account.",
+        "NAME": "Name",
+        "LAST-NAME": "Last Name",
+        "EMAIL-WARN1": "Email is required",
+        "EMAIL-WARN2": "Invalid email format",
+        "PHONE": "Phone",
+        "NOTE": "Additional note",
+        "NEXT": "Next",
+        "GUESTS2": "Guests",
+        "NEED-CRIB": "Needs crib",
+        "BRING-PET": "Bringing pet",
+        "YES": "Yes",
+        "NO": "No",
+        "NIGHTS-PRICES": "Nights and prices",
+        "PET2": "Pet",
+        "TOTAL": "Total",
+        "CLIENT": "Client",
+        "RETURN": "Return",
+        "SEND": "Send"
+    },
+    "CONTACT": {
+        "TITLE": "Contact Form",
+        "HELP": "How can we help you?"
+    },
+    "LEGAL": {
+        "INFO": "LEGAL INFORMATION"
     }
 }

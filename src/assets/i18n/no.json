@@ -1,16 +1,65 @@
 {
     "NAVBAR": {
-      "HOME": "HJEM",
-      "APARTMENT": "LEILIGHETEN",
-      "GALLERY": "GALLERI",
-      "LOCATION": "BELIGGENHET",
-      "BOOKING": "BESTILLING",
-      "CONTACT": "KONTAKT",
-      "LOGIN": "LOGG INN"
+        "HOME": "HJEM",
+        "APARTMENT": "LEILIGHETEN",
+        "GALLERY": "GALLERI",
+        "LOCATION": "BELIGGENHET",
+        "BOOKING": "BESTILL",
+        "CONTACT": "KONTAKT",
+        "LOGIN": "LOGG INN",
+        "CLIENT": "MIN KONTO",
+        "ADMIN": "ADMIN"
+    },
+    "FOOTER": {
+        "LEGAL": "Juridisk Merknad",
+        "PRIVACY": "Personvernerklæring",
+        "COOKIES": "Informasjonskapsler",
+        "CREATED": "Laget av"
     },
     "HOME": {
-      "BOOK": "BESTILL NÅ",
-      "WELCOME": "Velkommen til",
-      "VACATION": "For en ideell ferie."
+        "BOOK": "BESTILL NÅ",
+        "WELCOME": "Velkommen til",
+        "VACATION": "For en ideell ferie.",
+        "MORE": "SE MER"
+    },
+    "BOOKING": {
+        "TITLE": "Bestillingsforespørsel",
+        "TITLE2": "Reservasjonsdetaljer",
+        "TITLE3": "Kundedetaljer",
+        "TITLE4": "Oppsummering",
+        "GUEST-NUM": "Antall gjester",
+        "GUESTS": "gjester",
+        "GUEST": "gjest",
+        "DATES": "Velg datoer",
+        "CRIB": "Trenger du barneseng (< 2 år)?",
+        "PET": "Kjæledyr? +10€/natt",
+        "NIGHTS": "Netter",
+        "PRICE": "Totalpris",
+        "MODIFY": "For å endre denne informasjonen, gjør endringer i kontoen din.",
+        "NAME": "Fornavn",
+        "LAST-NAME": "Etternavn",
+        "EMAIL-WARN1": "E-post er påkrevd",
+        "EMAIL-WARN2": "Ugyldig e-postformat",
+        "PHONE": "Telefon",
+        "NOTE": "Tilleggsmerknad",
+        "NEXT": "Neste",
+        "GUESTS2": "Gjester",
+        "NEED-CRIB": "Trenger barneseng",
+        "BRING-PET": "Tar med kjæledyr",
+        "YES": "Ja",
+        "NO": "Nei",
+        "NIGHTS-PRICES": "Netter og priser",
+        "PET2": "Kjæledyr",
+        "TOTAL": "Totalt",
+        "CLIENT": "Kunde",
+        "RETURN": "Tilbake",
+        "SEND": "Send"
+    },
+    "CONTACT": {
+        "TITLE": "Kontaktskjema",
+        "HELP": "Hvordan kan vi hjelpe deg?"
+    },
+    "LEGAL": {
+        "INFO": "JURIDISK INFORMASJON"
     }
-  }
+}
