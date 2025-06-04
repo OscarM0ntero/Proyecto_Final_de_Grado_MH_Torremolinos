@@ -3,14 +3,63 @@
         "HOME": "STARTSEITE",
         "APARTMENT": "DAS APARTMENT",
         "GALLERY": "GALERIE",
-        "LOCATION": "LAGE",
-        "BOOKING": "BUCHUNG",
+        "LOCATION": "STANDORT",
+        "BOOKING": "BUCHEN",
         "CONTACT": "KONTAKT",
-        "LOGIN": "ANMELDEN"
+        "LOGIN": "ANMELDEN",
+        "CLIENT": "MEIN KONTO",
+        "ADMIN": "ADMIN"
+    },
+    "FOOTER": {
+        "LEGAL": "Rechtlicher Hinweis",
+        "PRIVACY": "Datenschutzrichtlinie",
+        "COOKIES": "Cookies",
+        "CREATED": "Erstellt von"
     },
     "HOME": {
         "BOOK": "JETZT BUCHEN",
         "WELCOME": "Willkommen bei",
-        "VACATION": "Für einen idealen Urlaub."
+        "VACATION": "Für einen idealen Urlaub.",
+        "MORE": "MEHR ANSEHEN"
+    },
+    "BOOKING": {
+        "TITLE": "Buchungsanfrage",
+        "TITLE2": "Reservierungsdetails",
+        "TITLE3": "Kundendaten",
+        "TITLE4": "Zusammenfassung",
+        "GUEST-NUM": "Anzahl der Gäste",
+        "GUESTS": "Gäste",
+        "GUEST": "Gast",
+        "DATES": "Daten auswählen",
+        "CRIB": "Benötigen Sie ein Babybett (< 2 Jahre)?",
+        "PET": "Haustier? +10€/Nacht",
+        "NIGHTS": "Nächte",
+        "PRICE": "Gesamtpreis",
+        "MODIFY": "Um diese Informationen zu ändern, ändern Sie sie in Ihrem Konto.",
+        "NAME": "Vorname",
+        "LAST-NAME": "Nachname",
+        "EMAIL-WARN1": "E-Mail ist erforderlich",
+        "EMAIL-WARN2": "Ungültiges E-Mail-Format",
+        "PHONE": "Telefon",
+        "NOTE": "Zusätzliche Anmerkung",
+        "NEXT": "Weiter",
+        "GUESTS2": "Gäste",
+        "NEED-CRIB": "Benötigt Babybett",
+        "BRING-PET": "Bringt ein Haustier mit",
+        "YES": "Ja",
+        "NO": "Nein",
+        "NIGHTS-PRICES": "Nächte und Preise",
+        "PET2": "Haustier",
+        "TOTAL": "Gesamt",
+        "CLIENT": "Kunde",
+        "RETURN": "Zurück",
+        "SEND": "Senden"
+    },
+    "CONTACT": {
+        "TITLE": "Kontaktformular",
+        "HELP": "Wie können wir Ihnen helfen?"
+    },
+    "LEGAL": {
+        "INFO": "RECHTLICHE INFORMATIONEN"
     }
 }
