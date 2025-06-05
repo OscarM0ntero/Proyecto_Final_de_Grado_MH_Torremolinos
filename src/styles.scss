@@ -421,6 +421,18 @@ h1 {
     h3 {
         font-size: 24px;
     }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+    .tablet-hide {
+        display: none !important;
+    }
+
+    .tablet-show {
+        display: block !important;
+    }
 
     .points {
         margin: 0;
@@ -434,18 +446,6 @@ h1 {
             font-size: 20px !important;
             margin: 0;
         }
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {}
-
-@media (max-width: 1024px) {
-    .tablet-hide {
-        display: none !important;
-    }
-
-    .tablet-show {
-        display: block !important;
     }
 
     .legal-container {
@@ -557,7 +557,7 @@ h1 {
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
     .tablet-show {
         display: none !important;
     }
