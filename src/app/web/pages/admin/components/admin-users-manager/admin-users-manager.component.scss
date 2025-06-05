@@ -1,0 +1,89 @@
+.searchBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.addContainer {
+    display: flex;
+    align-items: flex-end;
+    padding-right: 46px;
+}
+
+.addButton {
+    border: 2px solid var(--color-primary);
+    background-color: var(--color-tertiary);
+    color: var(--color-primary);
+}
+
+th,
+td {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px 10px;
+}
+
+th {
+    font-size: 18px;
+}
+
+td {
+    font-size: 14px;
+}
+
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+button {
+    padding: 3px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.editButton {
+    border: 2px solid var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+}
+
+.delButton {
+    border: 2px solid var(--color-warn);
+    background-color: var(--color-warn);
+    color: var(--color-neutral);
+}
+
+@media (max-width: 768px) {
+	.users-manager {
+		display: none;
+	}
+	.warning {
+		display: flex;
+		align-items: center;
+		min-height: 350px !important;
+		margin: 10%;
+		.msg {
+			text-align: center;
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	.warning {
+		display: none;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {}
+
+@media (min-width: 1024px) {}

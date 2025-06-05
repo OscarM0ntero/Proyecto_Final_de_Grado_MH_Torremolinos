@@ -1,0 +1,47 @@
+<!-- Dialog de edición de usuario -->
+<div class="dialog-container">
+    <h2>Editar Usuario</h2>
+    <form class="form">
+        <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="usuario.nombre" name="nombre" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Apellidos</mat-label>
+            <input matInput [(ngModel)]="usuario.apellidos" name="apellidos" />
+        </mat-form-field>
+        <div class="oneColumn">
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput [(ngModel)]="usuario.email" name="email" />
+            </mat-form-field>
+        </div>
+
+        <div class="tlf-container">
+            <mat-form-field class="pre">
+                <mat-label>+</mat-label>
+                <mat-select [(ngModel)]="usuario.prefijo" name="prefijo">
+                    <mat-option *ngFor="let p of prefijos" [value]="p">
+                        {{ p }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="tlf">
+                <mat-label>Teléfono</mat-label>
+                <input matInput [(ngModel)]="usuario.telefono" name="telefono" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field>
+            <mat-label>Rol</mat-label>
+            <mat-select [(ngModel)]="usuario.rol" name="rol">
+                <mat-option value="cliente">Cliente</mat-option>
+                <mat-option value="administrador">Administrador</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button class="submitButton" type="button" (click)="cancelar()">Cancelar</button>
+        <button mat-raised-button class="submitButton" type="button" (click)="guardar()">Guardar</button>
+
+    </form>
+</div>

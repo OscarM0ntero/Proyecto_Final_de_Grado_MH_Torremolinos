@@ -1,0 +1,49 @@
+<!-- Componente de administracion de usuarios -->
+<div class="users-manager">
+    <div class="searchBar">
+        <mat-form-field>
+            <input matInput type="text" [(ngModel)]="searchTerm" (input)="filtrarUsuarios()"
+                placeholder="Buscar usuarios..." />
+        </mat-form-field>
+        <div class="addContainer">
+            <button class="addButton" (click)="abrirDialogAdd()"><mat-icon>person_add</mat-icon></button>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let usuario of usuariosFiltrados">
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.apellidos }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.prefijo }} {{ usuario.telefono }}</td>
+                <td *ngIf="usuario.rol === 'administrador'"><mat-icon>manage_accounts</mat-icon></td>
+                <td *ngIf="usuario.rol === 'cliente'"><mat-icon>person</mat-icon></td>
+
+                <td>
+                    <div class="options">
+                        <button class="editButton"
+                            (click)="abrirDialogEditar(usuario)"><mat-icon>edit</mat-icon></button>
+                        <button class="delButton"
+                            (click)="eliminarUsuario(usuario)"><mat-icon>delete</mat-icon></button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="warning">
+    <div class="msg">
+        <h1>Para ver los usuarios, visitar la versión de escritorio.</h1>
+    </div>
+</div>

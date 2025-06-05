@@ -1,0 +1,54 @@
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    padding: 10px;
+}
+
+.form {
+    width: 530px !important;
+    gap: 10px 30px !important;
+
+    .submitButton {
+        width: 250px !important;
+    }
+}
+
+.mat-mdc-form-field,
+.mat-mdc-form-field-infix {
+    width: 250px !important;
+}
+
+.mat-mdc-form-field,
+.mat-mdc-form-field-infix,
+.mat-mdc-select {
+    font-size: 20px !important;
+}
+
+.oneColumn {
+
+    .mat-mdc-form-field,
+    .mat-mdc-form-field-infix {
+        width: 100% !important;
+    }
+}
+
+.tlf-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+
+    .pre {
+        width: 100px !important;
+    }
+
+    .tlf {
+        width: 145px !important;
+    }
+}
+
+.pre.mdc-text-field {
+    padding: 0 !important;
+}
