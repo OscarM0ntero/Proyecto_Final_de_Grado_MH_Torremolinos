@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UsuariosService } from '../../../../services/usuarios.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-recover-password',
@@ -15,13 +16,14 @@ export class RecoverPasswordComponent {
 	constructor(
 		private usuariosService: UsuariosService,
 		private snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private translate: TranslateService
 	) { }
 
 	recuperar() {
 		if (!this.email || !this.email.includes('@')) {
-			this.snackBar.open('Introduce un correo válido', 'Cerrar', {
-				duration: 4000,
+			this.snackBar.open(this.translate.instant('SNACKBAR.VALID-EMAIL'), undefined, {
+				duration: 3000,
 				panelClass: ['snackbar-error']
 			});
 			return;
@@ -29,15 +31,15 @@ export class RecoverPasswordComponent {
 
 		this.usuariosService.recoverPassword(this.email).subscribe({
 			next: () => {
-				this.snackBar.open('Si el correo está registrado, se enviará una nueva contraseña', 'Cerrar', {
-					duration: 4000,
+				this.snackBar.open(this.translate.instant('SNACKBAR.IF-VALID-EMAIL'), undefined, {
+					duration: 3000,
 					panelClass: ['snackbar-success']
 				});
 				this.email = '';
 			},
 			error: () => {
-				this.snackBar.open('Error al intentar recuperar la contraseña', 'Cerrar', {
-					duration: 4000,
+				this.snackBar.open(this.translate.instant('SNACKBAR.VALID-EMAIL-ERROR'), undefined, {
+					duration: 3000,
 					panelClass: ['snackbar-error']
 				});
 			}

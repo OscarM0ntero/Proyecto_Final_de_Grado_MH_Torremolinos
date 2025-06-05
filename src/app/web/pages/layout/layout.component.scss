@@ -237,10 +237,16 @@ mat-select.lang-select .mat-mdc-select-arrow-wrapper {
 		cursor: pointer;
 	}
 
+	.legal {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
 }
 
 .footer-section {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 	text-align: center;
 }
@@ -280,6 +286,10 @@ a:hover {
 	.right,
 	.left {
 		min-width: none;
+	}
+
+	.footer-section {
+		flex-direction: column;
 	}
 
 }

@@ -1,3 +1,4 @@
+<!-- Componente de la pagina de inicio, el primero que carga en el layout al entrar a la web -->
 <video muted onloadedmetadata="this.muted = true" playsinline autoplay loop preload="auto" class="vid">
     <source src="assets/VIDEO_01_silent.mp4" type="video/mp4" />
 </video>
@@ -52,7 +53,7 @@
 <div class="spacer-big tablet-hide"></div>
 
 <div class="points">
-    <h1>CON UNA PUNTUACIÓN DE<a> 9,4 </a>EN BOOKING</h1>
+    <div [innerHTML]="this.itemPuntuacion"></div>
 </div>
 
 <div class="spacer-big"></div>

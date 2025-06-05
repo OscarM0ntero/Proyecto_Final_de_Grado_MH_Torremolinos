@@ -1,5 +1,9 @@
-<div class="content-location">
+<!-- Componente de la sección Localización -->
+<div class="location-content" *ngIf="itemUbicacion">
     <div class="spacer-big"></div>
+
+    <h3>{{ itemUbicacion.titulo }}</h3>
+    <div [innerHTML]="itemUbicacion.texto"></div>
 
     <iframe src="https://www.google.com/maps/d/embed?mid=12V03WS6KgCsFfTmgcsLeh9rgSujDOlk&hl=es&ehbc=2E312F"
         style="width: 100%; height: 600px; border: 0;">

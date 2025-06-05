@@ -7,7 +7,6 @@ const RECAPTCHA_SECRET = process.env['RECAPTCHA_SECRET_KEY'];
 
 export async function verificarRecaptcha(token: string): Promise<boolean> {
     if (!RECAPTCHA_SECRET) {
-        console.warn('⚠️ No se ha configurado RECAPTCHA_SECRET en .env');
         return false;
     }
 
@@ -23,7 +22,6 @@ export async function verificarRecaptcha(token: string): Promise<boolean> {
 
         return respuesta.data.success;
     } catch (err) {
-        console.error('❌ Error al verificar reCAPTCHA:', err);
         return false;
     }
 }

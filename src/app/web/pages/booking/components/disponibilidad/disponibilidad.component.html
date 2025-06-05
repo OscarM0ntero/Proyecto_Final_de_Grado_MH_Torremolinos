@@ -1,6 +1,7 @@
+<!-- Formulario de reserva -->
 <form #reservaForm="ngForm" (ngSubmit)="enviarReserva()" class="form">
 
-    <!-- Paso 1: Formulario -->
+    <!-- Comienza el formulario -->
     <ng-container *ngIf="!mostrarResumen">
         <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
         <h3>{{ 'BOOKING.TITLE2' | translate }}</h3>
@@ -94,10 +95,13 @@
             </mat-form-field>
         </div>
 
-        <mat-form-field class="oneColumn">
-            <mat-label>{{ 'BOOKING.NOTE' | translate }}</mat-label>
-            <textarea matInput name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
-        </mat-form-field>
+        <div class="oneColumn">
+            <mat-form-field class="note">
+                <mat-label>{{ 'BOOKING.NOTE' | translate }}</mat-label>
+                <textarea matInput name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
+            </mat-form-field>
+        </div>
+
         <div class="oneColumn data-content">
             <button class="submitButton" mat-raised-button type="button" (click)="mostrarResumen = true;"
                 [disabled]="!reservaForm.valid || precioTotal === 0">
@@ -107,7 +111,7 @@
 
     </ng-container>
 
-    <!-- Paso 2: Resumen -->
+    <!-- Resumen de los datos rellenados -->
     <ng-container *ngIf="mostrarResumen">
         <h3>{{ 'BOOKING.TITLE4' | translate }}</h3>
 
@@ -144,7 +148,8 @@
                 <strong>{{ 'BOOKING.PET2' | translate }}: </strong>{{ numeroNoches }} x 10€ = {{ numeroNoches * 10 |
                 currency:'EUR':'symbol':'1.2-2':'es-ES' }}
             </p>
-            <p><strong>{{ 'BOOKING.TOTAL' | translate }}:</strong> {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
+            <p><strong>{{ 'BOOKING.TOTAL' | translate }}:</strong> {{ precioTotal |
+                currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
         </div>
 
 
@@ -173,15 +178,5 @@
             {{ 'BOOKING.SEND' | translate }}
         </button>
 
-
-
     </ng-container>
 </form>
-
-
-<button mat-raised-button type="button" class="submitButton" (click)="verDialog1()">
-    Dialog 1
-</button>
-<button mat-raised-button type="button" class="submitButton" (click)="verDialog2()">
-    Dialog 2
-</button>

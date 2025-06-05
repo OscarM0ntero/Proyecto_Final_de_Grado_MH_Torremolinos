@@ -5,6 +5,7 @@ import { startOfDay } from 'date-fns';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-admin-calendar-manager',
@@ -20,7 +21,7 @@ export class AdminCalendarManagerComponent implements OnInit {
 	refresh: Subject<void> = new Subject<void>();
 	events: CalendarEvent[] = [];
 	view: CalendarView = CalendarView.Month;
-	selectedDays: CalendarMonthViewDay[] = [];
+	selectedDates: string[] = []; // <- ahora guardamos strings YYYY-MM-DD
 
 	nuevoPrecio: number | null = null;
 	nuevoEstado: string = 'disponible';
@@ -32,7 +33,8 @@ export class AdminCalendarManagerComponent implements OnInit {
 	constructor(
 		private disponibilidadService: DisponibilidadService,
 		private http: HttpClient,
-		private snackBar: MatSnackBar
+		private snackBar: MatSnackBar,
+		private translate: TranslateService
 	) { }
 
 	ngOnInit(): void {
@@ -43,10 +45,9 @@ export class AdminCalendarManagerComponent implements OnInit {
 				precio: Number(d.precio)
 			}));
 
-			// Crear los eventos
 			this.events = this.disponibilidad.map(d => ({
 				start: startOfDay(new Date(d.fecha)),
-				title: '', // No queremos título
+				title: '',
 				color: this.getColor(d.estado),
 				meta: {
 					estado: d.estado,
@@ -57,7 +58,6 @@ export class AdminCalendarManagerComponent implements OnInit {
 			this.refresh.next();
 		});
 	}
-
 
 	previousMonth(): void {
 		this.viewDate = new Date(this.viewDate.setMonth(this.viewDate.getMonth() - 1));
@@ -115,40 +115,25 @@ export class AdminCalendarManagerComponent implements OnInit {
 					(day as any).customIcon = null;
 					(day as any).customMatIcon = null;
 				}
+
+				// Comprobamos si está seleccionado basado en fecha
+				if (this.selectedDates.includes(this.formatearFechaLocal(day.date))) {
+					day.cssClass += ' selected';
+				}
 			}
 		});
 	}
 
-	dayClicked(day: CalendarMonthViewDay): void {
-		const event = this.events.find(e => e.start.toDateString() === day.date.toDateString());
-		if (!event) {
-			return;
-		}
-
-		const estado = event.meta.estado;
-		if (estado === 'disponible' || estado === 'cerrada') {
-			const index = this.selectedDays.indexOf(day);
-			if (index > -1) {
-				this.selectedDays.splice(index, 1);
-				day.cssClass = event.meta.estado; // Volver a su estado normal
-			} else {
-				this.selectedDays.push(day);
-				day.cssClass = (event.meta.estado ?? '') + ' selected'; // Añadimos la clase 'seleccionado'
-			}
-		}
-	}
-
-
 	aplicarCambios(): void {
 		if (!this.nuevoEstado) {
-			this.snackBar.open('Debes seleccionar un estado', 'Cerrar', {
+			this.snackBar.open(this.translate.instant('SNACKBAR.MUST-SELECT-STATE'), undefined, {
 				duration: 3000,
 				panelClass: ['snackbar-error']
 			});
 			return;
 		}
 
-		const diasActualizar = this.selectedDays.map(d => this.formatearFechaLocal(d.date));
+		const diasActualizar = [...this.selectedDates];
 
 		const payload = {
 			fechas: diasActualizar,
@@ -158,7 +143,6 @@ export class AdminCalendarManagerComponent implements OnInit {
 
 		this.http.post('/api/disponibilidad/actualizar', payload).subscribe({
 			next: () => {
-				// Éxito: actualizamos el frontend como antes
 				diasActualizar.forEach(fechaStr => {
 					const event = this.events.find(e => this.formatearFechaLocal(e.start) === fechaStr);
 					if (event) {
@@ -167,19 +151,19 @@ export class AdminCalendarManagerComponent implements OnInit {
 					}
 				});
 
-				this.snackBar.open('Cambios aplicados correctamente', 'Cerrar', {
+				this.snackBar.open(this.translate.instant('SNACKBAR.CHANGES-APPLIED'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-success']
 				});
 
-				this.selectedDays = [];
+				this.selectedDates = [];
 				this.nuevoPrecio = null;
 				this.nuevoEstado = 'disponible';
-				this.refresh.next(); // Refrescamos el calendario visual
+				this.refresh.next();
 			},
 			error: (err) => {
 				console.error(err);
-				this.snackBar.open('Error al aplicar cambios', 'Cerrar', {
+				this.snackBar.open(this.translate.instant('SNACKBAR.CHANGES-ERROR'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-error']
 				});
@@ -197,35 +181,34 @@ export class AdminCalendarManagerComponent implements OnInit {
 	startDrag(day: CalendarMonthViewDay): void {
 		const event = this.events.find(e => e.start.toDateString() === day.date.toDateString());
 		if (event && (event.meta.estado === 'disponible' || event.meta.estado === 'cerrada')) {
-			if (this.selectedDays.includes(day)) {
+			const dateStr = this.formatearFechaLocal(day.date);
+			if (this.selectedDates.includes(dateStr)) {
 				this.unSelecting = true;
 			}
 			this.toggleDaySelection(day);
 			this.isDragging = true;
 			this.dragStartDay = day;
-
 		}
 	}
 
 	dragOver(day: CalendarMonthViewDay): void {
 		if (this.isDragging) {
 			const event = this.events.find(e => e.start.toDateString() === day.date.toDateString());
+			const dateStr = this.formatearFechaLocal(day.date);
 			if (event && (event.meta.estado === 'disponible' || event.meta.estado === 'cerrada')) {
-				if (!this.selectedDays.includes(day) && !this.unSelecting) {
-					this.selectedDays.push(day);
+				if (!this.selectedDates.includes(dateStr) && !this.unSelecting) {
+					this.selectedDates.push(dateStr);
 					day.cssClass += ' selected';
-				} else if (this.selectedDays.includes(day) && this.unSelecting) {
-					this.selectedDays = this.selectedDays.filter(d => d !== day);
+				} else if (this.selectedDates.includes(dateStr) && this.unSelecting) {
+					this.selectedDates = this.selectedDates.filter(d => d !== dateStr);
 					day.cssClass = (day.cssClass || '').replace(' selected', '');
 				}
 			}
 		}
 	}
 
-
 	endDrag(): void {
 		if (this.dragStartDay && !this.isDragging) {
-			// Si no hubo drag (simple click), selecciona el día
 			this.toggleDaySelection(this.dragStartDay);
 		}
 		this.dragStartDay = null;
@@ -233,19 +216,16 @@ export class AdminCalendarManagerComponent implements OnInit {
 		this.unSelecting = false;
 	}
 
-
 	toggleDaySelection(day: CalendarMonthViewDay): void {
-		if (this.selectedDays.includes(day)) {
-			// Ya está seleccionado → deseleccionar
-			this.selectedDays = this.selectedDays.filter(d => d !== day);
+		const dateStr = this.formatearFechaLocal(day.date);
+		const index = this.selectedDates.indexOf(dateStr);
+
+		if (index > -1) {
+			this.selectedDates.splice(index, 1);
 			day.cssClass = (day.cssClass || '').replace(' selected', '');
 		} else {
-			// No está seleccionado → seleccionar
-			this.selectedDays.push(day);
+			this.selectedDates.push(dateStr);
 			day.cssClass += ' selected';
 		}
 	}
-
-
-
 }

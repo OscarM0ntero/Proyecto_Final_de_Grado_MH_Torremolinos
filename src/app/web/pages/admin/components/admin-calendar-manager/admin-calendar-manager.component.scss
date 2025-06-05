@@ -43,6 +43,23 @@
 	height: 100px;
 }
 
+.day-container {
+	width: 100%;
+	height: 100%;
+}
+
+.cal-out-month.cerrada,
+.cal-out-month.disponible,
+.cal-out-month.reservada,
+.cal-out-month.booking,
+.cal-out-month.airbnb {
+	background-color: var(--color-background) !important;
+}
+
+.cal-out-month .day-container {
+	display: none !important;
+}
+
 .cal-month-view .day-number {
 	position: absolute;
 	top: 5px;
@@ -57,7 +74,7 @@
 	color: var(--color-primary) !important;
 }
 
-.cal-month-view .selected {
+.cal-month-view .selected:not(.cal-out-month) {
 	background-color: var(--color-neutral-dark) !important;
 	color: var(--color-background) !important;
 
@@ -111,12 +128,10 @@
 
 .booking {
 	background-color: var(--color-booking) !important;
-	opacity: 0.6;
 }
 
 .airbnb {
 	background-color: var(--color-airbnb) !important;
-	opacity: 0.6;
 }
 
 /* Para que los días seleccionados se vean */
@@ -160,35 +175,71 @@
 	}
 }
 
-
 .edit-panel {
 	margin-top: 20px;
 	padding: 20px;
 	background: var(--color-background);
-	border: 1px solid #ccc;
+	border: 1px solid var(--color-neutral);
 	border-radius: 8px;
+}
 
-	form {
+@media (max-width: 768px) {
+	.calendar {
+		//display: none;
+	}
+
+	.warning {
 		display: flex;
-		flex-direction: column;
-		gap: 15px;
+		align-items: center;
+		min-height: 350px;
+		margin: 10%;
 
-		label {
-			font-weight: bold;
-		}
-
-		input,
-		select {
-			padding: 5px;
-			font-size: 16px;
-		}
-
-		button {
-			width: fit-content;
-			padding: 5px 10px;
-			font-size: 16px;
-			margin-right: 10px;
-			cursor: pointer;
+		.msg {
+			text-align: center;
 		}
 	}
+
+	.cal-month-view .day-mat-icon {
+		.mat-icon {
+			padding-top: 3px !important;
+			width: 35px !important;
+			height: 35px !important;
+		}
+
+		.material-icons {
+			font-size: 35px !important;
+		}
+	}
+
+	.cal-month-view .day-badge {
+		position: absolute;
+		bottom: 5px;
+		left: 0;
+		right: 0;
+		width: 100%;
+		font-weight: bold;
+		text-align: center;
+		color: var(--color-dark);
+		font-size: 14px;
+	}
+
+	.button {
+		padding: 0 !important;
+	}
 }
+
+@media (min-width: 768px) {
+	.warning {
+		display: none;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+@media (max-width: 1024px) {
+	.form {
+		width: 100% !important;
+	}
+}
+
+@media (min-width: 1024px) {}

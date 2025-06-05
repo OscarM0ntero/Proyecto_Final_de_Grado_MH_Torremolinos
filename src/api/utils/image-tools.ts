@@ -16,7 +16,7 @@ export async function generarThumbnail(nombreArchivo: string): Promise<string> {
         await fs.writeFile(outputPath, await thumbnail.toBuffer());
         return nombreThumbnail;
     } catch (error) {
-        console.error('❌ Error generando thumbnail con image-js:', error);
+        console.error('Error generando thumbnail con image-js:', error);
         throw error;
     }
 }

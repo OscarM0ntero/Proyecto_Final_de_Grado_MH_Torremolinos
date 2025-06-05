@@ -1,14 +1,14 @@
+// Backend de contacto, para el formulario
 import express from 'express';
 import { enviarCorreo } from './utils/mailer.js';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 
 const router = express.Router();
-const adminEmails = ['info@mhtorremolinos.com'];
+const adminEmails = ['info@mhtorremolinos.com','mhtorremolinos@gmail.com'];
 
 router.post('/', async (req, res) => {
     const { nombre, email, telefono, mensaje, recaptcha } = req.body;
 
-    // Verificar reCAPTCHA
     const esValido = await verificarRecaptcha(recaptcha);
     if (!esValido) {
         return res.status(400).json({ error: 'Fallo en reCAPTCHA' });

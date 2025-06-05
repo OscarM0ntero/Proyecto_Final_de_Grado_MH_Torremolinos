@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ContactService {
-    constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-    enviarMensaje(data: {
-        nombre: string;
-        email: string;
-        telefono: string;
-        mensaje: string;
-        recaptcha: string;
-    }) {
-        return this.http.post('/api/contact', data);
-    }
+	enviarMensaje(data: {
+		nombre: string;
+		email: string;
+		telefono: string;
+		mensaje: string;
+		recaptcha: string;
+	}) {
+		return this.http.post('/api/contact', data);
+	}
 }

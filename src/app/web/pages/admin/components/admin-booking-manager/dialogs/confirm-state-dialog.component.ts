@@ -1,6 +1,7 @@
+// Dialog de confirmación para cambiar el estado de una reserva
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MaterialModule } from '../../../../../material/material.module';
+import { MaterialModule } from '../../../../../../material/material.module';
 
 @Component({
   selector: 'app-confirm-state-dialog',

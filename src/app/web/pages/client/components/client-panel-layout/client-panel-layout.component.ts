@@ -4,22 +4,22 @@ import { LogoutConfirmDialogComponent } from '../../dialogs/logout-confirm-dialo
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-client-panel-layout',
-  standalone: false,
-  templateUrl: './client-panel-layout.component.html',
-  styleUrl: './client-panel-layout.component.scss',
-  encapsulation: ViewEncapsulation.None
+	selector: 'app-client-panel-layout',
+	standalone: false,
+	templateUrl: './client-panel-layout.component.html',
+	styleUrl: './client-panel-layout.component.scss',
+	encapsulation: ViewEncapsulation.None
 })
 export class ClientPanelLayoutComponent {
-  constructor(private dialog: MatDialog, private auth: AuthService) { }
+	constructor(private dialog: MatDialog, private auth: AuthService) { }
 
-  logout() {
-    const dialogRef = this.dialog.open(LogoutConfirmDialogComponent);
+	logout() {
+		const dialogRef = this.dialog.open(LogoutConfirmDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.auth.logout();
-      }
-    });
-  }
+		dialogRef.afterClosed().subscribe(result => {
+			if (result === true) {
+				this.auth.logout();
+			}
+		});
+	}
 }

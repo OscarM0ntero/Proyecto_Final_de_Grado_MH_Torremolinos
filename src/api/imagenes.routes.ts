@@ -1,3 +1,4 @@
+// Backend de imagenes
 import express, { Request } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import { pool } from '../db.js';
@@ -7,7 +8,7 @@ import fs from 'fs/promises';
 
 const router = express.Router();
 
-// Configura multer para guardar archivos en /src/api/uploads
+// Configura para guardar archivos en /uploads
 const uploadPath = path.resolve('uploads');
 
 const storage = multer.diskStorage({
@@ -21,7 +22,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// GET /api/imagenes?pagina=gallery
 router.get('/', async (req, res) => {
     const { pagina } = req.query;
     const [rows] = await pool.query(
@@ -32,7 +32,6 @@ router.get('/', async (req, res) => {
     res.json(rows);
 });
 
-// POST /api/imagenes
 router.post('/', upload.single('imagen'), async (req, res) => {
     const { alt, orden, pagina } = req.body;
     const imagen = req.file;
@@ -56,9 +55,6 @@ router.post('/', upload.single('imagen'), async (req, res) => {
     }
 });
 
-
-
-// DELETE /api/imagenes/:id
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -88,8 +84,5 @@ router.delete('/:id', async (req, res) => {
     await pool.query('DELETE FROM imagenes WHERE id = ?', [id]);
     return res.json({ mensaje: 'Imagen eliminada correctamente' });
 });
-
-
-
 
 export default router;
