@@ -38,7 +38,7 @@ export class HomeComponent extends ContenidoBaseComponent {
 	override async ngOnInit(): Promise<void> {
 		await super.ngOnInit();
 
-		this.titleService.setTitle('Inicio | M&H Torremolinos');
+		this.titleService.setTitle('M&H Torremolinos');
 		this.metaService.updateTag({ name: 'description', content: 'Apartamentos turísticos en Torremolinos. 5 huéspedes, WiFi gratis, mascotas permitidas, ubicación ideal cerca de la playa.' });
 		this.metaService.updateTag({ name: 'robots', content: 'index, follow' });
 		this.metaService.updateTag({ name: 'keywords', content: 'apartamento, Torremolinos, vacaciones, Costa del Sol, alquiler turístico' });
