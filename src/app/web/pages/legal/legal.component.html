@@ -1,0 +1,26 @@
+<!-- Componente de textos legales -->
+<div class="spacer-big"></div>
+<div class="legal-container" *ngIf="itemAviso">
+
+    <h1>{{ 'LEGAL.INFO' | translate }}</h1>
+
+    <h3>{{ itemAviso.titulo }}</h3>
+    <div [innerHTML]="itemAviso.texto"></div>
+
+    <h3 id="privacy">{{ itemPrivacidad.titulo }}</h3>
+    <div [innerHTML]="itemPrivacidad.texto"></div>
+
+    <h3 id="cookies">{{ itemCookies.titulo }}</h3>
+    <div [innerHTML]="itemCookies.texto"></div>
+
+    <h3 id="booking">{{ itemCondiciones.titulo }}</h3>
+    <div [innerHTML]="itemCondiciones.texto"></div>
+
+    <h3>{{ itemIntelectual.titulo }}</h3>
+    <div [innerHTML]="itemIntelectual.texto"></div>
+
+    <h3>{{ itemLey.titulo }}</h3>
+    <div [innerHTML]="itemLey.texto"></div>
+
+</div>
+<div class="spacer-big"></div>
