@@ -1,9 +1,10 @@
+// Dialog para confirmar el cierre de sesión
 import { Component } from '@angular/core';
 import { MaterialModule } from '../../../../material/material.module';
 
 @Component({
-    selector: 'app-logout-confirm-dialog',
-    template: `
+	selector: 'app-logout-confirm-dialog',
+	template: `
     <div style="padding: 30px 30px 10px 30px; text-align: center">
       <h2>¿Cerrar sesión?</h2>
       <p style="margin: 0">¿Estás seguro de que quieres cerrar sesión?</p>
@@ -13,7 +14,7 @@ import { MaterialModule } from '../../../../material/material.module';
       </mat-dialog-actions>
     </div>
   `,
-    imports: [MaterialModule]
+	imports: [MaterialModule]
 
 })
 export class LogoutConfirmDialogComponent { }

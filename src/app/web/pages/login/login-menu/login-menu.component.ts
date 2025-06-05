@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-login-menu',
@@ -19,10 +20,11 @@ export class LoginMenuComponent {
 		private http: HttpClient,
 		private router: Router,
 		private auth: AuthService,
-		private snackBar: MatSnackBar
-
+		private snackBar: MatSnackBar,
+		private translate: TranslateService
 	) { }
 
+	// Envia los datos al endpoint para hacer post en la BD
 	login(): void {
 		this.http.post<{ token: string }>('/api/login', {
 			email: this.email,
@@ -39,7 +41,7 @@ export class LoginMenuComponent {
 				}
 			},
 			error: () => {
-				this.snackBar.open('Correo o contraseña incorrectos', undefined, {
+				this.snackBar.open(this.translate.instant('SNACKBAR.LOGIN-DATA-ERROR'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-error']
 				});

@@ -1,8 +1,9 @@
+// Dialog de confirmación de borrado de imágen
 import { Component } from '@angular/core';
 import { MaterialModule } from '../../../../../material/material.module';
 
 @Component({
-  selector: 'app-delete-confirm-dialog',
+  selector: 'app-delete-img-confirm-dialog',
   template: `
     <div style="padding: 30px 30px 10px 30px; text-align: center">
       <h2>¿Eliminar imagen?</h2>
@@ -16,4 +17,4 @@ import { MaterialModule } from '../../../../../material/material.module';
   imports: [MaterialModule]
 
 })
-export class DeleteConfirmDialogComponent { }
+export class DeleteImgConfirmDialogComponent { }

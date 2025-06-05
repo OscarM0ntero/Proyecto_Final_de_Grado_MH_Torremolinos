@@ -1,3 +1,4 @@
+// Backend de login
 import express from 'express';
 import { pool, secret } from '../db.js';
 import crypto from 'crypto';

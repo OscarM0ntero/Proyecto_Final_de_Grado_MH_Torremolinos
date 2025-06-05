@@ -18,9 +18,9 @@ export const transporter = nodemailer.createTransport({
 
 transporter.verify((err) => {
     if (err) {
-        console.error('❌ Error SMTP:', err);
+        console.error('Error SMTP:', err);
     } else {
-        console.log('✅ SMTP conectado correctamente');
+        console.log('SMTP conectado correctamente');
     }
 });
 

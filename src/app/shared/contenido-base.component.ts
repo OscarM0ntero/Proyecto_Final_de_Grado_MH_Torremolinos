@@ -1,3 +1,4 @@
+// Componente base de todos los componentes que permitan cargar imágenes o texto desde la base de datos
 import { OnInit, Directive } from '@angular/core';
 import { ContenidoWebService } from '../services/contenido-web.service';
 import { Contenido, ContenidoService } from '../services/contenido.service';
@@ -16,9 +17,9 @@ export abstract class ContenidoBaseComponent implements OnInit {
   constructor(
     private readonly contenido: ContenidoService,
     private readonly contenidoWeb: ContenidoWebService,
-    private readonly imagenes: ImagenesService,
-    private readonly translate: TranslateService,
-    private readonly nombrePagina: string
+    protected readonly imagenes: ImagenesService,
+    protected readonly translate: TranslateService,
+    protected readonly nombrePagina: string
   ) { }
 
   async ngOnInit(): Promise<void> {

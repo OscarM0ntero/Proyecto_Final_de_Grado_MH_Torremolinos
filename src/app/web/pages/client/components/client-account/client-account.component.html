@@ -1,13 +1,14 @@
-<h2>Datos personales</h2>
+<!-- Subcomponente de Mi cuenta del cliente, donde puede modificar sus datos personales y contraseña -->
+<h2>{{ 'CLIENT.PERSONAL-DATA' | translate}}</h2>
 <form #reservaForm="ngForm" (ngSubmit)="guardarCambios()" class="form">
 
     <mat-form-field>
-        <mat-label>Nombre</mat-label>
+        <mat-label>{{ 'BOOKING.NAME' | translate}}</mat-label>
         <input matInput name="nombre" [(ngModel)]="datosUsuario.nombre" />
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>Apellidos</mat-label>
+        <mat-label>{{ 'BOOKING.LAST-NAME' | translate}}</mat-label>
         <input matInput name="apellidos" [(ngModel)]="datosUsuario.apellidos" />
     </mat-form-field>
 
@@ -17,10 +18,10 @@
 
         <mat-error *ngIf="emailRef.invalid && emailRef.touched">
             <ng-container *ngIf="emailRef.errors?.['required']">
-                El email es obligatorio
+                {{ 'BOOKING.EMAIL-WARN1' | translate}}
             </ng-container>
             <ng-container *ngIf="emailRef.errors?.['email']">
-                El formato del email no es válido
+                {{ 'BOOKING.EMAIL-WARN2' | translate}}
             </ng-container>
         </mat-error>
     </mat-form-field>
@@ -36,41 +37,41 @@
         </mat-form-field>
 
         <mat-form-field class="tlf">
-            <mat-label>Teléfono</mat-label>
+            <mat-label>{{ 'BOOKING.PHONE' | translate}}</mat-label>
             <input matInput name="telefono" [(ngModel)]="datosUsuario.telefono" />
         </mat-form-field>
     </div>
 
     <div class="oneColumn">
-        <button mat-raised-button type="submit" class="submitButton data-content">Guardar</button>
+        <button mat-raised-button type="submit" class="submitButton data-content">{{ 'CLIENT.SAVE' | translate}}</button>
     </div>
 
 </form>
 
 <hr />
-<h2>Cambiar contraseña</h2>
+<h2>{{ 'CLIENT.CHANGE-PASS' | translate}}</h2>
 <form (ngSubmit)="cambiarContrasena()" class="form" #passForm="ngForm">
 
     <div class="oneColumn data" style="justify-content: center;">
         <mat-form-field>
-            <mat-label>Contraseña actual</mat-label>
+            <mat-label>{{ 'CLIENT.CURRENT-PASS' | translate}}</mat-label>
             <input matInput type="password" name="actual" [(ngModel)]="passwords.actual" required />
         </mat-form-field>
     </div>
 
     <mat-form-field>
-        <mat-label>Nueva contraseña</mat-label>
+        <mat-label>{{ 'CLIENT.NEW-PASS' | translate}}</mat-label>
         <input matInput type="password" name="nueva" [(ngModel)]="passwords.nueva" required />
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>Confirmar nueva contraseña</mat-label>
+        <mat-label>{{ 'CLIENT.NEW-PASS-CONFIRM' | translate}}</mat-label>
         <input matInput type="password" name="confirmar" [(ngModel)]="passwords.confirmar" required />
     </mat-form-field>
 
     <div class="oneColumn">
         <button mat-raised-button type="submit" class="submitButton data-content">
-            Guardar
+            {{ 'CLIENT.SAVE' | translate}}
         </button>
     </div>
 

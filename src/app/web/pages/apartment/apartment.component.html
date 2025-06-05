@@ -1,5 +1,5 @@
-<!-- Solo  -->
-<p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
+<!-- Componente de la sección El apartamento, que muestra información relevante de este y algunas imágenes en sliders -->
+<p-galleria [value]="images1" numVisible="1" [circular]="true" [showIndicators]="false"
     [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
     [transitionInterval]="3000" [showThumbnails]="false"
     [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
@@ -8,7 +8,7 @@
         <img [src]="item.url" style="width: 100%; display: block;" />
     </ng-template>
 </p-galleria>
-<p-galleria [value]="images" numVisible="1" [circular]="true" [showIndicators]="false"
+<p-galleria [value]="images1" numVisible="1" [circular]="true" [showIndicators]="false"
     [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
     [transitionInterval]="3000" [showThumbnails]="false"
     [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '200px', 'align-items': 'center' }"
@@ -17,3 +17,59 @@
         <img [src]="item.url" style="width: 100%; display: block;" />
     </ng-template>
 </p-galleria>
+
+<div class="spacer-big"></div>
+<section class="apartament-container" *ngIf="itemApartamento">
+
+    <h3>{{ itemApartamento.titulo }}</h3>
+    <div [innerHTML]="itemApartamento.texto"></div>
+
+    <h3>{{ itemDistribucion.titulo }}</h3>
+    <div [innerHTML]="itemDistribucion.texto"></div>
+
+    <h3>{{ itemComodidades.titulo }}</h3>
+    <div [innerHTML]="itemComodidades.texto"></div>
+
+    <h3>{{ itemMascotas.titulo }}</h3>
+    <div [innerHTML]="itemMascotas.texto"></div>
+
+</section>
+
+<p-galleria [value]="images2" numVisible="1" [circular]="true" [showIndicators]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
+    [transitionInterval]="3000" [showThumbnails]="false"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '300px', 'align-items': 'center' }"
+    baseZIndex="1" class="mobile-hide">
+    <ng-template #item let-item>
+        <img [src]="item.url" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
+<p-galleria [value]="images2" numVisible="1" [circular]="true" [showIndicators]="false"
+    [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
+    [transitionInterval]="3000" [showThumbnails]="false"
+    [containerStyle]="{ 'display': 'flex','width': '100%', 'border': '0', 'height': '200px', 'align-items': 'center' }"
+    baseZIndex="1" class="mobile-show" style="display: none;">
+    <ng-template #item let-item>
+        <img [src]="item.url" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
+
+<div class="spacer-big"></div>
+
+<section class="apartament-container" *ngIf="itemPiscina">
+
+    <h3>{{ itemPiscina.titulo }}</h3>
+    <div [innerHTML]="itemPiscina.texto"></div>
+
+    <h3>{{ itemEstacionamiento.titulo }}</h3>
+    <div [innerHTML]="itemEstacionamiento.texto"></div>
+
+</section>
+
+<div class="more-container">
+    <button [routerLink]="['../localizacion']" class="more">
+        <h3>{{ 'NAVBAR.LOCATION' | translate }}</h3>
+    </button>
+</div>
+
+<div class="spacer-big"></div>

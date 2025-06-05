@@ -1,3 +1,4 @@
+<!-- Componente del layout principal, el cual contiene todas las secciones de los subcomponentes, navbar y footer -->
 <div class="layout">
 	<section class="navbar-container">
 		<div class="toolbar tablet-hide">
@@ -60,17 +61,20 @@
 				(click)="closeMobileMenu()">{{ 'NAVBAR.APARTMENT' |
 				translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['galeria']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+			<a class="nav-item" [routerLink]="['galeria']" routerLinkActive="active-nav-mobile"
+				(click)="closeMobileMenu()">{{
 				'NAVBAR.GALLERY' | translate
 				}}</a>
 			<a class="nav-item" [routerLink]="['localizacion']" routerLinkActive="active-nav-mobile"
 				(click)="closeMobileMenu()">{{ 'NAVBAR.LOCATION' |
 				translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['reservar']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+			<a class="nav-item" [routerLink]="['reservar']" routerLinkActive="active-nav-mobile"
+				(click)="closeMobileMenu()">{{
 				'NAVBAR.BOOKING' | translate
 				}}</a>
-			<a class="nav-item" [routerLink]="['contacto']" routerLinkActive="active-nav-mobile" (click)="closeMobileMenu()">{{
+			<a class="nav-item" [routerLink]="['contacto']" routerLinkActive="active-nav-mobile"
+				(click)="closeMobileMenu()">{{
 				'NAVBAR.CONTACT' | translate
 				}}</a>
 			<a class="nav-item" style="color: var(--color-neutral); background-color: var(--color-primary)"
@@ -106,14 +110,20 @@
 
 	</div>
 
-	<section class="footer" color="primary">
+	<section class="footer">
 
 		<div class="footer-section">
-			<p>M&H Torremolinos &copy; {{currentYear}}</p>
+			<p>
+				<a class="legal" [routerLink]="['legal']">{{ 'FOOTER.LEGAL' | translate }}</a> |
+				<a class="legal" [routerLink]="['legal']" fragment="privacy">{{ 'FOOTER.PRIVACY' | translate }}</a> |
+				<a class="legal" [routerLink]="['legal']" fragment="cookies">{{ 'FOOTER.COOKIES' | translate }}</a>
+			</p>
 		</div>
 
 		<div class="footer-section">
-			<p>Creado por <a href="https://github.com/OscarM0ntero">Oscar Montero</a></p>
+			<div>&copy; {{currentYear}} M&H Torremolinos</div>
+			<div class="tablet-hide">&nbsp;|&nbsp;</div>
+			<div>{{ 'FOOTER.CREATED' | translate }} <a href="https://github.com/OscarM0ntero">Oscar Montero</a></div>
 		</div>
 	</section>
 </div>

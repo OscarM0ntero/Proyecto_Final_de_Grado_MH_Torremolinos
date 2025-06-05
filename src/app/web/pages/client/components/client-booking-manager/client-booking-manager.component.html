@@ -1,30 +1,31 @@
+<!-- Subcomponente de reservas del cliente, donde puede visualizar las reservas realizadas y su estado -->
 <h2>Mis reservas</h2>
-<p *ngIf="reservas.length === 0" style="text-align: center;">No tienes reservas todavía.</p>
-<p *ngIf="reservas.length !== 0" style="text-align: center;">Para modificar su reserva debe ponerse en contacto con nosotros.</p>
+<p *ngIf="reservas.length === 0" style="text-align: center;">{{ 'CLIENT.BOOKING-WARN1' | translate}}</p>
+<p *ngIf="reservas.length !== 0" style="text-align: center;">{{ 'CLIENT.BOOKING-WARN2' | translate}}</p>
 
 <div *ngFor="let r of reservas" class="reserva-card">
     <h3>{{ r.fecha_inicio | date:'dd/MM/yyyy'}} → {{ r.fecha_fin | date:'dd/MM/yyyy' }}</h3>
     <div class="booking-content">
         <div class="booking-column">
-            <p><strong>Datos personales</strong></p>
+            <p><strong>{{ 'CLIENT.PERSONAL-DATA' | translate}}</strong></p>
             <p>{{ r.nombre }} {{ r.apellidos }}</p>
             <p>{{ r.email }}</p>
             <p>{{ r.prefijo }} {{ r.telefono }}</p>
         </div>
         <div class="booking-column">
-            <p><strong>Datos reserva</strong></p>
-            <p>Personas: {{ r.n_personas }}</p>
-            <p>Bebé: {{ r.bebe ? 'Sí' : 'No' }} | Mascota: {{ r.mascota ? 'Sí' : 'No' }}</p>
-            <p>Total: {{ r.precio_total | number:'1.2-2' }} €</p>
+            <p><strong>{{ 'CLIENT.BOOKING-DATA' | translate}}</strong></p>
+            <p>{{ 'CLIENT.GUESTS' | translate}}: {{ r.n_personas }}</p>
+            <p>{{ 'CLIENT.BABY' | translate}}: {{ r.bebe ? 'Sí' : 'No' }} | Mascota: {{ r.mascota ? 'Sí' : 'No' }}</p>
+            <p>{{ 'CLIENT.TOTAL' | translate}}: {{ r.precio_total | number:'1.2-2' }} €</p>
         </div>
     </div>
     <div class="booking-content">
         <div class="booking-column">
-            <p><strong>Estado</strong></p>
+            <p><strong>{{ 'CLIENT.STATE' | translate}}</strong></p>
             <p>{{ r.estado_reserva }}</p>
         </div>
         <div class="booking-column" *ngIf="r.nota_adicional">
-            <p style="text-align: center;"><strong>Nota adicional</strong></p>
+            <p style="text-align: center;"><strong>{{ 'CLIENT.NOTE' | translate}}</strong></p>
             <p style="padding-left: 5%; padding-right: 5%;">{{ r.nota_adicional }}</p>
         </div>
     </div>

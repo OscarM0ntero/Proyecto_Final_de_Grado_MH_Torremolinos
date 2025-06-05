@@ -1,17 +1,18 @@
+<!-- Componente del layout del panel de gestión del cliente -->
 <div class="spacer-big"></div>
 <div class="client-panel-container">
     <nav>
         <a routerLink="/cliente/cuenta" routerLinkActive="active" class="horizontal-nav-item">
             <mat-icon>person</mat-icon>
-            Mi cuenta
+            {{ 'CLIENT.ACCOUNT' | translate}}
         </a>
         <a routerLink="/cliente/reservas" routerLinkActive="active" class="horizontal-nav-item">
             <mat-icon>event</mat-icon>
-            Reservas
+            {{ 'CLIENT.BOOKING' | translate}}
         </a>
         <a class="logout horizontal-nav-item" (click)="logout()">
             <mat-icon>logout</mat-icon>
-            Cerrar sesión
+            {{ 'CLIENT.LOGOUT' | translate}}
         </a>
     </nav>
 

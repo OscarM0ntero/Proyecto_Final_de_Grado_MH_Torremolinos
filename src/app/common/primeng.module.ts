@@ -1,3 +1,4 @@
+// Libreria con componentes de material PrimeNG
 import { NgModule } from '@angular/core';
 
 import { GalleriaModule } from 'primeng/galleria';
@@ -9,18 +10,18 @@ import { Carousel, CarouselModule } from 'primeng/carousel';
 import { MenubarModule } from 'primeng/menubar';
 
 @NgModule({
-  imports: [
-    Carousel
-  ],
-  exports: [
-    GalleriaModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    CardModule,
-    CarouselModule,
-    Carousel,
-    MenubarModule
-  ]
+	imports: [
+		Carousel
+	],
+	exports: [
+		GalleriaModule,
+		ButtonModule,
+		DialogModule,
+		InputTextModule,
+		CardModule,
+		CarouselModule,
+		Carousel,
+		MenubarModule
+	]
 })
-export class PrimeNgModule {}
+export class PrimeNgModule { }

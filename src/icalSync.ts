@@ -8,13 +8,14 @@ const icalUrls = [
     { url: environment.icalAirbnb, source: 'airbnb', summaryFilter: 'Reserved' },
 ];
 
+// Pasamos la fecha de UTC a nuestra fecha local
 function toLocalDateString(date: any) {
     return date.getFullYear() + '-' +
         (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
         date.getDate().toString().padStart(2, '0');
 }
 
-
+// Sincronizamos los calendarios de ical Booking y Airbnb con nuestro calendario interno
 async function sincronizarIcal() {
     try {
         console.log('[iCal] Iniciando sincronización...');
@@ -57,16 +58,15 @@ async function sincronizarIcal() {
                         let end = new Date(ev.end);
 
                         for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-                            const fechaStr = toLocalDateString(d); // <-- ¡Aquí!
+                            const fechaStr = toLocalDateString(d);
                             fechasOcupadas.push(fechaStr);
                         }
                     }
                 }
 
-
                 console.log(`[iCal] ${source}: ${fechasOcupadas.length} fechas ocupadas.`);
 
-                // Insertar/actualizar las fechas
+                // Insertamos/actualizamos las fechas
                 for (const fecha of fechasOcupadas) {
                     await connection.query(`
             INSERT INTO disponibilidad (fecha, estado, fuente, id_reserva)

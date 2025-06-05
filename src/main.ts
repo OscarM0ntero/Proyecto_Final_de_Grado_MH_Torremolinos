@@ -5,9 +5,10 @@ import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 
 platformBrowser().bootstrapModule(AppModule, {
-  ngZoneEventCoalescing: true,
-  providers: [provideAnimations()]
+	ngZoneEventCoalescing: true,
+	providers: [provideAnimations()]
 })
-  .catch(err => console.error(err));
+	.catch(err => console.error(err));
 
+// Configuramos la informacion local como España
 registerLocaleData(localeEs, 'es');

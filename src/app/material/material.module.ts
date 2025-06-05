@@ -1,3 +1,4 @@
+// Libreria con componentes de material utilizados
 import { NgModule } from '@angular/core';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -20,25 +21,25 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
-  exports: [
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSnackBarModule,
-    MatToolbarModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
-  ]
+	exports: [
+		MatAutocompleteModule,
+		MatButtonModule,
+		MatCardModule,
+		MatChipsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatGridListModule,
+		MatIconModule,
+		MatInputModule,
+		MatListModule,
+		MatProgressSpinnerModule,
+		MatSelectModule,
+		MatSidenavModule,
+		MatSnackBarModule,
+		MatToolbarModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		MatCheckboxModule,
+	]
 })
 export class MaterialModule { }

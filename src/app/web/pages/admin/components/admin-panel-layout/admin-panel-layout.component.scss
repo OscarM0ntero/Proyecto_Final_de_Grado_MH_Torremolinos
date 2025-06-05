@@ -22,6 +22,8 @@
         width: 100vw;
         margin: auto;
         transform: none;
+        min-height: none;
+        min-height: 350px !important;
     }
 
     .client-panel-content {

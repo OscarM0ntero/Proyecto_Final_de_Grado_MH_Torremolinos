@@ -1,9 +1,10 @@
+// Backend de reservas
 import express from 'express';
 import { pool } from '../db.js';
-import { generarContrasenaTemporal, hashearContrasena } from './utils/password.js';
 import { enviarCorreo } from './utils/mailer.js';
 import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
+import { crearUsuario } from './utils/usuarios.js';
 
 function formatearFecha(fecha: string | Date): string {
     const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
@@ -12,7 +13,6 @@ function formatearFecha(fecha: string | Date): string {
     const año = d.getFullYear();
     return `${dia}-${mes}-${año}`;
 }
-
 
 dotenv.config();
 
@@ -88,7 +88,7 @@ router.get('/cliente', async (req, res) => {
 // Configuración desde .env
 const IBAN = process.env['RESERVA_IBAN'] || 'IBAN_NO_CONFIGURADO';
 const ANTICIPO_PORCENTAJE = parseInt(process.env['RESERVA_ANTICIPO_PORCENTAJE'] || '30', 10);
-const adminEmails = ['info@mhtorremolinos.com'];
+const adminEmails = ['info@mhtorremolinos.com', 'mhtorremolinos@gmail.com'];
 
 router.post('/', async (req, res) => {
     const token = req.body.recaptcha;
@@ -121,7 +121,7 @@ router.post('/', async (req, res) => {
             }
         }
 
-        // 2. Si no hay token, comprobar si el correo ya existe
+        // 2. Si no hay token, comprobar si el correo ya existe, si no existe creamos el usuario
         if (!id_usuario) {
             const [usuarios] = await pool.query(
                 `SELECT id_usuario FROM usuarios WHERE email = ?`,
@@ -132,30 +132,10 @@ router.post('/', async (req, res) => {
                 return res.status(409).json({ requiereLogin: true });
             }
 
-            // 3. Crear usuario nuevo
-            const passAuto = generarContrasenaTemporal();
-            const hash = hashearContrasena(passAuto);
-
-            const [insertado] = await pool.query(
-                `INSERT INTO usuarios (nombre, apellidos, email, telefono, prefijo, contrasena, rol)
-         VALUES (?, ?, ?, ?, ?, ?, 'cliente')`,
-                [nombre, apellidos, email, telefono, prefijo, hash]
-            ) as any;
-
-            id_usuario = insertado.insertId;
-
-            // 4. Email al cliente con credenciales
-            await enviarCorreo(email, 'Tu cuenta ha sido creada', `
-            <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
-                <h2 style="font-family: Georgia, serif; color: #3F4B3A;">Hola ${nombre},</h2>
-                <p>Tu cuenta ha sido creada para gestionar tu reserva.</p>
-                <p><b>Correo:</b> ${email}<br/><b>Contraseña:</b> ${passAuto}</p>
-                <p>Puedes iniciar sesión aquí: <a href="https://www.mhtorremolinos.com/iniciar-sesion">Iniciar sesión</a></p>
-            </body>
-      `);
+            id_usuario = await crearUsuario(nombre, apellidos, email, telefono, prefijo, 'cliente');
         }
 
-        // 5. Insertar reserva en BD
+        // 3. Insertar reserva en BD
         await pool.query(
             `INSERT INTO reservas (id_usuario, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -164,7 +144,7 @@ router.post('/', async (req, res) => {
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
 
-        // 6. Email de confirmación al cliente
+        // 4. Email de confirmación al cliente
         await enviarCorreo(email, 'Solicitud de reserva recibida', `
         <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
             <h2 style="font-family: Georgia, serif; color: #3F4B3A;">Hola ${nombre},</h2>
@@ -181,12 +161,14 @@ router.post('/', async (req, res) => {
             (<strong>${anticipo}€</strong>) a:</p>
             <p><strong>IBAN:</strong> ${IBAN}</p>
             <p><strong>Concepto:</strong> ${nombre} ${apellidos}</p>
+            <p>Al realizar este pago, confirmas que has leído y aceptas la <a href="https://www.mhtorremolinos.com/legal#privacy">Politica de Privacidad</a> y <a href="https://www.mhtorremolinos.com/legal#booking">Condiciones de la Reserva</a></p>
             <p>Una vez recibido el pago, te confirmaremos la reserva por email.</p>
+            <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
             <p style="margin-top: 20px;"><em>Gracias por confiar en M&H Torremolinos.</em></p>
         </body>
         `);
 
-        // 7. Email a administradores
+        // 5. Email a administradores
         for (const admin of adminEmails) {
             await enviarCorreo(admin, 'Nueva solicitud de reserva', `
         <style>
@@ -294,7 +276,8 @@ router.put('/:id/estado', async (req, res) => {
                         <li><strong>Entrada:</strong> ${fechaInicioFmt}</li>
                         <li><strong>Salida:</strong> ${fechaFinFmt}</li>
                     </ul>
-                    <p>Gracias por confiar en M&H Torremolinos.</p>
+                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                    <p>Gracias por confiar en M&H Torremolinos, estamos deseando recibirte.</p>
                 </body>
             `);
         }
@@ -321,6 +304,7 @@ router.put('/:id/estado', async (req, res) => {
                     <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
                     <p>Lamentamos informarte que tu solicitud de reserva ha sido <strong>rechazada</strong>.</p>
                     <p>Sentimos los inconvenientes. Puedes volver a intentarlo en otras fechas disponibles.</p>
+                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                     <p>Atentamente,<br/>M&H Torremolinos</p>
                 </body>
             `);
@@ -351,12 +335,12 @@ router.put('/:id/estado', async (req, res) => {
                     <li><strong>Entrada:</strong> ${formatearFecha(fechaInicio)}</li>
                     <li><strong>Salida:</strong> ${formatearFecha(fechaFin)}</li>
                 </ul>
+                <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                 <p>Esperamos poder atenderte en otra ocasión.</p>
                 <p>Atentamente,<br/>M&H Torremolinos</p>
             </body>
     `);
         }
-
 
         return res.json({ mensaje: 'Estado actualizado correctamente' });
     } catch (err) {
