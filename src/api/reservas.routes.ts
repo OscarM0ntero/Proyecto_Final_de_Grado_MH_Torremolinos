@@ -14,6 +14,15 @@ function formatearFecha(fecha: string | Date): string {
     return `${dia}-${mes}-${año}`;
 }
 
+function formatearFechaSQL(fecha: string | Date): string {
+    const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
+    const dia = d.getDate().toString().padStart(2, '0');
+    const mes = (d.getMonth() + 1).toString().padStart(2, '0');
+    const año = d.getFullYear();
+    return `${año}-${mes}-${dia}`;
+}
+
+
 dotenv.config();
 
 const router = express.Router();
@@ -234,15 +243,21 @@ router.put('/:id/estado', async (req, res) => {
         // 2. Actualizar el estado
         await pool.query(`UPDATE reservas SET estado_reserva = ? WHERE id_reserva = ?`, [estado, id]);
 
+        const generarDiasArray = (inicio: Date, fin: Date) => {
+            const dias = [];
+            const actual = new Date(inicio);
+            while (actual < fin) {
+                dias.push(formatearFechaSQL(new Date(actual)));
+                actual.setDate(actual.getDate() + 1);
+            }
+            return dias;
+        };
+
         // 3. Si se confirma
         if (estado === 'Confirmada') {
             // Generar array de días
-            const dias = [];
-            const actual = new Date(fechaInicio);
-            while (actual <= fechaFin) {
-                dias.push(actual.toISOString().split('T')[0]);
-                actual.setDate(actual.getDate() + 1);
-            }
+            const dias = generarDiasArray(fechaInicio, fechaFin);
+
 
             // 3.1 Verificar disponibilidad
             const placeholders = dias.map(() => '?').join(',');
@@ -250,6 +265,11 @@ router.put('/:id/estado', async (req, res) => {
                 SELECT id_disponibilidad FROM disponibilidad
                 WHERE fecha IN (${placeholders}) AND estado = 'disponible'
             `, dias) as any[];
+
+            console.log('Placeholders:', placeholders);
+            console.log('Disponibles:', disponibles);
+            console.log('Días solicitados:', dias);
+            console.log('Días disponibles en DB:', disponibles.map((d: { fecha: any; }) => d.fecha));
 
             if (disponibles.length !== dias.length) {
                 return res.status(400).json({ error: 'Uno o más días no están disponibles para reservar.' });
@@ -282,14 +302,8 @@ router.put('/:id/estado', async (req, res) => {
             `);
         }
 
-        // 4. Si se rechaza
-        if (estado === 'Rechazada') {
-            const dias = [];
-            const actual = new Date(fechaInicio);
-            while (actual <= fechaFin) {
-                dias.push(actual.toISOString().split('T')[0]);
-                actual.setDate(actual.getDate() + 1);
-            }
+        if (['Rechazada', 'Cancelada'].includes(estado)) {
+            const dias = generarDiasArray(fechaInicio, fechaFin);
 
             for (const fecha of dias) {
                 await pool.query(`
@@ -299,47 +313,23 @@ router.put('/:id/estado', async (req, res) => {
                 `, [fecha, id]);
             }
 
-            await enviarCorreo(email, 'Reserva rechazada', `
+            const asunto = estado === 'Rechazada' ? 'Reserva rechazada' : 'Reserva cancelada';
+            const mensaje = estado === 'Rechazada'
+                ? `Lamentamos informarte que tu solicitud de reserva ha sido <strong>rechazada</strong>.`
+                : `Como solicitaste, tu reserva ha sido <strong>cancelada</strong>.`;
+
+            await enviarCorreo(email, asunto, `
                 <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
                     <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
-                    <p>Lamentamos informarte que tu solicitud de reserva ha sido <strong>rechazada</strong>.</p>
-                    <p>Sentimos los inconvenientes. Puedes volver a intentarlo en otras fechas disponibles.</p>
+                    <p>${mensaje}</p>
+                    <ul>
+                        <li><strong>Entrada:</strong> ${formatearFecha(fechaInicio)}</li>
+                        <li><strong>Salida:</strong> ${formatearFecha(fechaFin)}</li>
+                    </ul>
                     <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                     <p>Atentamente,<br/>M&H Torremolinos</p>
                 </body>
             `);
-        }
-
-        // 5. Si se cancela
-        if (estado === 'Cancelada') {
-            const dias = [];
-            const actual = new Date(fechaInicio);
-            while (actual <= fechaFin) {
-                dias.push(actual.toISOString().split('T')[0]);
-                actual.setDate(actual.getDate() + 1);
-            }
-
-            for (const fecha of dias) {
-                await pool.query(`
-            UPDATE disponibilidad
-            SET estado = 'disponible', fuente = 'local', id_reserva = NULL
-            WHERE fecha = ? AND id_reserva = ?
-        `, [fecha, id]);
-            }
-
-            await enviarCorreo(email, 'Reserva cancelada', `
-            <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
-                <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
-                <p>Como solicitaste, tu reserva ha sido <strong>cancelada</strong>.</p>
-                <ul>
-                    <li><strong>Entrada:</strong> ${formatearFecha(fechaInicio)}</li>
-                    <li><strong>Salida:</strong> ${formatearFecha(fechaFin)}</li>
-                </ul>
-                <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-                <p>Esperamos poder atenderte en otra ocasión.</p>
-                <p>Atentamente,<br/>M&H Torremolinos</p>
-            </body>
-    `);
         }
 
         return res.json({ mensaje: 'Estado actualizado correctamente' });
