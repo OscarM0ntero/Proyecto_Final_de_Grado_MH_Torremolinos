@@ -3,12 +3,9 @@ import express from 'express';
 import { pool, secret } from '../db.js';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { hashearContrasena } from './utils/password.js';
 
 const router = express.Router();
-
-function hashPassword(password: string): string {
-    return crypto.createHash('sha256').update(password).digest('hex');
-}
 
 router.post('/', async (req, res) => {
     const { email, contrasena } = req.body;
@@ -18,7 +15,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const hash = hashPassword(contrasena);
+        const hash = hashearContrasena(contrasena);
 
         const [usuarios] = await pool.query(
             'SELECT * FROM usuarios WHERE email = ? AND contrasena = ?',
