@@ -39,13 +39,13 @@ export class HomeComponent extends ContenidoBaseComponent {
 		await super.ngOnInit();
 
 		this.titleService.setTitle('M&H Torremolinos');
-		this.metaService.updateTag({ name: 'description', content: 'Apartamentos turísticos en Torremolinos. 5 huéspedes, WiFi gratis, mascotas permitidas, ubicación ideal cerca de la playa.' });
+		this.metaService.updateTag({ name: 'description', content: 'Apartamento turístico en Torremolinos. 5 huéspedes, WiFi gratis, mascotas permitidas, ubicación ideal cerca de la playa.' });
 		this.metaService.updateTag({ name: 'robots', content: 'index, follow' });
 		this.metaService.updateTag({ name: 'keywords', content: 'apartamento, Torremolinos, vacaciones, Costa del Sol, alquiler turístico' });
-
+		
 		this.metaService.updateTag({ property: 'og:title', content: 'M&H Torremolinos - Tu apartamento en la Costa del Sol' });
 		this.metaService.updateTag({ property: 'og:description', content: 'Alojamiento ideal en Torremolinos para 5 personas y mascotas. Reserva tu estancia perfecta.' });
-		this.metaService.updateTag({ property: 'og:image', content: 'https://www.mhtorremolinos.com/assets/thumbnail/IMG_01t.jpg' });
+		this.metaService.updateTag({ property: 'og:image', content: 'https://www.mhtorremolinos.com/assets/favicon.png' });
 		this.metaService.updateTag({ property: 'og:url', content: 'https://www.mhtorremolinos.com' });
 		this.metaService.updateTag({ property: 'og:type', content: 'website' });
 	}
