@@ -1,6 +1,6 @@
 # M&H Torremolinos – Self-managed Apartment Web Platform
 
-![Hero](img/front-home-2.png)
+![Hero](img/hero.png)
 
 A self-hosted, multilingual web platform designed to manage a real tourist apartment in Torremolinos, Spain. It features a synchronized booking calendar, content management tools, and a modern interface for both customers and administrators.
 
