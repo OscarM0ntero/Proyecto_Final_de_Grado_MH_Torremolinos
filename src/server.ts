@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 
 // SSR handler
 let ultimaSincronizacion = 0;
-const TIEMPO_ENTRE_SINCRONIZACIONES_MS = 5 * 60 * 1000; // 5 minutos
+const TIEMPO_ENTRE_SINCRONIZACIONES_MS = 1 * 60 * 1000; // 1 minutos
 
 // Cada vez que un usuario accede a la web, comprobamos si el calendario esta actualizado y sincrinizado con Booking y Airbnb
 app.use('/**', async (req, res, next) => {
