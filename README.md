@@ -132,17 +132,6 @@ Example emails:
 
 ---
 
-## Project Structure
-
-```
-/backend         → Express.js API and MySQL integration
-/frontend        → Angular SPA with SSR support
-/uploads         → Uploaded assets
-/img             → README media references
-```
-
----
-
 ## Author
 
 Developed by **Oscar Montero**  
