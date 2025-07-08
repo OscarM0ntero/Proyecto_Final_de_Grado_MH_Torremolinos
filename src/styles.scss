@@ -11,12 +11,14 @@
 }
 
 // Fuente para texto
+/*
 @font-face {
-    font-family: 'TTHazelnuts';
-    src: url('fonts/tt-hazelnuts.ttf') format('truetype');
+    font-family: 'Honeypot';
+    src: url('fonts/honeypot-regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
+*/
 
 // Colores para el tema y margenes genericos
 :root {
@@ -59,7 +61,7 @@ body {
     background-color: var(--color-background);
     color: var(--color-primary);
     font-size: 24px;
-    font-family: 'TTHazelnuts', Roboto, "Helvetica Neue", sans-serif;
+    font-family: 'Plus Jakarta Sans', Roboto, "Helvetica Neue", sans-serif; //Honeypot
 
 }
 
