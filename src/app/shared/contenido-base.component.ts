@@ -1,18 +1,19 @@
 // Componente base de todos los componentes que permitan cargar imágenes o texto desde la base de datos
-import { OnInit, Directive } from '@angular/core';
+import { OnInit, OnDestroy, Directive } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ContenidoWebService } from '../services/contenido-web.service';
 import { Contenido, ContenidoService } from '../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ImagenesService } from '../services/imagenes.service';
 
 @Directive()
-export abstract class ContenidoBaseComponent implements OnInit {
+export abstract class ContenidoBaseComponent implements OnInit, OnDestroy {
 
   contenidos: Contenido[] = [];
-
   images: any[] = [];
-
   lang: string = 'es';
+
+  private subs: Subscription[] = [];
 
   constructor(
     private readonly contenido: ContenidoService,
@@ -27,27 +28,27 @@ export abstract class ContenidoBaseComponent implements OnInit {
     this.contenidos = this.contenidoWeb.getContenidosPagina(this.nombrePagina);
     this.actualizarContenido();
 
-    this.translate.onLangChange.subscribe(() => {
-      this.actualizarContenido();
-    });
-
-    this.imagenes.loadImages(this.nombrePagina).subscribe((imgs) => {
-      this.images = imgs;
-    });
-
-    this.contenido.recarga$.subscribe(async (pagina) => {
-      console.log('[ContenidoRecarga] Recibido:', pagina);
-
-      if (pagina === this.nombrePagina) {
-        console.log('[ContenidoRecarga] Coincide con', this.nombrePagina);
-        await this.contenidoWeb.cargarContenidoPagina(pagina, true);
+    this.subs.push(
+      this.translate.onLangChange.subscribe(() => {
         this.actualizarContenido();
-      }
-    });
+      }),
+      this.imagenes.loadImages(this.nombrePagina).subscribe((imgs) => {
+        this.images = imgs;
+      }),
+      this.contenido.recarga$.subscribe(async (pagina) => {
+        if (pagina === this.nombrePagina) {
+          await this.contenidoWeb.cargarContenidoPagina(pagina, true);
+          this.actualizarContenido();
+        }
+      })
+    );
 
     const lang = localStorage.getItem('lang');
-    if (lang)
-      this.lang = lang;
+    if (lang) this.lang = lang;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   protected getTexto(id: number): string {

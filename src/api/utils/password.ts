@@ -1,8 +1,11 @@
 import crypto from 'crypto';
 
-// Devuelve una contraseña simple de 6 dígitos
+const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+
 export function generarContrasenaTemporal(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return Array.from(crypto.randomBytes(10))
+        .map(b => CHARS[b % CHARS.length])
+        .join('');
 }
 
 // Hashea una contraseña con SHA-256

@@ -76,13 +76,14 @@ async function sincronizarIcal() {
 
                 console.log(`[iCal] ${source}: ${fechasOcupadas.length} fechas ocupadas.`);
 
-                // Insertamos/actualizamos las fechas
-                for (const fecha of fechasOcupadas) {
+                if (fechasOcupadas.length > 0) {
+                    const placeholders = fechasOcupadas.map(() => '(?, ?, ?, NULL)').join(', ');
+                    const values = fechasOcupadas.flatMap(f => [f, source, source]);
                     await connection.query(`
-            INSERT INTO disponibilidad (fecha, estado, fuente, id_reserva)
-            VALUES (?, ?, ?, NULL)
-            ON DUPLICATE KEY UPDATE estado = ?, fuente = ?, actualizado = CURRENT_TIMESTAMP
-          `, [fecha, source, source, source, source]);
+                        INSERT INTO disponibilidad (fecha, estado, fuente, id_reserva)
+                        VALUES ${placeholders}
+                        ON DUPLICATE KEY UPDATE estado = VALUES(estado), fuente = VALUES(fuente), actualizado = CURRENT_TIMESTAMP
+                    `, values);
                 }
             }
 
