@@ -1,6 +1,7 @@
 import express from 'express';
 import path, { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 import {
 	AngularNodeAppEngine,
 	createNodeRequestHandler,
@@ -26,8 +27,19 @@ const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const rootFolder = path.resolve(serverDistFolder, '..');
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
-// Configuramos la carpeta uploads para subir y mostrar imagenes
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+// Si se pide un thumbnail .jpg/.png y existe la versión .webp, la sirve en su lugar
+const uploadsDir = path.join(process.cwd(), 'uploads');
+app.use('/uploads', (req, res, next) => {
+    if (req.path.match(/t\.(jpg|jpeg|png)$/i)) {
+        const webpPath = path.join(uploadsDir, req.path.replace(/\.[^.]+$/, '.webp'));
+        if (fs.existsSync(webpPath)) {
+            return res.sendFile(webpPath, { maxAge: '30d' });
+        }
+    }
+    next();
+});
+
+app.use('/uploads', express.static(uploadsDir, {
     maxAge: '30d',
     immutable: false
 }));
