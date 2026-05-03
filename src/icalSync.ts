@@ -3,6 +3,16 @@ import ical from 'node-ical';
 import { pool } from './db.js';
 import { environment } from './environments/environment.js';
 
+const THROTTLE_MS = 2 * 60 * 1000; // 2 minutos entre syncs bajo demanda
+let ultimaSync: number = 0;
+
+export function sincronizarIcalThrottled(): void {
+    const ahora = Date.now();
+    if (ahora - ultimaSync < THROTTLE_MS) return;
+    ultimaSync = ahora;
+    sincronizarIcal().catch(err => console.error('[iCal] Error en sync bajo demanda:', err));
+}
+
 const icalUrls = [
     { url: environment.icalBooking, source: 'booking', summaryFilter: 'CLOSED - Not available' },
     { url: environment.icalAirbnb, source: 'airbnb', summaryFilter: 'Reserved' },
