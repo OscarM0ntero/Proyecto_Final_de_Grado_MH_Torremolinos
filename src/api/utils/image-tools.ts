@@ -1,22 +1,15 @@
-import { Image } from 'image-js';
+import sharp from 'sharp';
 import path from 'path';
-import fs from 'fs/promises';
 
 export async function generarThumbnail(nombreArchivo: string): Promise<string> {
     const inputPath = path.resolve('uploads', nombreArchivo);
-    const nombreThumbnail = nombreArchivo.replace(/(\.[^.]+)$/, 't$1');
+    const nombreThumbnail = nombreArchivo.replace(/(\.[^.]+)$/, 't.webp');
     const outputPath = path.resolve('uploads', nombreThumbnail);
 
-    try {
-        const buffer = await fs.readFile(inputPath);
-        const image = await Image.load(buffer);
+    await sharp(inputPath)
+        .resize({ width: 800, withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(outputPath);
 
-        const thumbnail = image.resize({ width: Math.round(image.width / 4) });
-
-        await fs.writeFile(outputPath, await thumbnail.toBuffer());
-        return nombreThumbnail;
-    } catch (error) {
-        console.error('Error generando thumbnail con image-js:', error);
-        throw error;
-    }
+    return nombreThumbnail;
 }
