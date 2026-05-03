@@ -27,7 +27,10 @@ const rootFolder = path.resolve(serverDistFolder, '..');
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 // Configuramos la carpeta uploads para subir y mostrar imagenes
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+    maxAge: '30d',
+    immutable: false
+}));
 
 // Middleware para leer json del body
 app.use(express.json());
