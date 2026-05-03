@@ -18,6 +18,14 @@
     font-style: normal;
 }
 
+// Fuente para títulos
+@font-face {
+    font-family: 'Della Respira';
+    src: url('fonts/DellaRespira-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 // Colores para el tema y margenes genericos
 :root {
     --color-primary: #3F4B3A;

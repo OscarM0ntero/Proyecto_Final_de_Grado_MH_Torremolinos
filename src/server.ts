@@ -26,7 +26,7 @@ const rootFolder = path.resolve(serverDistFolder, '..');
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 // Configuramos la carpeta uploads para subir y mostrar imagenes
-app.use('/uploads', express.static(path.join(rootFolder, 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Middleware para leer json del body
 app.use(express.json());
@@ -56,24 +56,7 @@ app.use((req, res, next) => {
 });
 
 // SSR handler
-let ultimaSincronizacion = 0;
-const TIEMPO_ENTRE_SINCRONIZACIONES_MS = 1 * 60 * 1000; // 1 minutos
-
-// Cada vez que un usuario accede a la web, comprobamos si el calendario esta actualizado y sincrinizado con Booking y Airbnb
-app.use('/**', async (req, res, next) => {
-	try {
-		const ahora = Date.now();
-		if (ahora - ultimaSincronizacion > TIEMPO_ENTRE_SINCRONIZACIONES_MS) {
-			console.log('[SSR] Sincronizando calendario...');
-			await sincronizarIcal();
-			ultimaSincronizacion = ahora;
-		} else {
-			console.log('[SSR] Sincronización reciente, no se actualiza.');
-		}
-	} catch (err) {
-		console.error('[SSR] Error sincronizando calendario:', err);
-	}
-
+app.use('/**', (req, res, next) => {
 	angularApp
 		.handle(req)
 		.then(response =>
@@ -89,6 +72,11 @@ if (isMainModule(import.meta.url)) {
 	app.listen(port, () => {
 		console.log(`[SSR] Servidor escuchando en puerto ${port}`);
 	});
+
+	// Sincronización iCal en segundo plano, independiente de las visitas
+	const INTERVALO_ICAL_MS = 15 * 60 * 1000; // 15 minutos
+	sincronizarIcal(); // ejecución inicial al arrancar
+	setInterval(sincronizarIcal, INTERVALO_ICAL_MS);
 }
 
 export const reqHandler = createNodeRequestHandler(app);
