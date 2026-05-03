@@ -1,6 +1,7 @@
 // Backend de disponibilidad y calendario
 import express from 'express';
 import { pool } from '../db.js';
+import { sincronizarIcalThrottled } from '../icalSync.js';
 
 const router = express.Router();
 
@@ -32,6 +33,8 @@ router.get('/', async (req, res) => {
 			return res.status(500).json({ error: 'Error al obtener disponibilidad del mes' });
 		}
 	}
+
+	sincronizarIcalThrottled();
 
 	try {
 		const [filas] = await pool.query(

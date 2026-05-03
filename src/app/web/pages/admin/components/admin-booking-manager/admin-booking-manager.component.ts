@@ -16,8 +16,6 @@ export class AdminBookingManagerComponent implements OnInit {
 	reservas: Reserva[] = [];
 	estadoFiltro: string = '';
 	estados = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
-	anticipo: number = 0;
-
 	constructor(
 		private reservasService: ReservasService,
 		private dialog: MatDialog,
@@ -67,8 +65,6 @@ export class AdminBookingManagerComponent implements OnInit {
 						});
 					}
 				});
-			} else {
-				this.cargarReservas();
 			}
 		});
 	}
