@@ -46,10 +46,10 @@ router.get('/', async (req, res) => {
              ORDER BY r.fecha_inicio ASC`,
                 [estado]
             );
-            res.json(rows);
+            return res.json(rows);
         } catch (err) {
             console.error(`[GET /api/reservas/?estado=${estado}]`, err);
-            res.status(500).json({ error: 'Error al obtener reservas por estado' });
+            return res.status(500).json({ error: 'Error al obtener reservas por estado' });
         }
     } else {
         try {
@@ -59,10 +59,10 @@ router.get('/', async (req, res) => {
              JOIN usuarios u ON r.id_usuario = u.id_usuario
              ORDER BY r.fecha_inicio ASC`
             );
-            res.json(rows);
+            return res.json(rows);
         } catch (err) {
             console.error('[GET /api/reservas]', err);
-            res.status(500).json({ error: 'Error al obtener las reservas' });
+            return res.status(500).json({ error: 'Error al obtener las reservas' });
         }
     }
 });
@@ -86,10 +86,10 @@ router.get('/cliente', async (req, res) => {
             [id_usuario]
         );
 
-        res.json(rows);
+        return res.json(rows);
     } catch (err) {
         console.error('[GET /api/reservas/cliente]', err);
-        res.status(500).json({ error: 'Error al obtener tus reservas' });
+        return res.status(500).json({ error: 'Error al obtener tus reservas' });
     }
 });
 
