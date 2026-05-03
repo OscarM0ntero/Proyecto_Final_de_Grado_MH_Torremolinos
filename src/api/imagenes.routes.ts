@@ -28,7 +28,6 @@ router.get('/', async (req, res) => {
         'SELECT * FROM imagenes WHERE pagina = ? ORDER BY orden ASC',
         [pagina]
     );
-    console.log(rows);
     res.json(rows);
 });
 
@@ -71,11 +70,9 @@ router.delete('/:id', async (req, res) => {
 
     try {
         await fs.unlink(imagePath);
-        console.log(`🗑 Imagen eliminada: ${imagePath}`);
 
         if (url_thumbnail) {
             await fs.unlink(thumbPath);
-            console.log(`🗑 Thumbnail eliminado: ${thumbPath}`);
         }
     } catch (err) {
         console.error('Error al borrar archivos físicos:', err);

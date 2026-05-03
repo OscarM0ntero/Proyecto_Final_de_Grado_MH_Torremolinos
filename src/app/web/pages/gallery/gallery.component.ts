@@ -1,6 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
@@ -27,10 +26,7 @@ export class GalleryComponent extends ContenidoBaseComponent {
 		super(contenido, contenidoWeb, imagenes, translate, 'gallery');
 	}
 
-	protected actualizarContenido(): void {
-		//this.itemLema = this.getTexto(1);
-		//this.itemApartado1 = this.getContenido(5);
-	}
+	protected actualizarContenido(): void { }
 
 
 	imageClick(index: number) {

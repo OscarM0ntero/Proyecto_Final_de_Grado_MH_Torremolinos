@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { Contenido, ContenidoService } from '../../../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -63,22 +63,16 @@ export class ContactComponent extends ContenidoBaseComponent implements OnInit {
 	}
 
 	verificarCaptcha(): void {
-		console.log('[ContactComponent] verificarCaptcha: Intentando ejecutar captcha...');
 		this.layout.captchaRef?.execute();
 	}
 
 	onCaptchaResuelto(token: string): void {
-		console.log('[ContactComponent] onCaptchaResuelto: Captcha resuelto, token:', token);
 		this.tokenCaptcha = token;
 		this.enviarMensaje();
 	}
 
 	enviarMensaje(): void {
-		console.log('[ContactComponent] enviarMensaje: Enviando mensaje...');
-		if (!this.tokenCaptcha) {
-			console.warn('[ContactComponent] enviarMensaje: Captcha token NO disponible');
-			return;
-		}
+		if (!this.tokenCaptcha) return;
 
 		const data = {
 			nombre: this.form.nombre,
@@ -88,11 +82,8 @@ export class ContactComponent extends ContenidoBaseComponent implements OnInit {
 			recaptcha: this.tokenCaptcha
 		};
 
-		console.log('[ContactComponent] Payload a enviar:', data);
-
 		this.contactService.enviarMensaje(data).subscribe({
 			next: () => {
-				console.log('[ContactComponent] Mensaje enviado OK');
 				this.snackBar.open(this.translate.instant('SNACKBAR.MESSAGE-SENT'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-success']
@@ -101,8 +92,7 @@ export class ContactComponent extends ContenidoBaseComponent implements OnInit {
 				this.tokenCaptcha = '';
 				this.layout.resetCaptcha();
 			},
-			error: (err) => {
-				console.error('[ContactComponent] Error al enviar el mensaje:', err);
+			error: () => {
 				this.snackBar.open(this.translate.instant('SNACKBAR.MESSAGE-SENT-ERROR'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-error']

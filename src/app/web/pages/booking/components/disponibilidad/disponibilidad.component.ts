@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 import { DisponibilidadService } from '../../../../../services/disponibilidad.service';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
-import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { RecaptchaComponent } from 'ng-recaptcha-2';
 import { LoaderService } from '../../../../../services/loader.service';
 import { ReservaConfirmadaComponent } from './dialogs/reserva-confirmada.component';
 import { ReservaRequiereLoginComponent } from './dialogs/reserva-requiere-login.component';
@@ -21,7 +21,6 @@ import { UsuariosService } from '../../../../../services/usuarios.service';
 	encapsulation: ViewEncapsulation.None
 })
 export class DisponibilidadComponent implements OnInit {
-	@ViewChild('captchaRef') captchaRef!: RecaptchaComponent;
 	tokenCaptcha: string = '';
 	siteKey = environment.recaptchaSiteKey;
 
@@ -61,10 +60,10 @@ export class DisponibilidadComponent implements OnInit {
 		private disponibilidadService: DisponibilidadService,
 		private reservasService: ReservasService,
 		private usuariosService: UsuariosService,
-		private http: HttpClient,
 		private dialog: MatDialog,
 		private loader: LoaderService,
-		public layout: LayoutComponent
+		public layout: LayoutComponent,
+		@Inject(PLATFORM_ID) private platformId: Object
 	) { }
 
 	ngOnInit(): void {
@@ -76,7 +75,7 @@ export class DisponibilidadComponent implements OnInit {
 			}));
 		});
 
-		const token = localStorage.getItem('token');
+		const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
 		if (token) {
 			this.usuariosService.getUsuarioActual().subscribe({
 				next: (usuario) => {
@@ -88,7 +87,7 @@ export class DisponibilidadComponent implements OnInit {
 					this.camposBloqueados = true;
 				},
 				error: () => {
-					localStorage.removeItem('token');
+					if (isPlatformBrowser(this.platformId)) localStorage.removeItem('token');
 					this.camposBloqueados = false;
 				}
 			});

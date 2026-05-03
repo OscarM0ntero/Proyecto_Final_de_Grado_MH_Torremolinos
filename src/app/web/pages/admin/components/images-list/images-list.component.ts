@@ -34,7 +34,7 @@ export class ImagesListComponent {
         });
       }
       else {
-        console.log("gg");
+        console.error('Error al eliminar imagen:', id);
       }
     });
   }
