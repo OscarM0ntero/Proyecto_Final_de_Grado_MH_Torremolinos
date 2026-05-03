@@ -162,7 +162,7 @@ export class AdminCalendarManagerComponent implements OnInit {
 				this.refresh.next();
 			},
 			error: (err) => {
-				console.error(err);
+				console.error('[admin-calendar] Error al aplicar cambios:', err);
 				this.snackBar.open(this.translate.instant('SNACKBAR.CHANGES-ERROR'), undefined, {
 					duration: 3000,
 					panelClass: ['snackbar-error']

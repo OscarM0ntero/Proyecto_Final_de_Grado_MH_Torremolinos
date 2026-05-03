@@ -11,14 +11,20 @@
 }
 
 // Fuente para texto
-/*
 @font-face {
     font-family: 'Honeypot';
-    src: url('fonts/honeypot-regular.otf') format('opentype');
+    src: url('fonts/Honeypot-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
-*/
+
+// Fuente para títulos
+@font-face {
+    font-family: 'Della Respira';
+    src: url('fonts/DellaRespira-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 // Colores para el tema y margenes genericos
 :root {
@@ -61,7 +67,7 @@ body {
     background-color: var(--color-background);
     color: var(--color-primary);
     font-size: 24px;
-    font-family: 'Plus Jakarta Sans', Roboto, "Helvetica Neue", sans-serif; //Honeypot
+    font-family: 'Honeypot', Roboto, "Helvetica Neue", sans-serif;
 
 }
 

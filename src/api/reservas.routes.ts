@@ -1,10 +1,13 @@
 // Backend de reservas
 import express from 'express';
-import { pool } from '../db.js';
+import jwt from 'jsonwebtoken';
+import { pool, secret } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
 import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 import { crearUsuario } from './utils/usuarios.js';
+
+const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
 function formatearFecha(fecha: string | Date): string {
     const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
@@ -29,9 +32,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     const estado = req.query['estado'] as string;
-    const estadosPermitidos = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
     if (estado) {
-        if (!estadosPermitidos.includes(estado)) {
+        if (!ESTADOS_RESERVA.includes(estado)) {
             return res.status(400).json({ error: 'Estado no válido' });
         }
 
@@ -44,10 +46,10 @@ router.get('/', async (req, res) => {
              ORDER BY r.fecha_inicio ASC`,
                 [estado]
             );
-            res.json(rows);
+            return res.json(rows);
         } catch (err) {
-            console.error('[GET /api/reservas/?estado=]' + estado, err);
-            res.status(500).json({ error: 'Error al obtener reservas por estado' });
+            console.error(`[GET /api/reservas/?estado=${estado}]`, err);
+            return res.status(500).json({ error: 'Error al obtener reservas por estado' });
         }
     } else {
         try {
@@ -57,13 +59,12 @@ router.get('/', async (req, res) => {
              JOIN usuarios u ON r.id_usuario = u.id_usuario
              ORDER BY r.fecha_inicio ASC`
             );
-            res.json(rows);
+            return res.json(rows);
         } catch (err) {
             console.error('[GET /api/reservas]', err);
-            res.status(500).json({ error: 'Error al obtener las reservas' });
+            return res.status(500).json({ error: 'Error al obtener las reservas' });
         }
     }
-    return;
 });
 
 
@@ -73,7 +74,7 @@ router.get('/cliente', async (req, res) => {
 
     try {
         const token = authHeader.split(' ')[1];
-        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        const payload = jwt.verify(token, secret!) as any;
         const id_usuario = payload.id;
 
         const [rows] = await pool.query(
@@ -85,12 +86,11 @@ router.get('/cliente', async (req, res) => {
             [id_usuario]
         );
 
-        res.json(rows);
+        return res.json(rows);
     } catch (err) {
         console.error('[GET /api/reservas/cliente]', err);
-        res.status(500).json({ error: 'Error al obtener tus reservas' });
+        return res.status(500).json({ error: 'Error al obtener tus reservas' });
     }
-    return;
 });
 
 
@@ -123,7 +123,7 @@ router.post('/', async (req, res) => {
         if (authHeader) {
             const token = authHeader.split(' ')[1];
             try {
-                const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+                const payload = jwt.verify(token, secret!) as any;
                 id_usuario = payload.id;
             } catch {
                 return res.status(401).json({ error: 'Token inválido' });
@@ -206,7 +206,7 @@ router.post('/', async (req, res) => {
         return res.status(200).json({ mensaje: 'Reserva enviada correctamente' });
 
     } catch (err) {
-        console.error('Error al procesar la reserva:', err);
+        console.error('[POST /api/reservas]', err);
         return res.status(500).json({ error: 'Error interno al procesar la reserva' });
     }
 });
@@ -215,8 +215,7 @@ router.put('/:id/estado', async (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;
 
-    const estadosPermitidos = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
-    if (!estadosPermitidos.includes(estado)) {
+    if (!ESTADOS_RESERVA.includes(estado)) {
         return res.status(400).json({ error: 'Estado no válido' });
     }
 
@@ -265,11 +264,6 @@ router.put('/:id/estado', async (req, res) => {
                 SELECT id_disponibilidad FROM disponibilidad
                 WHERE fecha IN (${placeholders}) AND estado = 'disponible'
             `, dias) as any[];
-
-            console.log('Placeholders:', placeholders);
-            console.log('Disponibles:', disponibles);
-            console.log('Días solicitados:', dias);
-            console.log('Días disponibles en DB:', disponibles.map((d: { fecha: any; }) => d.fecha));
 
             if (disponibles.length !== dias.length) {
                 return res.status(400).json({ error: 'Uno o más días no están disponibles para reservar.' });
