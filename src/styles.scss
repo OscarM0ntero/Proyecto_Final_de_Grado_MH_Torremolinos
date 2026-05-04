@@ -12,7 +12,8 @@
 
 @font-face {
     font-family: 'Honeypot';
-    src: url('fonts/Honeypot-Regular.otf') format('opentype');
+    src: url('fonts/Honeypot-Regular.woff2') format('woff2'),
+         url('fonts/Honeypot-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -20,7 +21,8 @@
 
 @font-face {
     font-family: 'Della Respira';
-    src: url('fonts/DellaRespira-Regular.ttf') format('truetype');
+    src: url('fonts/DellaRespira-Regular.woff2') format('woff2'),
+         url('fonts/DellaRespira-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;

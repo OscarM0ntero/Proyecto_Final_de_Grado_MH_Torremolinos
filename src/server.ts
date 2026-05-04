@@ -33,7 +33,9 @@ app.use('/uploads', (req, res, next) => {
     if (req.path.match(/t\.(jpg|jpeg|png)$/i)) {
         const webpPath = path.join(uploadsDir, req.path.replace(/\.[^.]+$/, '.webp'));
         if (fs.existsSync(webpPath)) {
-            return res.sendFile(webpPath, { maxAge: '30d' });
+            res.set('Content-Type', 'image/webp');
+            res.set('Cache-Control', 'public, max-age=2592000');
+            return res.sendFile(webpPath);
         }
     }
     next();
