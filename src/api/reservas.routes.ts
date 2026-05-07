@@ -109,11 +109,15 @@ router.post('/', async (req, res) => {
     const {
         nombre, apellidos, email, telefono, prefijo,
         huespedes, conBebe, conMascota, nota,
-        fechaInicio, fechaFin, precio_total
+        fechaInicio, fechaFin, precio_total,
+        tipo_tarifa = 'cancelable',
+        descuento_aplicado = 0
     } = req.body;
 
     const fechaInicioFmt = formatearFecha(fechaInicio);
     const fechaFinFmt = formatearFecha(fechaFin);
+    const esNoCancelable = tipo_tarifa === 'no_cancelable';
+    const labelTarifa = esNoCancelable ? 'No cancelable' : 'Cancelable';
 
     let id_usuario = null;
 
@@ -146,12 +150,15 @@ router.post('/', async (req, res) => {
 
         // 3. Insertar reserva en BD
         await pool.query(
-            `INSERT INTO reservas (id_usuario, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id_usuario, fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null, precio_total]
+            `INSERT INTO reservas (id_usuario, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa, descuento_aplicado)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id_usuario, fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null, precio_total, tipo_tarifa, descuento_aplicado]
         );
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
+        const descuentoInfo = esNoCancelable && descuento_aplicado > 0
+            ? `<p style="color:#8f0000;"><strong>Tarifa no cancelable:</strong> descuento del ${descuento_aplicado}% aplicado. Esta reserva no puede cancelarse ni reembolsarse.</p>`
+            : `<p><strong>Tarifa cancelable.</strong></p>`;
 
         // 4. Email de confirmación al cliente
         await enviarCorreo(email, 'Solicitud de reserva recibida', `
@@ -165,8 +172,11 @@ router.post('/', async (req, res) => {
                 <li><strong>Huéspedes:</strong> ${huespedes}</li>
                 <li><strong>Bebé:</strong> ${conBebe ? 'Sí' : 'No'}</li>
                 <li><strong>Mascota:</strong> ${conMascota ? 'Sí' : 'No'}</li>
+                <li><strong>Tarifa:</strong> ${labelTarifa}</li>
+                <li><strong>Total:</strong> ${precio_total}€</li>
             </ul>
-            <p>Para confirmar tu reserva, realiza una transferencia del <strong>${ANTICIPO_PORCENTAJE}%</strong> del total 
+            ${descuentoInfo}
+            <p>Para confirmar tu reserva, realiza una transferencia del <strong>${ANTICIPO_PORCENTAJE}%</strong> del total
             (<strong>${anticipo}€</strong>) a:</p>
             <p><strong>IBAN:</strong> ${IBAN}</p>
             <p><strong>Concepto:</strong> ${nombre} ${apellidos}</p>
@@ -197,6 +207,7 @@ router.post('/', async (req, res) => {
           <p><strong>Fechas:</strong> ${fechaInicioFmt} → ${fechaFinFmt}</p>
           <p><strong>Email:</strong> ${email} | <strong>Tel:</strong> ${prefijo} ${telefono}</p>
           <p><strong>Personas:</strong> ${huespedes} | <strong>Bebé:</strong> ${conBebe ? 'Sí' : 'No'} | <strong>Mascota:</strong> ${conMascota ? 'Sí' : 'No'}</p>
+          <p><strong>Tarifa:</strong> ${labelTarifa}${esNoCancelable && descuento_aplicado > 0 ? ` (${descuento_aplicado}% dto.)` : ''}</p>
           <p><strong>Nota:</strong> ${nota || 'Sin nota'}</p>
           <p><strong>Total:</strong> ${precio_total}€</p>
         </body>

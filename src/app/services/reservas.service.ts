@@ -12,6 +12,9 @@ export interface Reserva {
 	mascota: boolean;
 	nota_adicional: string;
 	precio_total: number;
+	tipo_tarifa: 'cancelable' | 'no_cancelable';
+	descuento_aplicado: number;
+	fecha_creacion: string;
 	estado_reserva: string;
 	actualizado: string;
 	nombre?: string;
