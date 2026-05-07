@@ -50,10 +50,18 @@
         "NO": "No",
         "NIGHTS-PRICES": "Noches y precios",
         "PET2": "Mascota",
+        "PET-SURCHARGE": "+10€/noche",
         "TOTAL": "Total",
         "CLIENT": "Cliente",
         "RETURN": "Volver",
-        "SEND": "Enviar"
+        "SEND": "Enviar",
+        "RATE-TYPE": "Tipo de tarifa",
+        "CANCELABLE": "Cancelable",
+        "CANCELABLE-DESC": "Cancela hasta {{days}} días antes de tu llegada",
+        "NON-CANCELABLE": "No cancelable",
+        "NON-CANCELABLE-DESC": "Precio reducido, sin posibilidad de cancelación",
+        "DISCOUNT": "Descuento",
+        "RESERVATION": "Reserva"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",
