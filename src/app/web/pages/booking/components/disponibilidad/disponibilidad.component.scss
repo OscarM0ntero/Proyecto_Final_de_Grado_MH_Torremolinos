@@ -12,15 +12,260 @@
     width: 100%;
 }
 
-@media (max-width: 768px) {}
+/* Tarifa selector */
+.tarifa-section {
+    h3 {
+        margin-bottom: 12px;
+        font-size: 16px;
+        color: var(--color-primary);
+    }
+}
 
-@media (min-width: 769px) and (max-width: 1024px) {}
+.tarifa-cards {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.tarifa-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border: 2px solid var(--color-tertiary);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+
+    &:hover {
+        border-color: var(--color-secondary);
+    }
+
+    &.selected {
+        border-color: var(--color-primary);
+        box-shadow: 0 2px 8px rgba(63, 75, 58, 0.15);
+    }
+
+    .tarifa-card-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--color-secondary);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    &.selected .tarifa-card-icon {
+        background: var(--color-primary);
+    }
+
+    .tarifa-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        strong {
+            font-size: 14px;
+            color: var(--color-primary);
+        }
+
+        span {
+            font-size: 12px;
+            color: #666;
+        }
+    }
+
+    .tarifa-card-price {
+        margin-top: 4px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--color-primary);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .precio-descuento {
+            font-size: 13px;
+            font-weight: 400;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .badge-descuento {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            background: #e8f5e1;
+            color: #2d6a00;
+            border-radius: 4px;
+            padding: 2px 6px;
+            width: fit-content;
+        }
+    }
+}
+
+/* Precio card (formulario) */
+.precio-card {
+    width: 100%;
+    background: #f8f9f7;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+
+    .precio-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .descuento-row {
+        color: #2d6a00;
+    }
+
+    .total-row {
+        border-top: 1px solid var(--color-tertiary);
+        padding-top: 8px;
+        margin-top: 4px;
+        font-size: 15px;
+        color: var(--color-primary);
+    }
+}
+
+/* Summary grid */
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 24px;
+
+    .summary-card--full {
+        grid-column: 1 / -1;
+    }
+}
+
+.summary-card {
+    background: #f8f9f7;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .summary-card-header {
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-primary);
+        border-bottom: 1px solid var(--color-tertiary);
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+    }
+
+    .summary-card-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 13px;
+        color: #444;
+
+        span:first-child {
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        strong {
+            text-align: right;
+            color: var(--color-primary);
+            white-space: nowrap;
+        }
+    }
+
+    .descuento-row {
+        color: #2d6a00;
+
+        strong {
+            color: #2d6a00;
+        }
+    }
+
+    .total-row {
+        border-top: 1px solid var(--color-tertiary);
+        padding-top: 8px;
+        margin-top: 4px;
+        font-size: 14px;
+
+        strong {
+            font-size: 15px;
+        }
+    }
+
+    .tarifa-badge-row {
+        align-items: center;
+    }
+
+    .tarifa-desc-row {
+        font-size: 12px;
+        color: #888;
+        padding-top: 2px;
+
+        span {
+            font-style: italic;
+        }
+    }
+}
+
+.tarifa-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    background: #e6f0e0;
+    color: var(--color-primary);
+
+    &.no-cancelable {
+        background: #fff3e0;
+        color: #b35c00;
+    }
+}
+
+.summary-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .tarifa-cards {
+        flex-direction: column;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+
+        .summary-card--full {
+            grid-column: 1;
+        }
+    }
+}
 
 @media (max-width: 1024px) {
     .note {
         width: 100%;
     }
-
 }
 
 @media (min-width: 1025px) {}

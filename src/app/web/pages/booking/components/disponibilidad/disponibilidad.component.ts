@@ -12,6 +12,7 @@ import { LayoutComponent } from '../../../layout/layout.component';
 import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
 import { ReservasService } from '../../../../../services/reservas.service';
 import { UsuariosService } from '../../../../../services/usuarios.service';
+import { ConfiguracionService } from '../../../../../services/configuracion.service';
 
 @Component({
 	selector: 'app-disponibilidad',
@@ -24,15 +25,35 @@ export class DisponibilidadComponent implements OnInit {
 	tokenCaptcha: string = '';
 	siteKey = environment.recaptchaSiteKey;
 
-	disponibilidad: { fecha: string; precio: number; estado: string }[] = [];
+	disponibilidad: { fecha: string; precio: number; estado: string; cancelable: number }[] = [];
 
 	fechaInicio: Date | null = null;
 	fechaFin: Date | null = null;
 	precioMascota = 0;
+	precioHabitacion = 0;
+	precioBase = 0;
 	precioTotal = 0;
 	numeroNoches = 0;
 	mostrarResumen = false;
 	camposBloqueados = false;
+
+	tipoTarifa: 'cancelable' | 'no_cancelable' = 'cancelable';
+	descuentoNoCancelable = 10;
+	descuentoEuros = 0;
+	diasCancelacion = 30;
+
+	get precioConDescuento(): number {
+		const habitacionDescontada = Math.round((this.precioHabitacion * (1 - this.descuentoNoCancelable / 100)) * 100) / 100;
+		return Math.round((habitacionDescontada + this.precioMascota) * 100) / 100;
+	}
+
+	get todosLosDiasCancelables(): boolean {
+		if (!this.fechaInicio || !this.fechaFin) return true;
+		const inicio = this.formatearFechaLocal(this.fechaInicio);
+		const fin = this.formatearFechaLocal(this.fechaFin);
+		const diasRango = this.disponibilidad.filter(d => d.fecha >= inicio && d.fecha < fin);
+		return diasRango.every(d => d.cancelable !== 0);
+	}
 
 	reserva: any = {
 		nombre: '',
@@ -55,11 +76,11 @@ export class DisponibilidadComponent implements OnInit {
 		'other': 'BOOKING.GUESTS'
 	};
 
-
 	constructor(
 		private disponibilidadService: DisponibilidadService,
 		private reservasService: ReservasService,
 		private usuariosService: UsuariosService,
+		private configuracionService: ConfiguracionService,
 		private dialog: MatDialog,
 		private loader: LoaderService,
 		public layout: LayoutComponent,
@@ -71,8 +92,19 @@ export class DisponibilidadComponent implements OnInit {
 			this.disponibilidad = data.map(d => ({
 				...d,
 				fecha: d.fecha.trim(),
-				precio: Number(d.precio)
+				precio: Number(d.precio),
+				cancelable: d.cancelable ?? 1
 			}));
+		});
+
+		this.configuracionService.getValor('descuento_no_cancelable').subscribe({
+			next: (cfg) => { this.descuentoNoCancelable = parseFloat(cfg.valor) || 10; },
+			error: () => { this.descuentoNoCancelable = 10; }
+		});
+
+		this.configuracionService.getValor('dias_cancelacion').subscribe({
+			next: (cfg) => { this.diasCancelacion = parseInt(cfg.valor) || 30; },
+			error: () => { this.diasCancelacion = 30; }
 		});
 
 		const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
@@ -117,7 +149,10 @@ export class DisponibilidadComponent implements OnInit {
 
 	onRangoChange(): void {
 		if (!this.fechaInicio || !this.fechaFin) {
+			this.precioHabitacion = 0;
+			this.precioBase = 0;
 			this.precioTotal = 0;
+			this.descuentoEuros = 0;
 			return;
 		}
 
@@ -127,14 +162,35 @@ export class DisponibilidadComponent implements OnInit {
 		const fechas = this.disponibilidad.filter(d => d.estado === 'disponible' && d.fecha >= inicio && d.fecha < fin);
 
 		this.numeroNoches = diasEsperados;
-		this.precioTotal = fechas.length === diasEsperados
+		this.dias = fechas;
+
+		this.precioHabitacion = fechas.length === diasEsperados
 			? fechas.reduce((total, d) => total + d.precio, 0)
 			: 0;
 
-		this.dias = fechas;
 		this.calcPrecioMascotas();
-		this.precioTotal += this.precioMascota;
-		this.precioPorNoche = this.precioTotal / this.numeroNoches;
+		this.precioBase = this.precioHabitacion + this.precioMascota;
+
+		if (!this.todosLosDiasCancelables) {
+			this.tipoTarifa = 'no_cancelable';
+		}
+
+		this.aplicarDescuento();
+		this.precioPorNoche = this.precioBase / this.numeroNoches;
+	}
+
+	onTarifaChange(): void {
+		this.aplicarDescuento();
+	}
+
+	aplicarDescuento(): void {
+		if (this.tipoTarifa === 'no_cancelable' && this.precioHabitacion > 0) {
+			this.descuentoEuros = Math.round(this.precioHabitacion * (this.descuentoNoCancelable / 100) * 100) / 100;
+			this.precioTotal = Math.round((this.precioHabitacion - this.descuentoEuros + this.precioMascota) * 100) / 100;
+		} else {
+			this.descuentoEuros = 0;
+			this.precioTotal = this.precioBase;
+		}
 	}
 
 	formatearFechaLocal(fecha: Date): string {
@@ -157,6 +213,8 @@ export class DisponibilidadComponent implements OnInit {
 			fechaFin: this.formatearFechaLocal(this.fechaFin),
 			numeroNoches: this.numeroNoches,
 			precio_total: this.precioTotal,
+			tipo_tarifa: this.tipoTarifa,
+			descuento_aplicado: this.tipoTarifa === 'no_cancelable' ? this.descuentoNoCancelable : 0,
 			recaptcha: this.layout.tokenCaptcha
 		};
 
@@ -182,7 +240,6 @@ export class DisponibilidadComponent implements OnInit {
 			}
 		});
 	}
-
 
 	dateClass: MatCalendarCellClassFunction<Date> = (date: Date) => {
 		const fechaStr = this.formatearFechaLocal(date);
