@@ -13,7 +13,6 @@
                 <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">
                     {{ i }} {{ i | i18nPlural: pluralMap | translate }}
                 </mat-option>
-
             </mat-select>
         </mat-form-field>
 
@@ -38,14 +37,72 @@
             </mat-checkbox>
         </div>
 
-        <div class="data">
-            <div class="data-content">
-                <strong>{{ 'BOOKING.NIGHTS' | translate }}</strong>
-                ~{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} x {{ numeroNoches }}
+        <!-- Selector de tarifa -->
+        <div class="oneColumn tarifa-section" *ngIf="precioBase > 0">
+            <h3>{{ 'BOOKING.RATE-TYPE' | translate }}</h3>
+
+            <!-- Ambas opciones cuando todos los días son cancelables -->
+            <div class="tarifa-cards" *ngIf="todosLosDiasCancelables">
+                <div class="tarifa-card" [class.selected]="tipoTarifa === 'cancelable'"
+                    (click)="tipoTarifa = 'cancelable'; onTarifaChange()">
+                    <div class="tarifa-card-icon">✓</div>
+                    <div class="tarifa-card-body">
+                        <strong>{{ 'BOOKING.CANCELABLE' | translate }}</strong>
+                        <span>{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: diasCancelacion } }}</span>
+                    </div>
+                    <div class="tarifa-card-price">
+                        {{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
+                    </div>
+                </div>
+                <div class="tarifa-card" [class.selected]="tipoTarifa === 'no_cancelable'"
+                    (click)="tipoTarifa = 'no_cancelable'; onTarifaChange()">
+                    <div class="tarifa-card-icon">%</div>
+                    <div class="tarifa-card-body">
+                        <strong>{{ 'BOOKING.NON-CANCELABLE' | translate }}</strong>
+                        <span>{{ 'BOOKING.NON-CANCELABLE-DESC' | translate }}</span>
+                    </div>
+                    <div class="tarifa-card-price">
+                        <span class="precio-descuento">{{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}</span>
+                        {{ precioConDescuento | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
+                        <span class="badge-descuento">-{{ descuentoNoCancelable }}%</span>
+                    </div>
+                </div>
             </div>
-            <div class="data-content">
+
+            <!-- Solo tarifa no cancelable cuando algún día no lo es -->
+            <div class="tarifa-cards" *ngIf="!todosLosDiasCancelables">
+                <div class="tarifa-card selected">
+                    <div class="tarifa-card-icon">%</div>
+                    <div class="tarifa-card-body">
+                        <strong>{{ 'BOOKING.NON-CANCELABLE' | translate }}</strong>
+                        <span>{{ 'BOOKING.NON-CANCELABLE-DESC' | translate }}</span>
+                    </div>
+                    <div class="tarifa-card-price">
+                        <span class="precio-descuento">{{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}</span>
+                        {{ precioConDescuento | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
+                        <span class="badge-descuento">-{{ descuentoNoCancelable }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de precio -->
+        <div class="precio-card" *ngIf="precioBase > 0">
+            <div class="precio-row">
+                <span>{{ 'BOOKING.NIGHTS' | translate }}</span>
+                <span>~{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} x {{ numeroNoches }}</span>
+            </div>
+            <div class="precio-row descuento-row" *ngIf="tipoTarifa === 'no_cancelable' && descuentoEuros > 0">
+                <span>{{ 'BOOKING.DISCOUNT' | translate }} ({{ descuentoNoCancelable }}%)</span>
+                <span>-{{ descuentoEuros | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
+            </div>
+            <div class="precio-row" *ngIf="reserva.conMascota">
+                <span>{{ 'BOOKING.PET2' | translate }}</span>
+                <span>{{ numeroNoches }} x 10€</span>
+            </div>
+            <div class="precio-row total-row">
                 <strong>{{ 'BOOKING.PRICE' | translate }}</strong>
-                {{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}
+                <strong>{{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
             </div>
         </div>
 
@@ -68,7 +125,6 @@
             <mat-label>Email</mat-label>
             <input matInput type="email" name="email" [(ngModel)]="reserva.email" required #emailRef="ngModel" email
                 [disabled]="camposBloqueados" />
-
             <mat-error *ngIf="emailRef.invalid && emailRef.touched">
                 <ng-container *ngIf="emailRef.errors?.['required']">
                     {{ 'BOOKING.EMAIL-WARN1' | translate }}
@@ -115,68 +171,95 @@
     <ng-container *ngIf="mostrarResumen">
         <h3>{{ 'BOOKING.TITLE4' | translate }}</h3>
 
-        <div class="summary-info">
-            <div class="data">
-                <div class="data-content">
-                    <strong>Check-in</strong>
-                    <strong>Check-out</strong>
-                    <strong>{{ 'BOOKING.GUESTS2' | translate }}</strong>
-                    <strong>{{ 'BOOKING.NEED-CRIB' | translate }}</strong>
-                    <strong>{{ 'BOOKING.BRING-PET' | translate }}</strong>
+        <div class="summary-grid oneColumn">
+
+            <!-- Card: Cliente (primera, ancho completo) -->
+            <div class="summary-card summary-card--full">
+                <div class="summary-card-header">{{ 'BOOKING.CLIENT' | translate }}</div>
+                <div class="summary-card-row">
+                    <span>{{ 'BOOKING.NAME' | translate }}</span>
+                    <strong>{{ reserva.nombre }} {{ reserva.apellidos }}</strong>
                 </div>
-                <div class="data-content">
-                    <p>{{ fechaInicio | date:'dd-MM-yyyy' }}</p>
-                    <p>{{ fechaFin | date:'dd-MM-yyyy' }}</p>
-
-                    <p>{{ reserva.huespedes }}</p>
-                    <p>{{ reserva.conBebe ? ('BOOKING.YES' | translate) : ('BOOKING.NO' | translate) }}</p>
-                    <p>{{ reserva.conMascota ? ('BOOKING.YES' | translate) : ('BOOKING.NO' | translate) }}</p>
-
+                <div class="summary-card-row">
+                    <span>Email</span>
+                    <strong>{{ reserva.email }}</strong>
+                </div>
+                <div class="summary-card-row">
+                    <span>{{ 'BOOKING.PHONE' | translate }}</span>
+                    <strong>{{ reserva.prefijo }} {{ reserva.telefono }}</strong>
                 </div>
             </div>
 
-
-        </div>
-
-        <div class="summary-info data-content threeRows">
-            <strong>{{ 'BOOKING.NIGHTS-PRICES' | translate }}</strong>
-            <div *ngFor="let dia of dias">
-                <p class="price">{{ dia.fecha | date:'dd-MM-yyyy' }}&nbsp;&nbsp;x&nbsp;&nbsp;{{ dia.precio |
-                    currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
+            <!-- Card: Reserva -->
+            <div class="summary-card">
+                <div class="summary-card-header">{{ 'BOOKING.RESERVATION' | translate }}</div>
+                <div class="summary-card-row">
+                    <span>Check-in</span>
+                    <strong>{{ fechaInicio | date:'dd-MM-yyyy' }}</strong>
+                </div>
+                <div class="summary-card-row">
+                    <span>Check-out</span>
+                    <strong>{{ fechaFin | date:'dd-MM-yyyy' }}</strong>
+                </div>
+                <div class="summary-card-row">
+                    <span>{{ 'BOOKING.GUESTS2' | translate }}</span>
+                    <strong>{{ reserva.huespedes }}</strong>
+                </div>
+                <div class="summary-card-row">
+                    <span>{{ 'BOOKING.NEED-CRIB' | translate }}</span>
+                    <strong>{{ (reserva.conBebe ? 'BOOKING.YES' : 'BOOKING.NO') | translate }}</strong>
+                </div>
+                <div class="summary-card-row">
+                    <span>{{ 'BOOKING.BRING-PET' | translate }}</span>
+                    <strong>{{ (reserva.conMascota ? 'BOOKING.YES' : 'BOOKING.NO') | translate }}<ng-container *ngIf="reserva.conMascota"> ({{ 'BOOKING.PET-SURCHARGE' | translate }})</ng-container></strong>
+                </div>
+                <div class="summary-card-row tarifa-badge-row">
+                    <span>{{ 'BOOKING.RATE-TYPE' | translate }}</span>
+                    <span class="tarifa-badge" [class.no-cancelable]="tipoTarifa === 'no_cancelable'">
+                        {{ tipoTarifa === 'cancelable' ? ('BOOKING.CANCELABLE' | translate) : ('BOOKING.NON-CANCELABLE' | translate) }}
+                    </span>
+                </div>
+                <div class="summary-card-row tarifa-desc-row">
+                    <span *ngIf="tipoTarifa === 'cancelable'">{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: diasCancelacion } }}</span>
+                    <span *ngIf="tipoTarifa === 'no_cancelable'">{{ 'BOOKING.NON-CANCELABLE-DESC' | translate }}</span>
+                </div>
+                <div class="summary-card-row" *ngIf="reserva.nota">
+                    <span>{{ 'BOOKING.NOTE' | translate }}</span>
+                    <strong>{{ reserva.nota }}</strong>
+                </div>
             </div>
-            <p *ngIf="reserva.conMascota" class="price">
-                <strong>{{ 'BOOKING.PET2' | translate }}: </strong>{{ numeroNoches }} x 10€ = {{ numeroNoches * 10 |
-                currency:'EUR':'symbol':'1.2-2':'es-ES' }}
-            </p>
-            <p><strong>{{ 'BOOKING.TOTAL' | translate }}:</strong> {{ precioTotal |
-                currency:'EUR':'symbol':'1.2-2':'es-ES' }}</p>
-        </div>
 
-
-        <div class="summary-info">
-            <strong>{{ 'BOOKING.CLIENT' | translate }}</strong>
-            <div>
-                <p>{{ reserva.nombre }} {{ reserva.apellidos }}</p>
-                <p>{{ reserva.email }}</p>
-                <p>{{ reserva.prefijo }} {{ reserva.telefono }}</p>
+            <!-- Card: Precio -->
+            <div class="summary-card">
+                <div class="summary-card-header">{{ 'BOOKING.PRICE' | translate }}</div>
+                <div *ngFor="let dia of dias" class="summary-card-row">
+                    <span>{{ dia.fecha | date:'dd-MM-yyyy' }}</span>
+                    <strong>{{ dia.precio | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
+                <div class="summary-card-row" *ngIf="reserva.conMascota">
+                    <span>{{ 'BOOKING.PET2' | translate }}</span>
+                    <strong>{{ numeroNoches * 10 | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
+                <div class="summary-card-row descuento-row" *ngIf="tipoTarifa === 'no_cancelable' && descuentoEuros > 0">
+                    <span>{{ 'BOOKING.DISCOUNT' | translate }} ({{ descuentoNoCancelable }}%)</span>
+                    <strong>-{{ descuentoEuros | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
+                <div class="summary-card-row total-row">
+                    <strong>{{ 'BOOKING.TOTAL' | translate }}</strong>
+                    <strong>{{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
             </div>
 
         </div>
 
-        <div *ngIf="!reserva.nota"></div>
-
-        <div class="summary-info" *ngIf="reserva.nota">
-            <strong>{{ 'BOOKING.NOTE' | translate }}</strong>
-            <p>{{ reserva.nota }}</p>
+        <div class="oneColumn summary-actions">
+            <button mat-stroked-button type="button" (click)="mostrarResumen = false" class="submitButton">
+                {{ 'BOOKING.RETURN' | translate }}
+            </button>
+            <button mat-raised-button type="button" class="submitButton" (click)="verificarCaptcha()">
+                {{ 'BOOKING.SEND' | translate }}
+            </button>
         </div>
-
-        <button mat-stroked-button type="button" (click)="mostrarResumen = false" class="submitButton">
-            {{ 'BOOKING.RETURN' | translate }}
-        </button>
-
-        <button mat-raised-button type="button" class="submitButton" (click)="verificarCaptcha()">
-            {{ 'BOOKING.SEND' | translate }}
-        </button>
 
     </ng-container>
 </form>

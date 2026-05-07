@@ -50,10 +50,18 @@
         "NO": "No",
         "NIGHTS-PRICES": "Nights and prices",
         "PET2": "Pet",
+        "PET-SURCHARGE": "+10€/night",
         "TOTAL": "Total",
         "CLIENT": "Client",
         "RETURN": "Return",
-        "SEND": "Send"
+        "SEND": "Send",
+        "RATE-TYPE": "Rate type",
+        "CANCELABLE": "Flexible",
+        "CANCELABLE-DESC": "Cancel up to {{days}} days before your arrival",
+        "NON-CANCELABLE": "Non-refundable",
+        "NON-CANCELABLE-DESC": "Reduced price, no cancellation allowed",
+        "DISCOUNT": "Discount",
+        "RESERVATION": "Reservation"
     },
     "CONTACT": {
         "TITLE": "Contact Form",

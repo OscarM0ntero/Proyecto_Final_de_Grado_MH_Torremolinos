@@ -50,10 +50,18 @@
         "NO": "Nein",
         "NIGHTS-PRICES": "Nächte und Preise",
         "PET2": "Haustier",
+        "PET-SURCHARGE": "+10€/Nacht",
         "TOTAL": "Gesamt",
         "CLIENT": "Kunde",
         "RETURN": "Zurück",
-        "SEND": "Senden"
+        "SEND": "Senden",
+        "RATE-TYPE": "Tarifart",
+        "CANCELABLE": "Flexibel",
+        "CANCELABLE-DESC": "Bis {{days}} Tage vor Anreise kostenlos stornierbar",
+        "NON-CANCELABLE": "Nicht stornierbar",
+        "NON-CANCELABLE-DESC": "Günstigerer Preis, keine Stornierung möglich",
+        "DISCOUNT": "Rabatt",
+        "RESERVATION": "Buchung"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
