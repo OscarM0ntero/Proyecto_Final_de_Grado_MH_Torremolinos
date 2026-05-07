@@ -8,15 +8,15 @@ import { Observable } from 'rxjs';
 export class DisponibilidadService {
 	constructor(private http: HttpClient) { }
 
-	getDisponibilidad(): Observable<{ fecha: string; precio: number; estado: string }[]> {
-		return this.http.get<{ fecha: string; precio: number; estado: string }[]>(`/api/disponibilidad`);
+	getDisponibilidad(): Observable<{ fecha: string; precio: number; estado: string; cancelable: number }[]> {
+		return this.http.get<{ fecha: string; precio: number; estado: string; cancelable: number }[]>(`/api/disponibilidad`);
 	}
 
-	getDisponibilidadPorMes(mes: string): Observable<{ fecha: string; precio: number; estado: string }[]> {
-		return this.http.get<{ fecha: string; precio: number; estado: string }[]>(`/api/disponibilidad?mes=${mes}`);
+	getDisponibilidadPorMes(mes: string): Observable<{ fecha: string; precio: number; estado: string; cancelable: number }[]> {
+		return this.http.get<{ fecha: string; precio: number; estado: string; cancelable: number }[]>(`/api/disponibilidad?mes=${mes}`);
 	}
 
-	actualizarDisponibilidad(data: { fechas: string[], precio?: number, estado: string }) {
+	actualizarDisponibilidad(data: { fechas: string[], precio?: number, estado: string, cancelable?: boolean | null }) {
 		return this.http.post('/api/disponibilidad/actualizar', data);
 	}
 }

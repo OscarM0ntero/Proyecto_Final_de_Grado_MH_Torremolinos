@@ -46,6 +46,14 @@
                 </mat-select>
             </mat-form-field>
 
+            <mat-form-field>
+                <mat-label>Cancelable</mat-label>
+                <mat-select [(ngModel)]="nuevoCancelable" name="cancelable">
+                    <mat-option [value]="true">Cancelable</mat-option>
+                    <mat-option [value]="false">No cancelable</mat-option>
+                </mat-select>
+            </mat-form-field>
+
             <div class="oneColumn data">
                 <button mat-raised-button type="submit" class="submitButton">Aplicar cambios</button>
             </div>

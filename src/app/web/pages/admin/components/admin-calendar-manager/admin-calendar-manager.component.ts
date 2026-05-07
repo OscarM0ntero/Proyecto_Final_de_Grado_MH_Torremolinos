@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 	encapsulation: ViewEncapsulation.None
 })
 export class AdminCalendarManagerComponent implements OnInit {
-	disponibilidad: { fecha: string; precio: number; estado: string }[] = [];
+	disponibilidad: { fecha: string; precio: number; estado: string; cancelable: number }[] = [];
 
 	viewDate: Date = new Date();
 	refresh: Subject<void> = new Subject<void>();
@@ -25,6 +25,7 @@ export class AdminCalendarManagerComponent implements OnInit {
 
 	nuevoPrecio: number | null = null;
 	nuevoEstado: string = 'disponible';
+	nuevoCancelable: boolean = true;
 
 	isDragging = false;
 	unSelecting = false;
@@ -42,7 +43,8 @@ export class AdminCalendarManagerComponent implements OnInit {
 			this.disponibilidad = data.map(d => ({
 				...d,
 				fecha: d.fecha.trim(),
-				precio: Number(d.precio)
+				precio: Number(d.precio),
+				cancelable: d.cancelable ?? 1
 			}));
 
 			this.events = this.disponibilidad.map(d => ({
@@ -51,7 +53,8 @@ export class AdminCalendarManagerComponent implements OnInit {
 				color: this.getColor(d.estado),
 				meta: {
 					estado: d.estado,
-					precio: d.precio
+					precio: d.precio,
+					cancelable: d.cancelable ?? 1
 				}
 			}));
 
@@ -116,6 +119,11 @@ export class AdminCalendarManagerComponent implements OnInit {
 					(day as any).customMatIcon = null;
 				}
 
+				// Indicador visual para días no cancelables
+				if (event.meta.cancelable === 0) {
+					day.cssClass += ' no-cancelable';
+				}
+
 				// Comprobamos si está seleccionado basado en fecha
 				if (this.selectedDates.includes(this.formatearFechaLocal(day.date))) {
 					day.cssClass += ' selected';
@@ -138,7 +146,8 @@ export class AdminCalendarManagerComponent implements OnInit {
 		const payload = {
 			fechas: diasActualizar,
 			precio: this.nuevoPrecio,
-			estado: this.nuevoEstado
+			estado: this.nuevoEstado,
+			cancelable: this.nuevoCancelable
 		};
 
 		this.http.post('/api/disponibilidad/actualizar', payload).subscribe({
@@ -148,6 +157,7 @@ export class AdminCalendarManagerComponent implements OnInit {
 					if (event) {
 						event.meta.precio = this.nuevoPrecio ?? event.meta.precio;
 						event.meta.estado = this.nuevoEstado;
+						event.meta.cancelable = this.nuevoCancelable ? 1 : 0;
 					}
 				});
 
@@ -159,6 +169,7 @@ export class AdminCalendarManagerComponent implements OnInit {
 				this.selectedDates = [];
 				this.nuevoPrecio = null;
 				this.nuevoEstado = 'disponible';
+				this.nuevoCancelable = true;
 				this.refresh.next();
 			},
 			error: (err) => {

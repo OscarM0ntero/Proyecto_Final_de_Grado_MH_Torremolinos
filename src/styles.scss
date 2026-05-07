@@ -232,17 +232,36 @@ h1 {
     background-color: var(--color-tertiary) !important;
 }
 
-// Color del botones
-.mat-mdc-raised-button:not(:disabled) {
+// Botón primario — relleno verde oscuro
+.mat-mdc-raised-button,
+.mat-mdc-flat-button {
+    border-radius: 8px !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 600 !important;
+}
+
+.mat-mdc-raised-button:not(:disabled),
+.mat-mdc-flat-button:not(:disabled) {
     color: var(--color-neutral) !important;
     background-color: var(--color-primary) !important;
 }
 
-.mat-mdc-outlined-button:not(:disabled),
+// Botón secundario — outline verde oscuro
+.mat-mdc-outlined-button {
+    border-radius: 8px !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 600 !important;
+}
+
+.mat-mdc-outlined-button:not(:disabled) {
+    color: var(--color-primary) !important;
+    background-color: transparent !important;
+    border-color: var(--color-primary) !important;
+}
+
+// Botón texto plano (sin fondo, sin borde — solo icono/acción secundaria)
 .mat-mdc-button {
     color: var(--color-primary) !important;
-    background-color: var(--color-tertiary) !important;
-    border-color: var(--color-secondary) !important;
 }
 
 .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,

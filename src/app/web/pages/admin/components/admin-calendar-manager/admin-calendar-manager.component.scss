@@ -175,6 +175,11 @@
 	}
 }
 
+// Indicador de día no cancelable: borde inferior llamativo
+.cal-month-view .no-cancelable:not(.cal-out-month) {
+	border-bottom: 3px solid var(--color-accent) !important;
+}
+
 .edit-panel {
 	margin-top: 20px;
 	padding: 20px;

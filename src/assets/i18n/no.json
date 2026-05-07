@@ -50,10 +50,18 @@
         "NO": "Nei",
         "NIGHTS-PRICES": "Netter og priser",
         "PET2": "Kjæledyr",
+        "PET-SURCHARGE": "+10€/natt",
         "TOTAL": "Totalt",
         "CLIENT": "Kunde",
         "RETURN": "Tilbake",
-        "SEND": "Send"
+        "SEND": "Send",
+        "RATE-TYPE": "Tarifftype",
+        "CANCELABLE": "Fleksibel",
+        "CANCELABLE-DESC": "Avbestill opptil {{days}} dager før ankomst",
+        "NON-CANCELABLE": "Ikke avbestillbar",
+        "NON-CANCELABLE-DESC": "Lavere pris, ingen avbestilling mulig",
+        "DISCOUNT": "Rabatt",
+        "RESERVATION": "Bestilling"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",

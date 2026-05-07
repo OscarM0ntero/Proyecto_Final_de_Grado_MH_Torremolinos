@@ -19,6 +19,7 @@ import reservasRouter from './api/reservas.routes.js';
 import imagenesRouter from './api/imagenes.routes.js';
 import contactRouter from './api/contact.routes.js';
 import icalRouter from './api/ical.routes.js';
+import configuracionRouter from './api/configuracion.routes.js';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
@@ -58,6 +59,7 @@ app.use('/api/reservas', reservasRouter);
 app.use('/api/imagenes', imagenesRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/ical', icalRouter);
+app.use('/api/configuracion', configuracionRouter);
 
 
 

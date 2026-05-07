@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 			const fin = `${anio}-${mesStr.padStart(2, '0')}-${ultimoDia.toString().padStart(2, '0')}`;
 
 			const [filas] = await pool.query(
-				`SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, precio, estado FROM disponibilidad WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC`,
+				`SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, precio, estado, cancelable FROM disponibilidad WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC`,
 				[inicio, fin]
 			);
 
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 
 	try {
 		const [filas] = await pool.query(
-			`SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, precio, estado, fuente FROM disponibilidad ORDER BY fecha ASC`
+			`SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, precio, estado, cancelable, fuente FROM disponibilidad ORDER BY fecha ASC`
 		);
 		return res.json(filas);
 	} catch (err) {
@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/actualizar', async (req, res) => {
-	const { fechas, precio, estado } = req.body;
+	const { fechas, precio, estado, cancelable } = req.body;
 
 	if (!fechas || !Array.isArray(fechas) || !estado) {
 		return res.status(400).json({ error: 'Faltan datos: fechas (array) y estado son obligatorios.' });
@@ -59,16 +59,31 @@ router.post('/actualizar', async (req, res) => {
 		await connection.beginTransaction();
 
 		for (const fecha of fechas) {
+			const setCancelable = cancelable !== undefined && cancelable !== null;
 			if (precio !== undefined && precio !== null) {
-				await connection.query(
-					`UPDATE disponibilidad SET estado = ?, precio = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
-					[estado, precio, fecha]
-				);
+				if (setCancelable) {
+					await connection.query(
+						`UPDATE disponibilidad SET estado = ?, precio = ?, cancelable = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+						[estado, precio, cancelable ? 1 : 0, fecha]
+					);
+				} else {
+					await connection.query(
+						`UPDATE disponibilidad SET estado = ?, precio = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+						[estado, precio, fecha]
+					);
+				}
 			} else {
-				await connection.query(
-					`UPDATE disponibilidad SET estado = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
-					[estado, fecha]
-				);
+				if (setCancelable) {
+					await connection.query(
+						`UPDATE disponibilidad SET estado = ?, cancelable = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+						[estado, cancelable ? 1 : 0, fecha]
+					);
+				} else {
+					await connection.query(
+						`UPDATE disponibilidad SET estado = ?, actualizado = CURRENT_TIMESTAMP WHERE fecha = ?`,
+						[estado, fecha]
+					);
+				}
 			}
 		}
 
