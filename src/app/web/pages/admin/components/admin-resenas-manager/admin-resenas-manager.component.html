@@ -1,0 +1,110 @@
+<!-- Gestor de reseñas del panel de administración -->
+<h2>Gestión de reseñas</h2>
+
+<div class="resenas-container">
+
+    <!-- Lista de reseñas -->
+    <div class="resenas-list" *ngIf="!creando && !editando">
+        <button mat-raised-button color="primary" (click)="nuevaResena()" class="btn-nueva">
+            <mat-icon>add</mat-icon> Nueva reseña
+        </button>
+
+        <div *ngIf="resenas.length === 0" class="empty-state">
+            No hay reseñas añadidas todavía.
+        </div>
+
+        <table *ngIf="resenas.length > 0" class="resenas-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>País</th>
+                    <th>Puntuación</th>
+                    <th>Fecha estancia</th>
+                    <th>Activa</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let r of resenas">
+                    <td>{{ r.nombre }}</td>
+                    <td>
+                        <img [src]="'https://flagcdn.com/w20/' + r.iso + '.png'" [alt]="r.pais" class="flag">
+                        {{ r.pais }}
+                    </td>
+                    <td>{{ r.puntuacion }}</td>
+                    <td>{{ r.fecha_estancia }}</td>
+                    <td>
+                        <mat-icon [class.activa]="r.activa">{{ r.activa ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </td>
+                    <td class="acciones">
+                        <button mat-icon-button (click)="editar(r)" matTooltip="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="eliminar(r.id_resena!)" matTooltip="Eliminar" color="warn">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulario crear / editar -->
+    <div class="resena-form" *ngIf="creando || editando">
+        <h3>{{ editando ? 'Editar reseña' : 'Nueva reseña' }}</h3>
+
+        <div class="form-row">
+            <mat-form-field>
+                <mat-label>Nombre</mat-label>
+                <input matInput [(ngModel)]="form.nombre" placeholder="Ej: Sarah" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>País</mat-label>
+                <input matInput [(ngModel)]="form.pais" placeholder="Ej: Reino Unido" />
+            </mat-form-field>
+
+            <mat-form-field class="iso-field">
+                <mat-label>Código ISO</mat-label>
+                <input matInput [(ngModel)]="form.iso" placeholder="gb" maxlength="2" />
+                <mat-hint>2 letras minúsculas (es, gb, fr, de, no...)</mat-hint>
+            </mat-form-field>
+        </div>
+
+        <div class="form-row">
+            <mat-form-field class="small-field">
+                <mat-label>Puntuación</mat-label>
+                <input matInput type="number" [(ngModel)]="form.puntuacion" min="1" max="10" step="0.1" />
+            </mat-form-field>
+
+            <mat-form-field class="small-field">
+                <mat-label>Fecha estancia</mat-label>
+                <input matInput [(ngModel)]="form.fecha_estancia" placeholder="Ej: Agosto 2024" />
+            </mat-form-field>
+
+            <div class="toggle-field">
+                <mat-slide-toggle [(ngModel)]="form.activa" [ngModelOptions]="{standalone: true}">
+                    Visible en la web
+                </mat-slide-toggle>
+            </div>
+        </div>
+
+        <mat-form-field class="full-width">
+            <mat-label>Comentario positivo</mat-label>
+            <textarea matInput [(ngModel)]="form.texto_positivo" rows="3"></textarea>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <mat-label>Comentario negativo (opcional)</mat-label>
+            <textarea matInput [(ngModel)]="form.texto_negativo" rows="2"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+            <button mat-raised-button color="primary" (click)="guardar()" [disabled]="!form.nombre || !form.pais || !form.iso">
+                <mat-icon>save</mat-icon> Guardar
+            </button>
+            <button mat-button (click)="cancelar()">Cancelar</button>
+        </div>
+    </div>
+
+</div>

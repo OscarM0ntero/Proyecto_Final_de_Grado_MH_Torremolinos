@@ -20,6 +20,7 @@ import imagenesRouter from './api/imagenes.routes.js';
 import contactRouter from './api/contact.routes.js';
 import icalRouter from './api/ical.routes.js';
 import configuracionRouter from './api/configuracion.routes.js';
+import resenasRouter from './api/resenas.routes.js';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
@@ -60,6 +61,7 @@ app.use('/api/imagenes', imagenesRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/ical', icalRouter);
 app.use('/api/configuracion', configuracionRouter);
+app.use('/api/resenas', resenasRouter);
 
 
 

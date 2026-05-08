@@ -66,6 +66,31 @@
 
 <div class="spacer-big tablet-show"></div>
 
+<div class="spacer-big"></div>
+
+<section class="resenas-section" *ngIf="resenas.length > 0">
+    <p-carousel [value]="resenas" [numVisible]="3" [numScroll]="1" [circular]="true" [autoplayInterval]="5000" [responsiveOptions]="resenaResponsiveOptions">
+        <ng-template pTemplate="item" let-r>
+            <a class="resena-card" [href]="bookingReviewsUrl" target="_blank" rel="noopener">
+                <div class="resena-header">
+                    <div class="resena-meta">
+                        <span class="resena-nombre">{{ r.nombre }}</span>
+                        <span class="resena-pais">
+                            <img [src]="'https://flagcdn.com/w20/' + r.iso + '.png'" [alt]="r.pais" class="resena-flag">
+                            {{ r.pais }}
+                        </span>
+                    </div>
+                    <div class="resena-score">{{ r.puntuacion }}</div>
+                </div>
+                <p class="resena-positivo" *ngIf="r.texto_positivo">"{{ r.texto_positivo }}"</p>
+                <p class="resena-negativo" *ngIf="r.texto_negativo">"{{ r.texto_negativo }}"</p>
+            </a>
+        </ng-template>
+    </p-carousel>
+</section>
+
+<div class="spacer-big"></div>
+
 <div class="more-container">
     <button [routerLink]="['apartamento']" class="more">
         <h3>{{ 'HOME.MORE' | translate }}</h3>
