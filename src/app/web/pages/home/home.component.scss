@@ -273,6 +273,13 @@ p {
         flex-shrink: 0;
     }
 
+    .resena-titulo {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin: 0;
+    }
+
     .resena-positivo {
         font-size: 15px;
         line-height: 1.6;

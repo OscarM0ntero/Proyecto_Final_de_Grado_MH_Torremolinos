@@ -45,6 +45,7 @@ export class AdminResenasManagerComponent implements OnInit {
 			nombre: resena.nombre,
 			pais: resena.pais,
 			iso: resena.iso,
+			titulo: resena.titulo,
 			puntuacion: resena.puntuacion,
 			texto_positivo: resena.texto_positivo,
 			texto_negativo: resena.texto_negativo,
@@ -93,6 +94,6 @@ export class AdminResenasManagerComponent implements OnInit {
 	}
 
 	private formVacio(): Omit<Resena, 'id_resena'> {
-		return { nombre: '', pais: '', iso: '', puntuacion: 10, texto_positivo: '', texto_negativo: '', fecha_estancia: '', activa: 1 };
+		return { nombre: '', pais: '', iso: '', titulo: '', puntuacion: 10, texto_positivo: '', texto_negativo: '', fecha_estancia: '', activa: 1 };
 	}
 }
