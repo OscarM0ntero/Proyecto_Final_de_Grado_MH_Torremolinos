@@ -1,60 +1,63 @@
 <!-- Componente de información y formulario de contacto -->
 <div class="spacer-big"></div>
-<div class="contact-container">
+<div class="contact-intro-wrapper" *ngIf="itemIntro">
+    <p [innerHTML]="itemIntro.texto"></p>
+</div>
+<div class="contact-columns">
     <div class="contact-section">
         <div *ngIf="email">
             <h3>{{ email.titulo }}</h3>
-            <p>{{ email.texto }}</p>
+            <p [innerHTML]="email.texto"></p>
         </div>
         <div *ngIf="tlf">
             <h3>{{ tlf.titulo }}</h3>
-            <p>{{ tlf.texto }}</p>
+            <p [innerHTML]="tlf.texto"></p>
         </div>
     </div>
-    <div class="contact-section">
-        <form #contactForm="ngForm" (ngSubmit)="enviarMensaje()" class="form">
-            <h2>{{ 'CONTACT.TITLE' | translate }}</h2>
+    <div class="form-section">
+    <form #contactForm="ngForm" (ngSubmit)="enviarMensaje()" class="form">
+        <h2>{{ 'CONTACT.TITLE' | translate }}</h2>
 
-            <div class="oneColumn">
-                <mat-form-field class="long-field">
-                    <mat-label>{{ 'BOOKING.NAME' | translate }}</mat-label>
-                    <input matInput name="nombre" [(ngModel)]="form.nombre" required />
-                </mat-form-field>
-            </div>
+        <div class="oneColumn">
+            <mat-form-field class="long-field">
+                <mat-label>{{ 'BOOKING.NAME' | translate }}</mat-label>
+                <input matInput name="nombre" [(ngModel)]="form.nombre" required />
+            </mat-form-field>
+        </div>
 
-            <mat-form-field>
-                <mat-label>Email</mat-label>
-                <input matInput name="email" [(ngModel)]="form.email" required email />
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput name="email" [(ngModel)]="form.email" required email />
+        </mat-form-field>
+
+        <div class="tlf-container">
+            <mat-form-field class="pre">
+                <mat-label>+</mat-label>
+                <mat-select [(ngModel)]="form.prefijo" name="prefijo">
+                    <mat-option *ngFor="let p of prefijos" [value]="p">{{ p }}</mat-option>
+                </mat-select>
             </mat-form-field>
 
-            <div class="tlf-container">
-                <mat-form-field class="pre">
-                    <mat-label>+</mat-label>
-                    <mat-select [(ngModel)]="form.prefijo" name="prefijo">
-                        <mat-option *ngFor="let p of prefijos" [value]="p">{{ p }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+            <mat-form-field class="tlf">
+                <mat-label>{{ 'BOOKING.PHONE' | translate }}</mat-label>
+                <input matInput name="telefono" [(ngModel)]="form.telefono" />
+            </mat-form-field>
+        </div>
 
-                <mat-form-field class="tlf">
-                    <mat-label>{{ 'BOOKING.PHONE' | translate }}</mat-label>
-                    <input matInput name="telefono" [(ngModel)]="form.telefono" />
-                </mat-form-field>
-            </div>
+        <div class="oneColumn">
+            <mat-form-field class="long-field">
+                <mat-label>{{ 'CONTACT.HELP' | translate }}</mat-label>
+                <textarea matInput name="mensaje" [(ngModel)]="form.mensaje" required></textarea>
+            </mat-form-field>
+        </div>
 
-            <div class="oneColumn">
-                <mat-form-field class="long-field">
-                    <mat-label>{{ 'CONTACT.HELP' | translate }}</mat-label>
-                    <textarea matInput name="mensaje" [(ngModel)]="form.mensaje" required></textarea>
-                </mat-form-field>
-            </div>
-
-            <div class="oneColumn">
-                <button mat-raised-button type="button" class="submitButton data-content" (click)="verificarCaptcha()"
-                    [disabled]="!contactForm.valid">
-                    {{ 'BOOKING.SEND' | translate }}
-                </button>
-            </div>
-        </form>
+        <div class="oneColumn">
+            <button mat-raised-button type="button" class="submitButton data-content" (click)="verificarCaptcha()"
+                [disabled]="!contactForm.valid">
+                {{ 'BOOKING.SEND' | translate }}
+            </button>
+        </div>
+    </form>
     </div>
 </div>
 <div class="spacer-big"></div>
