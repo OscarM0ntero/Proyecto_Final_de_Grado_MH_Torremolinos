@@ -60,13 +60,6 @@
 </div>
 
 <div class="spacer-big"></div>
-<div class="spacer-big tablet-hide"></div>
-
-<app-grid-overlay [contenido]="itemApartado2" [imagen]="images[5].url" *ngIf="images.length >= 6"></app-grid-overlay>
-
-<div class="spacer-big tablet-show"></div>
-
-<div class="spacer-big"></div>
 
 <section class="resenas-section" *ngIf="resenas.length > 0">
     <p-carousel [value]="resenas" [numVisible]="3" [numScroll]="1" [circular]="true" [autoplayInterval]="5000" [responsiveOptions]="resenaResponsiveOptions">
@@ -89,6 +82,13 @@
         </ng-template>
     </p-carousel>
 </section>
+
+<div class="spacer-big"></div>
+<div class="spacer-big tablet-hide"></div>
+
+<app-grid-overlay [contenido]="itemApartado2" [imagen]="images[5].url" *ngIf="images.length >= 6"></app-grid-overlay>
+
+<div class="spacer-big tablet-show"></div>
 
 <div class="spacer-big"></div>
 
