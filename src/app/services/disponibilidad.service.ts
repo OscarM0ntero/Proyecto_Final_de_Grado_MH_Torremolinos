@@ -19,4 +19,8 @@ export class DisponibilidadService {
 	actualizarDisponibilidad(data: { fechas: string[], precio?: number, estado: string, cancelable?: boolean | null }) {
 		return this.http.post('/api/disponibilidad/actualizar', data);
 	}
+
+	getPrecioMinimo(): Observable<{ precio_minimo: number | null }> {
+		return this.http.get<{ precio_minimo: number | null }>('/api/disponibilidad/precio-minimo');
+	}
 }

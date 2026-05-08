@@ -5,7 +5,8 @@ import { ContenidoBaseComponent } from '../../../shared/contenido-base.component
 import { HttpClient } from '@angular/common/http';
 import { ImagenesService } from '../../../services/imagenes.service';
 import { ContenidoService } from '../../../services/contenido.service';
-import { Title, Meta } from '@angular/platform-browser';  //SEO
+import { Title, Meta } from '@angular/platform-browser';
+import { DisponibilidadService } from '../../../services/disponibilidad.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class HomeComponent extends ContenidoBaseComponent {
 	itemApartado1: any;
 	itemApartado2: any;
 	itemPuntuacion = '';
+	precioMinimo: number | null = null;
 
 	constructor(
 		contenido: ContenidoService,
@@ -30,13 +32,19 @@ export class HomeComponent extends ContenidoBaseComponent {
 		imagenes: ImagenesService,
 		translate: TranslateService,
 		private titleService: Title,
-		private metaService: Meta
+		private metaService: Meta,
+		private disponibilidadService: DisponibilidadService
 	) {
 		super(contenido, contenidoWeb, imagenes, translate, 'home');
 	}
 
 	override async ngOnInit(): Promise<void> {
 		await super.ngOnInit();
+
+		this.disponibilidadService.getPrecioMinimo().subscribe({
+			next: (data) => { this.precioMinimo = data.precio_minimo; },
+			error: () => { this.precioMinimo = null; }
+		});
 
 		this.titleService.setTitle('M&H Torremolinos');
 		this.metaService.updateTag({ name: 'description', content: 'Apartamento turístico en Torremolinos. 5 huéspedes, WiFi gratis, mascotas permitidas, ubicación ideal cerca de la playa.' });

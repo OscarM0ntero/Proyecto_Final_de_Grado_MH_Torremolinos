@@ -4,7 +4,10 @@
 </video>
 
 <div class="vid-opacity">
-    <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
+    <div class="hero-cta">
+        <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
+        <span class="precio-desde" *ngIf="precioMinimo">Desde {{ precioMinimo }}€/noche</span>
+    </div>
 </div>
 
 <div class="spacer"></div>

@@ -1,4 +1,35 @@
 
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 50px;
+}
+
+.amenity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 8px;
+    background: #f8f9f7;
+    border-radius: 10px;
+    text-align: center;
+
+    mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        color: var(--color-primary);
+    }
+
+    span {
+        font-size: 13px;
+        color: var(--color-primary);
+        font-weight: 500;
+    }
+}
+
 .more-container {
     display: flex;
     justify-content: center;
