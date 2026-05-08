@@ -28,21 +28,22 @@
     <div [innerHTML]="itemDistribucion.texto"></div>
 
     <h3>{{ itemComodidades.titulo }}</h3>
-    <div class="amenities-grid">
-        <div class="amenity"><mat-icon>straighten</mat-icon><span>90 m²</span></div>
-        <div class="amenity"><mat-icon>bathroom</mat-icon><span>2 baños</span></div>
-        <div class="amenity"><mat-icon>kitchen</mat-icon><span>Cocina equipada</span></div>
-        <div class="amenity"><mat-icon>tv</mat-icon><span>TV pantalla plana</span></div>
-        <div class="amenity"><mat-icon>deck</mat-icon><span>Terraza exterior</span></div>
-        <div class="amenity"><mat-icon>wifi</mat-icon><span>Wi-Fi gratuito</span></div>
-        <div class="amenity"><mat-icon>ac_unit</mat-icon><span>Aire acondicionado</span></div>
-        <div class="amenity"><mat-icon>fireplace</mat-icon><span>Chimenea</span></div>
-        <div class="amenity"><mat-icon>pool</mat-icon><span>Piscina y jardín</span></div>
-        <div class="amenity"><mat-icon>local_parking</mat-icon><span>Aparcamiento</span></div>
-    </div>
+    <div [innerHTML]="itemComodidades.texto"></div>
 
     <h3>{{ itemMascotas.titulo }}</h3>
     <div [innerHTML]="itemMascotas.texto"></div>
+
+</section>
+
+<div class="spacer-big"></div>
+
+<section class="apartament-container" *ngIf="itemPiscina">
+
+    <h3>{{ itemPiscina.titulo }}</h3>
+    <div [innerHTML]="itemPiscina.texto"></div>
+
+    <h3>{{ itemEstacionamiento.titulo }}</h3>
+    <div [innerHTML]="itemEstacionamiento.texto"></div>
 
 </section>
 
@@ -66,16 +67,6 @@
 </p-galleria>
 
 <div class="spacer-big"></div>
-
-<section class="apartament-container" *ngIf="itemPiscina">
-
-    <h3>{{ itemPiscina.titulo }}</h3>
-    <div [innerHTML]="itemPiscina.texto"></div>
-
-    <h3>{{ itemEstacionamiento.titulo }}</h3>
-    <div [innerHTML]="itemEstacionamiento.texto"></div>
-
-</section>
 
 <div class="more-container">
     <button [routerLink]="['../localizacion']" class="more">
