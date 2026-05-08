@@ -20,7 +20,8 @@
         "BOOK": "RESERVAR AHORA",
         "WELCOME": "Bienvenido a",
         "VACATION": "Para unas vacaciones ideales.",
-        "MORE": "VER MÁS"
+        "MORE": "VER MÁS",
+        "FROM_PRICE": "Desde {{precio}}€/noche"
     },
     "BOOKING": {
         "TITLE": "Solicitud de reserva",

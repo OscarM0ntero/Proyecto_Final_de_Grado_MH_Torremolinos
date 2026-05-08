@@ -24,6 +24,7 @@ export class ContactComponent extends ContenidoBaseComponent implements OnInit {
 	prefijos = PREFIJOS_TELEFONO;
 	email: any;
 	tlf: any;
+	itemIntro: any;
 
 	tokenCaptcha: string = '';
 
@@ -57,7 +58,7 @@ export class ContactComponent extends ContenidoBaseComponent implements OnInit {
 	}
 
 	protected actualizarContenido(): void {
-		//this.itemLema = this.getTexto(1);
+		this.itemIntro = this.getContenido(26);
 		this.email = this.getContenido(7);
 		this.tlf = this.getContenido(8);
 	}

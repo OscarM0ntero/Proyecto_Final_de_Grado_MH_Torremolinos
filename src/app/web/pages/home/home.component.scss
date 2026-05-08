@@ -41,14 +41,33 @@ p {
     }
 }
 
+.hero-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+}
+
+.precio-desde {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    animation: fadeInButton 5s ease forwards;
+    animation-delay: 4s;
+}
+
 .book-button {
     width: 200px;
     height: 50px;
     border: none;
     border-radius: 8px;
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     opacity: 0;
-    color: var(--color-neutral);
+    color: var(--color-primary);
     font-weight: 600;
     letter-spacing: 0.06em;
     animation: fadeInButton 5s ease forwards;
@@ -57,21 +76,22 @@ p {
     text-decoration: none;
     font-size: 16px;
     z-index: 3;
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .book-button:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
 }
 
-// Animacion del boton de reserva
+// Animacion del boton de reserva y precio
 @keyframes fadeInButton {
     from {
         opacity: 0;
     }
 
     to {
-        opacity: 0.85;
+        opacity: 1;
     }
 }
 
@@ -189,6 +209,107 @@ p {
     align-self: stretch;
 }
 
+.resenas-section {
+    margin: 0 var(--desktop-margin);
+
+    .resena-card {
+        background-color: var(--color-tertiary);
+        border-radius: 16px;
+        padding: 28px;
+        margin: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 180px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: box-shadow 0.2s ease;
+
+        &:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    .resena-flag {
+        width: 20px;
+        height: 15px;
+        object-fit: cover;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 4px;
+    }
+
+    .resena-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .resena-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .resena-nombre {
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--color-primary);
+    }
+
+    .resena-pais {
+        font-size: 13px;
+        color: var(--color-primary);
+        opacity: 0.7;
+    }
+
+    .resena-score {
+        background-color: var(--color-primary);
+        color: var(--color-neutral);
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 8px;
+        padding: 6px 12px;
+        flex-shrink: 0;
+    }
+
+    .resena-titulo {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin: 0;
+    }
+
+    .resena-positivo {
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--color-primary);
+        margin: 0;
+        font-style: italic;
+    }
+
+    .resena-negativo {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--color-primary);
+        opacity: 0.6;
+        margin: 0;
+        font-style: italic;
+    }
+}
+
+@media (max-width: 768px) {
+    .resenas-section {
+        margin: 0 var(--tiny-margin);
+
+        ::ng-deep .p-carousel-items-container {
+            .resena-card {
+                margin: 8px 4px;
+            }
+        }
+    }
+}
+
 .more-container {
     display: flex;
     justify-content: center;
@@ -196,11 +317,11 @@ p {
 }
 
 .more {
-    width: 260px;
-    padding: 14px 28px;
+    width: 400px;
+    padding: 20px 28px;
     color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-    border-radius: 8px;
+    border: 4px solid var(--color-primary);
+    border-radius: 10px;
     margin: auto;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -208,7 +329,7 @@ p {
 
     h3 {
         margin: 0;
-        font-size: 15px;
+        font-size: 19px;
     }
 }
 
@@ -223,8 +344,8 @@ p {
     }
 
     .more {
-        width: 220px;
-        padding: 15px;
+        width: 280px;
+        padding: 16px;
     }
 }
 

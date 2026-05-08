@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AdminConfigManagerComponent implements OnInit {
     descuentoNoCancelable: number = 10;
     diasCancelacion: number = 30;
+    precioBase: number = 150;
     guardando = false;
 
     constructor(
@@ -27,13 +28,18 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.diasCancelacion = parseInt(cfg.valor) || 30; },
             error: () => { this.diasCancelacion = 30; }
         });
+        this.configuracionService.getValor('precio_base').subscribe({
+            next: (cfg) => { this.precioBase = parseFloat(cfg.valor) || 150; },
+            error: () => { this.precioBase = 150; }
+        });
     }
 
     guardar(): void {
         this.guardando = true;
         const saves = [
             this.configuracionService.setValor('descuento_no_cancelable', this.descuentoNoCancelable.toString()),
-            this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString())
+            this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString()),
+            this.configuracionService.setValor('precio_base', this.precioBase.toString())
         ];
 
         let completados = 0;

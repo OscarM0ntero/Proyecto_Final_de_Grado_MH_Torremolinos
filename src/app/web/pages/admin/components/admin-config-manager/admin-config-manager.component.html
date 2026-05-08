@@ -32,10 +32,29 @@
             </div>
         </div>
 
-        <div class="config-actions">
-            <button mat-raised-button (click)="guardar()" [disabled]="guardando">
-                {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
+    </div>
+
+    <div class="config-section">
+        <h3>Calendario</h3>
+
+        <div class="config-row">
+            <div class="config-label">
+                <strong>Precio base por noche (€)</strong>
+                <span>Precio que se asigna automáticamente a los nuevos días generados en el calendario. Se puede ajustar día a día desde el panel de calendario.</span>
+            </div>
+            <div class="config-input">
+                <mat-form-field appearance="outline">
+                    <mat-label>Precio (€)</mat-label>
+                    <input matInput type="number" [(ngModel)]="precioBase" min="0" step="1" />
+                    <span matSuffix>€</span>
+                </mat-form-field>
+            </div>
         </div>
+    </div>
+
+    <div class="config-actions">
+        <button mat-raised-button (click)="guardar()" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
     </div>
 </div>
