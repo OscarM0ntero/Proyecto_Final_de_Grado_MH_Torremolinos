@@ -55,6 +55,9 @@ p {
     font-weight: 500;
     letter-spacing: 0.04em;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    animation: fadeInButton 5s ease forwards;
+    animation-delay: 4s;
 }
 
 .book-button {
@@ -62,9 +65,9 @@ p {
     height: 50px;
     border: none;
     border-radius: 8px;
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     opacity: 0;
-    color: var(--color-neutral);
+    color: var(--color-primary);
     font-weight: 600;
     letter-spacing: 0.06em;
     animation: fadeInButton 5s ease forwards;
@@ -76,11 +79,11 @@ p {
 }
 
 .book-button:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
 }
 
-// Animacion del boton de reserva
+// Animacion del boton de reserva y precio
 @keyframes fadeInButton {
     from {
         opacity: 0;

@@ -6,7 +6,7 @@
 <div class="vid-opacity">
     <div class="hero-cta">
         <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
-        <span class="precio-desde" *ngIf="precioMinimo">Desde {{ precioMinimo }}€/noche</span>
+        <span class="precio-desde" *ngIf="precioMinimo">{{ 'HOME.FROM_PRICE' | translate:{ precio: precioMinimo } }}</span>
     </div>
 </div>
 

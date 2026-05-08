@@ -20,7 +20,8 @@
         "BOOK": "BESTILL NÅ",
         "WELCOME": "Velkommen til",
         "VACATION": "For en ideell ferie.",
-        "MORE": "SE MER"
+        "MORE": "SE MER",
+        "FROM_PRICE": "Fra {{precio}}€/natt"
     },
     "BOOKING": {
         "TITLE": "Bestillingsforespørsel",
