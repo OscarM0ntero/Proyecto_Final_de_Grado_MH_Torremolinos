@@ -5,6 +5,21 @@ import { sincronizarIcalThrottled } from '../icalSync.js';
 
 const router = express.Router();
 
+router.get('/precio-minimo', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            `SELECT MIN(precio) AS precio_minimo
+             FROM disponibilidad
+             WHERE estado = 'disponible' AND fecha >= CURDATE() AND precio IS NOT NULL`
+        ) as any[];
+        const precio = rows[0]?.precio_minimo ?? null;
+        return res.json({ precio_minimo: precio });
+    } catch (err) {
+        console.error('[GET /api/disponibilidad/precio-minimo]', err);
+        return res.status(500).json({ error: 'Error al obtener precio mínimo' });
+    }
+});
+
 router.get('/', async (req, res) => {
 	const mes = req.query['mes'] as string;
 

@@ -35,6 +35,18 @@
 
 </section>
 
+<div class="spacer-big"></div>
+
+<section class="apartament-container" *ngIf="itemPiscina">
+
+    <h3>{{ itemPiscina.titulo }}</h3>
+    <div [innerHTML]="itemPiscina.texto"></div>
+
+    <h3>{{ itemEstacionamiento.titulo }}</h3>
+    <div [innerHTML]="itemEstacionamiento.texto"></div>
+
+</section>
+
 <p-galleria [value]="images2" numVisible="1" [circular]="true" [showIndicators]="false"
     [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"
     [transitionInterval]="3000" [showThumbnails]="false"
@@ -55,16 +67,6 @@
 </p-galleria>
 
 <div class="spacer-big"></div>
-
-<section class="apartament-container" *ngIf="itemPiscina">
-
-    <h3>{{ itemPiscina.titulo }}</h3>
-    <div [innerHTML]="itemPiscina.texto"></div>
-
-    <h3>{{ itemEstacionamiento.titulo }}</h3>
-    <div [innerHTML]="itemEstacionamiento.texto"></div>
-
-</section>
 
 <div class="more-container">
     <button [routerLink]="['../localizacion']" class="more">

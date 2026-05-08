@@ -26,6 +26,7 @@ import { ClientBookingManagerComponent } from './pages/client/components/client-
 import { AdminCalendarManagerComponent } from './pages/admin/components/admin-calendar-manager/admin-calendar-manager.component';
 import { AdminUsersManagerComponent } from './pages/admin/components/admin-users-manager/admin-users-manager.component';
 import { AdminConfigManagerComponent } from './pages/admin/components/admin-config-manager/admin-config-manager.component';
+import { AdminResenasManagerComponent } from './pages/admin/components/admin-resenas-manager/admin-resenas-manager.component';
 import { RecoverPasswordComponent } from './pages/login/recover-password/recover-password.component';
 import { LoginMenuComponent } from './pages/login/login-menu/login-menu.component';
 import { LegalComponent } from './pages/legal/legal.component';
@@ -73,6 +74,7 @@ const routes: Routes = [
 					{ path: 'reservas', component: AdminBookingManagerComponent },
 					{ path: 'usuarios', component: AdminUsersManagerComponent },
 					{ path: 'configuracion', component: AdminConfigManagerComponent },
+					{ path: 'resenas', component: AdminResenasManagerComponent },
 					{
 						path: 'textos',
 						component: AdminContentManagerComponent,
