@@ -63,7 +63,7 @@ p {
 .book-button {
     width: 200px;
     height: 50px;
-    border: 2px solid var(--color-primary);
+    border: none;
     border-radius: 8px;
     background-color: var(--color-secondary);
     opacity: 0;
@@ -76,13 +76,12 @@ p {
     text-decoration: none;
     font-size: 16px;
     z-index: 3;
-    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .book-button:hover {
     background-color: var(--color-primary);
     color: var(--color-neutral);
-    border-color: var(--color-primary);
 }
 
 // Animacion del boton de reserva y precio
@@ -92,7 +91,7 @@ p {
     }
 
     to {
-        opacity: 0.85;
+        opacity: 1;
     }
 }
 
