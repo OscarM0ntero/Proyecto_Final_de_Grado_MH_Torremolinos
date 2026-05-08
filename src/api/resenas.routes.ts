@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', async (_req, res: Response) => {
 	try {
 		const [rows] = await pool.query(
-			'SELECT * FROM resenas WHERE activa = 1 ORDER BY id_resena DESC'
+			'SELECT * FROM resenas WHERE activa = 1 ORDER BY id_resena ASC'
 		) as unknown as [any[]];
 		return res.json(rows);
 	} catch (error) {
