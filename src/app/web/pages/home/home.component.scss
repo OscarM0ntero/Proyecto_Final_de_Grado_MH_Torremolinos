@@ -209,6 +209,100 @@ p {
     align-self: stretch;
 }
 
+.resenas-section {
+    margin: 0 var(--desktop-margin);
+
+    .resena-card {
+        background-color: var(--color-tertiary);
+        border-radius: 16px;
+        padding: 28px;
+        margin: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 180px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: box-shadow 0.2s ease;
+
+        &:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    .resena-flag {
+        width: 20px;
+        height: 15px;
+        object-fit: cover;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 4px;
+    }
+
+    .resena-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .resena-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .resena-nombre {
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--color-primary);
+    }
+
+    .resena-pais {
+        font-size: 13px;
+        color: var(--color-primary);
+        opacity: 0.7;
+    }
+
+    .resena-score {
+        background-color: var(--color-primary);
+        color: var(--color-neutral);
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 8px;
+        padding: 6px 12px;
+        flex-shrink: 0;
+    }
+
+    .resena-positivo {
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--color-primary);
+        margin: 0;
+        font-style: italic;
+    }
+
+    .resena-negativo {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--color-primary);
+        opacity: 0.6;
+        margin: 0;
+        font-style: italic;
+    }
+}
+
+@media (max-width: 768px) {
+    .resenas-section {
+        margin: 0 var(--tiny-margin);
+
+        ::ng-deep .p-carousel-items-container {
+            .resena-card {
+                margin: 8px 4px;
+            }
+        }
+    }
+}
+
 .more-container {
     display: flex;
     justify-content: center;

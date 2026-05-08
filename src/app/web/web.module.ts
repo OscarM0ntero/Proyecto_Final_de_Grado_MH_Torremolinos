@@ -41,6 +41,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { AdminUsersManagerComponent } from './pages/admin/components/admin-users-manager/admin-users-manager.component';
 import { AdminConfigManagerComponent } from './pages/admin/components/admin-config-manager/admin-config-manager.component';
+import { AdminResenasManagerComponent } from './pages/admin/components/admin-resenas-manager/admin-resenas-manager.component';
 import { EditUserDialogComponent } from './pages/admin/components/admin-users-manager/dialogs/edit-user-dialog/edit-user-dialog.component';
 import { AddUserDialogComponent } from './pages/admin/components/admin-users-manager/dialogs/add-user-dialog/add-user-dialog.component';
 import { RecoverPasswordComponent } from './pages/login/recover-password/recover-password.component';
@@ -82,6 +83,7 @@ registerLocaleData(localeEs);
 		LoginMenuComponent,
 		LegalComponent,
 		AdminConfigManagerComponent,
+		AdminResenasManagerComponent,
 	],
 	imports: [
 		CommonModule,

@@ -7,6 +7,7 @@ import { ImagenesService } from '../../../services/imagenes.service';
 import { ContenidoService } from '../../../services/contenido.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { DisponibilidadService } from '../../../services/disponibilidad.service';
+import { ResenasService, Resena } from '../../../services/resenas.service';
 
 
 @Component({
@@ -26,6 +27,15 @@ export class HomeComponent extends ContenidoBaseComponent {
 	itemPuntuacion = '';
 	precioMinimo: number | null = null;
 
+	resenaResponsiveOptions = [
+		{ breakpoint: '1200px', numVisible: 3, numScroll: 1 },
+		{ breakpoint: '768px', numVisible: 1, numScroll: 1 },
+	];
+
+	bookingReviewsUrl = 'https://www.booking.com/hotel/es/m-amp-h-torremolinos.html?#tab-reviews';
+
+	resenas: Resena[] = [];
+
 	constructor(
 		contenido: ContenidoService,
 		contenidoWeb: ContenidoWebService,
@@ -33,7 +43,8 @@ export class HomeComponent extends ContenidoBaseComponent {
 		translate: TranslateService,
 		private titleService: Title,
 		private metaService: Meta,
-		private disponibilidadService: DisponibilidadService
+		private disponibilidadService: DisponibilidadService,
+		private resenasService: ResenasService
 	) {
 		super(contenido, contenidoWeb, imagenes, translate, 'home');
 	}
@@ -44,6 +55,11 @@ export class HomeComponent extends ContenidoBaseComponent {
 		this.disponibilidadService.getPrecioMinimo().subscribe({
 			next: (data) => { this.precioMinimo = data.precio_minimo; },
 			error: () => { this.precioMinimo = null; }
+		});
+
+		this.resenasService.getResenas().subscribe({
+			next: (data: Resena[]) => { this.resenas = data; },
+			error: () => { this.resenas = []; }
 		});
 
 		this.titleService.setTitle('M&H Torremolinos');
