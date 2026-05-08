@@ -56,6 +56,11 @@ export class LayoutComponent implements OnInit {
 				) {
 					setTimeout(() => this.loader.ocultar(), 100);
 				}
+				if (event instanceof NavigationEnd) {
+					const url = event.urlAfterRedirects;
+					const mostrar = ['/reservar', '/contacto'].some(r => url.includes(r));
+					document.body.classList.toggle('show-recaptcha', mostrar);
+				}
 			});
 		} else {
 			this.cargando = true;
