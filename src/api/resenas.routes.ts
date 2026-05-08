@@ -35,11 +35,11 @@ router.get('/all', verificarToken, async (req: RequestConUsuario, res: Response)
 
 router.post('/', verificarToken, async (req: RequestConUsuario, res: Response) => {
 	if (req.usuario?.rol !== 'administrador') return res.status(403).json({ error: 'Acceso denegado' });
-	const { nombre, pais, iso, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa } = req.body;
+	const { nombre, pais, iso, titulo, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa } = req.body;
 	try {
 		const [result] = await pool.query(
-			'INSERT INTO resenas (nombre, pais, iso, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-			[nombre, pais, iso, puntuacion, texto_positivo || '', texto_negativo || '', fecha_estancia || '', activa ?? 1]
+			'INSERT INTO resenas (nombre, pais, iso, titulo, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[nombre, pais, iso, titulo || '', puntuacion, texto_positivo || '', texto_negativo || '', fecha_estancia || '', activa ?? 1]
 		) as unknown as [any];
 		return res.status(201).json({ id_resena: result.insertId });
 	} catch (error) {
@@ -50,11 +50,11 @@ router.post('/', verificarToken, async (req: RequestConUsuario, res: Response) =
 
 router.put('/:id', verificarToken, async (req: RequestConUsuario, res: Response) => {
 	if (req.usuario?.rol !== 'administrador') return res.status(403).json({ error: 'Acceso denegado' });
-	const { nombre, pais, iso, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa } = req.body;
+	const { nombre, pais, iso, titulo, puntuacion, texto_positivo, texto_negativo, fecha_estancia, activa } = req.body;
 	try {
 		await pool.query(
-			'UPDATE resenas SET nombre = ?, pais = ?, iso = ?, puntuacion = ?, texto_positivo = ?, texto_negativo = ?, fecha_estancia = ?, activa = ? WHERE id_resena = ?',
-			[nombre, pais, iso, puntuacion, texto_positivo || '', texto_negativo || '', fecha_estancia || '', activa, req.params['id']]
+			'UPDATE resenas SET nombre = ?, pais = ?, iso = ?, titulo = ?, puntuacion = ?, texto_positivo = ?, texto_negativo = ?, fecha_estancia = ?, activa = ? WHERE id_resena = ?',
+			[nombre, pais, iso, titulo || '', puntuacion, texto_positivo || '', texto_negativo || '', fecha_estancia || '', activa, req.params['id']]
 		);
 		return res.json({ mensaje: 'Reseña actualizada' });
 	} catch (error) {

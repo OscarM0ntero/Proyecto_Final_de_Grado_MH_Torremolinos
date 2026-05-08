@@ -82,6 +82,7 @@
                     </div>
                     <div class="resena-score">{{ r.puntuacion }}</div>
                 </div>
+                <p class="resena-titulo" *ngIf="r.titulo"><strong>{{ r.titulo }}</strong></p>
                 <p class="resena-positivo" *ngIf="r.texto_positivo">"{{ r.texto_positivo }}"</p>
                 <p class="resena-negativo" *ngIf="r.texto_negativo">"{{ r.texto_negativo }}"</p>
             </a>

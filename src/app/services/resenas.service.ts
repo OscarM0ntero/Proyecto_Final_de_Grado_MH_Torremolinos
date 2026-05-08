@@ -7,6 +7,7 @@ export interface Resena {
 	nombre: string;
 	pais: string;
 	iso: string;
+	titulo: string;
 	puntuacion: number;
 	texto_positivo: string;
 	texto_negativo: string;
