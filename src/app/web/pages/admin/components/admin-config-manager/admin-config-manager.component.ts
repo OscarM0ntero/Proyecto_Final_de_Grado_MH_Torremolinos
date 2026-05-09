@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfiguracionService } from '../../../../../services/configuracion.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-admin-config-manager',
@@ -17,7 +18,8 @@ export class AdminConfigManagerComponent implements OnInit {
 
     constructor(
         private configuracionService: ConfiguracionService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private translate: TranslateService
     ) { }
 
     ngOnInit(): void {
@@ -55,7 +57,11 @@ export class AdminConfigManagerComponent implements OnInit {
             next: () => {
                 completados++;
                 if (completados === saves.length) {
-                    this.snackBar.open(hayError ? 'Error al guardar algún valor' : 'Configuración guardada', 'OK', { duration: 3000 });
+                    this.snackBar.open(
+                        this.translate.instant(hayError ? 'SNACKBAR.CHANGES-ERROR' : 'SNACKBAR.CHANGES-APPLIED'),
+                        undefined,
+                        { duration: 3000, panelClass: [hayError ? 'snackbar-error' : 'snackbar-success'] }
+                    );
                     this.guardando = false;
                 }
             },
@@ -63,7 +69,11 @@ export class AdminConfigManagerComponent implements OnInit {
                 hayError = true;
                 completados++;
                 if (completados === saves.length) {
-                    this.snackBar.open('Error al guardar', 'OK', { duration: 3000 });
+                    this.snackBar.open(
+                        this.translate.instant('SNACKBAR.CHANGES-ERROR'),
+                        undefined,
+                        { duration: 3000, panelClass: ['snackbar-error'] }
+                    );
                     this.guardando = false;
                 }
             }
