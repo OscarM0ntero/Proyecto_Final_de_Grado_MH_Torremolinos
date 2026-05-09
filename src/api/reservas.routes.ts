@@ -156,60 +156,156 @@ router.post('/', async (req, res) => {
         );
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
-        const descuentoInfo = esNoCancelable && descuento_aplicado > 0
-            ? `<p style="color:#8f0000;"><strong>Tarifa no cancelable:</strong> descuento del ${descuento_aplicado}% aplicado. Esta reserva no puede cancelarse ni reembolsarse.</p>`
-            : `<p><strong>Tarifa cancelable.</strong></p>`;
+        const restante = precio_total - anticipo;
+
+        const paymentBlock = esNoCancelable
+            ? `<div style="background:#fff8f8;border-left:4px solid #8f0000;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
+                <p style="margin:0 0 8px;font-size:15px;"><strong>Non-refundable rate — full payment required</strong></p>
+                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the full amount:</p>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    <tr><td style="padding:4px 0;color:#555;">Amount due now</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${precio_total}€</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
+                </table>
+                <p style="margin:12px 0 0;font-size:13px;color:#8f0000;">⚠ This rate does not allow cancellations or refunds once payment is made.</p>
+               </div>`
+            : `<div style="background:#f5f8f3;border-left:4px solid #3F4B3A;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
+                <p style="margin:0 0 8px;font-size:15px;"><strong>Refundable rate — deposit to confirm</strong></p>
+                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the ${ANTICIPO_PORCENTAJE}% deposit:</p>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    <tr><td style="padding:4px 0;color:#555;">Deposit due now (${ANTICIPO_PORCENTAJE}%)</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${anticipo}€</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">Remaining balance (due 30 days before check-in)</td><td style="padding:4px 0;text-align:right;">${restante}€</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
+                </table>
+                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to 30 days before check-in — deposit fully refunded.</p>
+               </div>`;
 
         // 4. Email de confirmación al cliente
-        await enviarCorreo(email, 'Solicitud de reserva recibida', `
-        <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
-            <h2 style="font-family: Georgia, serif; color: #3F4B3A;">Hola ${nombre},</h2>
+        await enviarCorreo(email, 'Booking request received — M&H Torremolinos', `
+        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
+            <tr><td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
 
-            <p>Hemos recibido tu solicitud de reserva:</p>
-            <ul>
-                <li><strong>Entrada:</strong> ${fechaInicioFmt}</li>
-                <li><strong>Salida:</strong> ${fechaFinFmt}</li>
-                <li><strong>Huéspedes:</strong> ${huespedes}</li>
-                <li><strong>Bebé:</strong> ${conBebe ? 'Sí' : 'No'}</li>
-                <li><strong>Mascota:</strong> ${conMascota ? 'Sí' : 'No'}</li>
-                <li><strong>Tarifa:</strong> ${labelTarifa}</li>
-                <li><strong>Total:</strong> ${precio_total}€</li>
-            </ul>
-            ${descuentoInfo}
-            <p>Para confirmar tu reserva, realiza una transferencia del <strong>${ANTICIPO_PORCENTAJE}%</strong> del total
-            (<strong>${anticipo}€</strong>) a:</p>
-            <p><strong>IBAN:</strong> ${IBAN}</p>
-            <p><strong>Concepto:</strong> ${nombre} ${apellidos}</p>
-            <p>Al realizar este pago, confirmas que has leído y aceptas la <a href="https://www.mhtorremolinos.com/legal#privacy">Politica de Privacidad</a> y <a href="https://www.mhtorremolinos.com/legal#booking">Condiciones de la Reserva</a></p>
-            <p>Una vez recibido el pago, te confirmaremos la reserva por email.</p>
-            <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-            <p style="margin-top: 20px;"><em>Gracias por confiar en M&H Torremolinos.</em></p>
+                <!-- Header -->
+                <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
+                  <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
+                  <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
+                </td></tr>
+
+                <!-- Body -->
+                <tr><td style="padding:36px 40px;">
+                  <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${nombre},</h2>
+                  <p style="margin:0 0 24px;color:#555;font-size:15px;">Thank you for your booking request. Here is a summary:</p>
+
+                  <!-- Booking details -->
+                  <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:8px;">
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Check-in</td>
+                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${fechaInicioFmt}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 14px;color:#555;">Check-out</td>
+                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${fechaFinFmt}</td>
+                    </tr>
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Guests</td>
+                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${huespedes}</td>
+                    </tr>
+                    ${conBebe ? `<tr><td style="padding:10px 14px;color:#555;">Baby cot</td><td style="padding:10px 14px;font-weight:700;text-align:right;">Yes</td></tr>` : ''}
+                    ${conMascota ? `<tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;">Pet</td><td style="padding:10px 14px;font-weight:700;text-align:right;">Yes</td></tr>` : ''}
+                    <tr style="border-top:2px solid #3F4B3A;">
+                      <td style="padding:12px 14px;color:#3F4B3A;font-weight:700;">Total</td>
+                      <td style="padding:12px 14px;font-weight:700;text-align:right;font-size:17px;">${precio_total}€${esNoCancelable && descuento_aplicado > 0 ? ` <span style="font-size:12px;color:#555;font-weight:400;">(${descuento_aplicado}% discount applied)</span>` : ''}</td>
+                    </tr>
+                  </table>
+
+                  ${paymentBlock}
+
+                  <p style="font-size:14px;color:#555;margin:20px 0 8px;">Once we receive your payment, we will confirm your booking by email.</p>
+                  <p style="font-size:14px;color:#555;margin:0 0 24px;">If you have any questions, feel free to reply to this email or contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
+
+                  <p style="font-size:12px;color:#999;margin:0;">By making this payment you confirm that you have read and agree to our <a href="https://www.mhtorremolinos.com/legal" style="color:#3F4B3A;">Privacy Policy and Booking Conditions</a>.</p>
+                </td></tr>
+
+                <!-- Footer -->
+                <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
+                  <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
+                </td></tr>
+
+              </table>
+            </td></tr>
+          </table>
         </body>
         `);
 
         // 5. Email a administradores
+        const pagoEsperado = esNoCancelable
+            ? `100% — ${precio_total}€ (non-refundable)`
+            : `${ANTICIPO_PORCENTAJE}% deposit — ${anticipo}€ now · ${restante}€ before 30 days`;
+
         for (const admin of adminEmails) {
-            await enviarCorreo(admin, 'Nueva solicitud de reserva', `
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Della+Respira&family=Roboto&display=swap');
-          body {
-            font-family: 'Roboto', sans-serif;
-            color: #3F4B3A;
-          }
-          h1, h2, h3 {
-            font-family: 'Della Respira', serif;
-            color: #3F4B3A;
-          }
-        </style>
-        <body>
-          <h3>Reserva pendiente</h3>
-          <p><strong>Cliente:</strong> ${nombre} ${apellidos}</p>
-          <p><strong>Fechas:</strong> ${fechaInicioFmt} → ${fechaFinFmt}</p>
-          <p><strong>Email:</strong> ${email} | <strong>Tel:</strong> ${prefijo} ${telefono}</p>
-          <p><strong>Personas:</strong> ${huespedes} | <strong>Bebé:</strong> ${conBebe ? 'Sí' : 'No'} | <strong>Mascota:</strong> ${conMascota ? 'Sí' : 'No'}</p>
-          <p><strong>Tarifa:</strong> ${labelTarifa}${esNoCancelable && descuento_aplicado > 0 ? ` (${descuento_aplicado}% dto.)` : ''}</p>
-          <p><strong>Nota:</strong> ${nota || 'Sin nota'}</p>
-          <p><strong>Total:</strong> ${precio_total}€</p>
+            await enviarCorreo(admin, `New booking request — ${nombre} ${apellidos} (${fechaInicioFmt})`, `
+        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
+            <tr><td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
+
+                <tr><td style="background:#3F4B3A;padding:20px 32px;">
+                  <h2 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:18px;">New booking request</h2>
+                  <p style="margin:4px 0 0;color:#b8c4b3;font-size:13px;">M&amp;H Torremolinos · Pending payment</p>
+                </td></tr>
+
+                <tr><td style="padding:28px 32px;">
+                  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;width:45%;">Guest</td>
+                      <td style="padding:10px 14px;font-weight:700;">${nombre} ${apellidos}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 14px;color:#555;">Email</td>
+                      <td style="padding:10px 14px;"><a href="mailto:${email}" style="color:#3F4B3A;">${email}</a></td>
+                    </tr>
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Phone</td>
+                      <td style="padding:10px 14px;">${prefijo} ${telefono}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 14px;color:#555;">Check-in</td>
+                      <td style="padding:10px 14px;font-weight:700;">${fechaInicioFmt}</td>
+                    </tr>
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Check-out</td>
+                      <td style="padding:10px 14px;font-weight:700;">${fechaFinFmt}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 14px;color:#555;">Guests</td>
+                      <td style="padding:10px 14px;">${huespedes}${conBebe ? ' · cot' : ''}${conMascota ? ' · pet' : ''}</td>
+                    </tr>
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Rate</td>
+                      <td style="padding:10px 14px;">${labelTarifa}${esNoCancelable && descuento_aplicado > 0 ? ` <span style="color:#8f0000;">(${descuento_aplicado}% discount)</span>` : ''}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:10px 14px;color:#555;">Total</td>
+                      <td style="padding:10px 14px;font-weight:700;font-size:16px;">${precio_total}€</td>
+                    </tr>
+                    <tr style="background:#f5f8f3;">
+                      <td style="padding:10px 14px;color:#555;">Expected payment</td>
+                      <td style="padding:10px 14px;font-weight:700;color:${esNoCancelable ? '#8f0000' : '#3F4B3A'};">${pagoEsperado}</td>
+                    </tr>
+                    ${nota ? `<tr><td style="padding:10px 14px;color:#555;vertical-align:top;">Note</td><td style="padding:10px 14px;">${nota}</td></tr>` : ''}
+                  </table>
+                </td></tr>
+
+                <tr><td style="background:#f5f8f3;padding:16px 32px;text-align:center;border-top:1px solid #e0e0d8;">
+                  <a href="https://www.mhtorremolinos.com/admin" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;">Open admin panel</a>
+                </td></tr>
+
+              </table>
+            </td></tr>
+          </table>
         </body>
       `);
         }
@@ -293,17 +389,45 @@ router.put('/:id/estado', async (req, res) => {
             const fechaInicioFmt = formatearFecha(fechaInicio);
             const fechaFinFmt = formatearFecha(fechaFin);
 
-            await enviarCorreo(email, 'Reserva confirmada', `
-                <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
-                    <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
-                    <p>Tu reserva ha sido <strong>confirmada</strong>.</p>
-                    <ul>
-                        <li><strong>Entrada:</strong> ${fechaInicioFmt}</li>
-                        <li><strong>Salida:</strong> ${fechaFinFmt}</li>
-                    </ul>
-                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-                    <p>Gracias por confiar en M&H Torremolinos, estamos deseando recibirte.</p>
-                </body>
+            await enviarCorreo(email, 'Booking confirmed — M&H Torremolinos', `
+            <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
+                <tr><td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
+
+                    <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
+                      <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
+                      <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
+                    </td></tr>
+
+                    <tr><td style="padding:36px 40px;text-align:center;">
+                      <div style="font-size:48px;">✓</div>
+                      <h2 style="margin:8px 0 4px;font-family:Georgia,serif;color:#3F4B3A;font-size:22px;">Your booking is confirmed!</h2>
+                      <p style="margin:0 0 28px;color:#555;font-size:15px;">Hi ${nombre}, we are delighted to welcome you.</p>
+
+                      <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
+                        <tr style="background:#f5f8f3;">
+                          <td style="padding:12px 16px;color:#555;">Check-in</td>
+                          <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaInicioFmt}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:12px 16px;color:#555;">Check-out</td>
+                          <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaFinFmt}</td>
+                        </tr>
+                      </table>
+
+                      <p style="font-size:14px;color:#555;margin:24px 0 8px;">If you have any questions before your arrival, feel free to contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
+                      <p style="font-size:15px;color:#3F4B3A;margin:0;"><em>We look forward to seeing you soon!</em></p>
+                    </td></tr>
+
+                    <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
+                      <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
+                    </td></tr>
+
+                  </table>
+                </td></tr>
+              </table>
+            </body>
             `);
         }
 
@@ -318,22 +442,56 @@ router.put('/:id/estado', async (req, res) => {
                 `, [fecha, id]);
             }
 
-            const asunto = estado === 'Rechazada' ? 'Reserva rechazada' : 'Reserva cancelada';
-            const mensaje = estado === 'Rechazada'
-                ? `Lamentamos informarte que tu solicitud de reserva ha sido <strong>rechazada</strong>.`
-                : `Como solicitaste, tu reserva ha sido <strong>cancelada</strong>.`;
+            const asunto = estado === 'Rechazada'
+                ? 'Booking request update — M&H Torremolinos'
+                : 'Booking cancellation — M&H Torremolinos';
+
+            const mensajePrincipal = estado === 'Rechazada'
+                ? `We are sorry to inform you that we were unable to confirm your booking request for the selected dates.`
+                : `As requested, your booking has been cancelled.`;
+
+            const mensajeSecundario = estado === 'Rechazada'
+                ? `We apologise for the inconvenience. Please feel free to contact us to check alternative dates.`
+                : `If you have any questions regarding your cancellation, please don't hesitate to get in touch.`;
 
             await enviarCorreo(email, asunto, `
-                <body style="font-family: Arial, sans-serif; color: #3F4B3A;">
-                    <h2 style="font-family: Georgia, serif;">Hola ${nombre},</h2>
-                    <p>${mensaje}</p>
-                    <ul>
-                        <li><strong>Entrada:</strong> ${formatearFecha(fechaInicio)}</li>
-                        <li><strong>Salida:</strong> ${formatearFecha(fechaFin)}</li>
-                    </ul>
-                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-                    <p>Atentamente,<br/>M&H Torremolinos</p>
-                </body>
+            <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
+                <tr><td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
+
+                    <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
+                      <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
+                      <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
+                    </td></tr>
+
+                    <tr><td style="padding:36px 40px;">
+                      <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${nombre},</h2>
+                      <p style="margin:0 0 20px;color:#555;font-size:15px;">${mensajePrincipal}</p>
+
+                      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
+                        <tr style="background:#f5f8f3;">
+                          <td style="padding:10px 14px;color:#555;">Check-in</td>
+                          <td style="padding:10px 14px;font-weight:700;text-align:right;">${formatearFecha(fechaInicio)}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:10px 14px;color:#555;">Check-out</td>
+                          <td style="padding:10px 14px;font-weight:700;text-align:right;">${formatearFecha(fechaFin)}</td>
+                        </tr>
+                      </table>
+
+                      <p style="font-size:14px;color:#555;margin:0 0 8px;">${mensajeSecundario}</p>
+                      <p style="font-size:14px;color:#555;margin:0;">You can reach us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
+                    </td></tr>
+
+                    <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
+                      <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
+                    </td></tr>
+
+                  </table>
+                </td></tr>
+              </table>
+            </body>
             `);
         }
 
