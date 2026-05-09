@@ -71,12 +71,12 @@
         gap: 2px;
 
         strong {
-            font-size: 14px;
+            font-size: 18px;
             color: var(--color-primary);
         }
 
         span {
-            font-size: 12px;
+            font-size: 14px;
             color: #666;
         }
     }
@@ -251,6 +251,13 @@
 @media (max-width: 768px) {
     .tarifa-cards {
         flex-direction: column;
+    }
+
+    .tarifa-cards,
+    .precio-card {
+        width: 90% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     .summary-grid {

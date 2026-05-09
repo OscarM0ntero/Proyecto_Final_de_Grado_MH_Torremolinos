@@ -35,6 +35,24 @@
     </div>
 
     <div class="config-section">
+        <h3>Mascotas</h3>
+
+        <div class="config-row">
+            <div class="config-label">
+                <strong>Suplemento por mascota (€/noche)</strong>
+                <span>Coste adicional por noche que se aplica cuando el huésped indica que trae mascota. Aparece en el formulario de reserva y en el resumen del precio.</span>
+            </div>
+            <div class="config-input">
+                <mat-form-field appearance="outline">
+                    <mat-label>Precio (€)</mat-label>
+                    <input matInput type="number" [(ngModel)]="precioMascota" min="0" step="1" />
+                    <span matSuffix>€/noche</span>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="config-section">
         <h3>Calendario</h3>
 
         <div class="config-row">

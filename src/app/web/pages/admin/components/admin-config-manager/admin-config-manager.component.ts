@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfiguracionService } from '../../../../../services/configuracion.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-admin-config-manager',
@@ -12,11 +13,13 @@ export class AdminConfigManagerComponent implements OnInit {
     descuentoNoCancelable: number = 10;
     diasCancelacion: number = 30;
     precioBase: number = 150;
+    precioMascota: number = 10;
     guardando = false;
 
     constructor(
         private configuracionService: ConfiguracionService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private translate: TranslateService
     ) { }
 
     ngOnInit(): void {
@@ -32,6 +35,10 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.precioBase = parseFloat(cfg.valor) || 150; },
             error: () => { this.precioBase = 150; }
         });
+        this.configuracionService.getValor('precio_mascota').subscribe({
+            next: (cfg) => { this.precioMascota = parseFloat(cfg.valor) || 10; },
+            error: () => { this.precioMascota = 10; }
+        });
     }
 
     guardar(): void {
@@ -39,7 +46,8 @@ export class AdminConfigManagerComponent implements OnInit {
         const saves = [
             this.configuracionService.setValor('descuento_no_cancelable', this.descuentoNoCancelable.toString()),
             this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString()),
-            this.configuracionService.setValor('precio_base', this.precioBase.toString())
+            this.configuracionService.setValor('precio_base', this.precioBase.toString()),
+            this.configuracionService.setValor('precio_mascota', this.precioMascota.toString())
         ];
 
         let completados = 0;
@@ -49,7 +57,11 @@ export class AdminConfigManagerComponent implements OnInit {
             next: () => {
                 completados++;
                 if (completados === saves.length) {
-                    this.snackBar.open(hayError ? 'Error al guardar algún valor' : 'Configuración guardada', 'OK', { duration: 3000 });
+                    this.snackBar.open(
+                        this.translate.instant(hayError ? 'SNACKBAR.CHANGES-ERROR' : 'SNACKBAR.CHANGES-APPLIED'),
+                        undefined,
+                        { duration: 3000, panelClass: [hayError ? 'snackbar-error' : 'snackbar-success'] }
+                    );
                     this.guardando = false;
                 }
             },
@@ -57,7 +69,11 @@ export class AdminConfigManagerComponent implements OnInit {
                 hayError = true;
                 completados++;
                 if (completados === saves.length) {
-                    this.snackBar.open('Error al guardar', 'OK', { duration: 3000 });
+                    this.snackBar.open(
+                        this.translate.instant('SNACKBAR.CHANGES-ERROR'),
+                        undefined,
+                        { duration: 3000, panelClass: ['snackbar-error'] }
+                    );
                     this.guardando = false;
                 }
             }
