@@ -64,7 +64,7 @@
 <section class="resenas-section" *ngIf="resenas.length > 0">
     <p-carousel [value]="resenas" [numVisible]="3" [numScroll]="1" [circular]="true" [autoplayInterval]="5000" [responsiveOptions]="resenaResponsiveOptions">
         <ng-template pTemplate="item" let-r>
-            <a class="resena-card" [href]="bookingReviewsUrl" target="_blank" rel="noopener">
+            <a class="resena-card" [href]="bookingReviewsUrl" target="_blank" rel="noopener" tabindex="-1">
                 <div class="resena-header">
                     <div class="resena-meta">
                         <span class="resena-nombre">{{ r.nombre }}</span>
