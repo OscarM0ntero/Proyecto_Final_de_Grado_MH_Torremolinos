@@ -12,6 +12,7 @@ export class AdminConfigManagerComponent implements OnInit {
     descuentoNoCancelable: number = 10;
     diasCancelacion: number = 30;
     precioBase: number = 150;
+    precioMascota: number = 10;
     guardando = false;
 
     constructor(
@@ -32,6 +33,10 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.precioBase = parseFloat(cfg.valor) || 150; },
             error: () => { this.precioBase = 150; }
         });
+        this.configuracionService.getValor('precio_mascota').subscribe({
+            next: (cfg) => { this.precioMascota = parseFloat(cfg.valor) || 10; },
+            error: () => { this.precioMascota = 10; }
+        });
     }
 
     guardar(): void {
@@ -39,7 +44,8 @@ export class AdminConfigManagerComponent implements OnInit {
         const saves = [
             this.configuracionService.setValor('descuento_no_cancelable', this.descuentoNoCancelable.toString()),
             this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString()),
-            this.configuracionService.setValor('precio_base', this.precioBase.toString())
+            this.configuracionService.setValor('precio_base', this.precioBase.toString()),
+            this.configuracionService.setValor('precio_mascota', this.precioMascota.toString())
         ];
 
         let completados = 0;

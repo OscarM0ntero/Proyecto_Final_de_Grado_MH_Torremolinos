@@ -41,6 +41,7 @@ export class DisponibilidadComponent implements OnInit {
 	descuentoNoCancelable = 10;
 	descuentoEuros = 0;
 	diasCancelacion = 30;
+	precioMascotaNoche = 10;
 
 	get precioConDescuento(): number {
 		const habitacionDescontada = Math.round((this.precioHabitacion * (1 - this.descuentoNoCancelable / 100)) * 100) / 100;
@@ -105,6 +106,10 @@ export class DisponibilidadComponent implements OnInit {
 		this.configuracionService.getValor('dias_cancelacion').subscribe({
 			next: (cfg) => { this.diasCancelacion = parseInt(cfg.valor) || 30; },
 			error: () => { this.diasCancelacion = 30; }
+		});
+		this.configuracionService.getValor('precio_mascota').subscribe({
+			next: (cfg) => { this.precioMascotaNoche = parseFloat(cfg.valor) || 10; },
+			error: () => { this.precioMascotaNoche = 10; }
 		});
 
 		const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
@@ -201,7 +206,7 @@ export class DisponibilidadComponent implements OnInit {
 	}
 
 	calcPrecioMascotas(): void {
-		this.precioMascota = this.reserva.conMascota ? this.numeroNoches * 10 : 0;
+		this.precioMascota = this.reserva.conMascota ? this.numeroNoches * this.precioMascotaNoche : 0;
 	}
 
 	enviarReserva(): void {

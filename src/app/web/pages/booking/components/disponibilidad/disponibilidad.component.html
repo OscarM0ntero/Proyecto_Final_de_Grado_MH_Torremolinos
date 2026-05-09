@@ -33,7 +33,7 @@
                 {{ 'BOOKING.CRIB' | translate }}
             </mat-checkbox>
             <mat-checkbox [(ngModel)]="reserva.conMascota" name="conMascota" (ngModelChange)="onRangoModelChanged()">
-                {{ 'BOOKING.PET' | translate }}
+                {{ 'BOOKING.PET' | translate: { price: precioMascotaNoche } }}
             </mat-checkbox>
         </div>
 
@@ -96,7 +96,7 @@
             </div>
             <div class="precio-row" *ngIf="reserva.conMascota">
                 <span>{{ 'BOOKING.PET2' | translate }}</span>
-                <span>{{ numeroNoches }} x 10€</span>
+                <span>{{ numeroNoches }} x {{ precioMascotaNoche }}€</span>
             </div>
             <div class="precio-row total-row">
                 <strong>{{ 'BOOKING.PRICE' | translate }}</strong>
@@ -209,7 +209,7 @@
                 </div>
                 <div class="summary-card-row">
                     <span>{{ 'BOOKING.BRING-PET' | translate }}</span>
-                    <strong>{{ (reserva.conMascota ? 'BOOKING.YES' : 'BOOKING.NO') | translate }}<ng-container *ngIf="reserva.conMascota"> ({{ 'BOOKING.PET-SURCHARGE' | translate }})</ng-container></strong>
+                    <strong>{{ (reserva.conMascota ? 'BOOKING.YES' : 'BOOKING.NO') | translate }}<ng-container *ngIf="reserva.conMascota"> ({{ 'BOOKING.PET-SURCHARGE' | translate: { price: precioMascotaNoche } }})</ng-container></strong>
                 </div>
                 <div class="summary-card-row tarifa-badge-row">
                     <span>{{ 'BOOKING.RATE-TYPE' | translate }}</span>
@@ -236,7 +236,7 @@
                 </div>
                 <div class="summary-card-row" *ngIf="reserva.conMascota">
                     <span>{{ 'BOOKING.PET2' | translate }}</span>
-                    <strong>{{ numeroNoches * 10 | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                    <strong>{{ numeroNoches * precioMascotaNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                 </div>
                 <div class="summary-card-row descuento-row" *ngIf="tipoTarifa === 'no_cancelable' && descuentoEuros > 0">
                     <span>{{ 'BOOKING.DISCOUNT' | translate }} ({{ descuentoNoCancelable }}%)</span>
