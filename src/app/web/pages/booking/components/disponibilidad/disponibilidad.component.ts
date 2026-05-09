@@ -184,7 +184,7 @@ export class DisponibilidadComponent implements OnInit {
 	}
 
 	aplicarDescuento(): void {
-		if (this.tipoTarifa === 'no_cancelable' && this.precioHabitacion > 0) {
+		if (this.tipoTarifa === 'no_cancelable' && this.todosLosDiasCancelables && this.precioHabitacion > 0) {
 			this.descuentoEuros = Math.round(this.precioHabitacion * (this.descuentoNoCancelable / 100) * 100) / 100;
 			this.precioTotal = Math.round((this.precioHabitacion - this.descuentoEuros + this.precioMascota) * 100) / 100;
 		} else {
@@ -214,7 +214,7 @@ export class DisponibilidadComponent implements OnInit {
 			numeroNoches: this.numeroNoches,
 			precio_total: this.precioTotal,
 			tipo_tarifa: this.tipoTarifa,
-			descuento_aplicado: this.tipoTarifa === 'no_cancelable' ? this.descuentoNoCancelable : 0,
+			descuento_aplicado: (this.tipoTarifa === 'no_cancelable' && this.todosLosDiasCancelables) ? this.descuentoNoCancelable : 0,
 			recaptcha: this.layout.tokenCaptcha
 		};
 
