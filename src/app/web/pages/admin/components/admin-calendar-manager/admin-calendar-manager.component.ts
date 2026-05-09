@@ -122,6 +122,9 @@ export class AdminCalendarManagerComponent implements OnInit {
 				// Indicador visual para días no cancelables
 				if (event.meta.cancelable === 0) {
 					day.cssClass += ' no-cancelable';
+					(day as any).customSymbol = 'contract_delete';
+				} else {
+					(day as any).customSymbol = null;
 				}
 
 				// Comprobamos si está seleccionado basado en fecha

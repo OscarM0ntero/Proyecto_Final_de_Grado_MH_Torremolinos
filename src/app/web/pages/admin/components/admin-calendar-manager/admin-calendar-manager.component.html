@@ -25,6 +25,9 @@
             <div *ngIf="day.customMatIcon" class="day-mat-icon">
                 <mat-icon>{{ day.customMatIcon }}</mat-icon>
             </div>
+            <div *ngIf="day.customSymbol" class="day-symbol-icon">
+                <mat-icon fontSet="material-symbols-outlined">{{ day.customSymbol }}</mat-icon>
+            </div>
         </div>
     </ng-template>
 
