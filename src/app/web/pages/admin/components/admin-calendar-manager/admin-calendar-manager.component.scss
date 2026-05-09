@@ -175,9 +175,19 @@
 	}
 }
 
-// Indicador de día no cancelable: borde inferior llamativo
-.cal-month-view .no-cancelable:not(.cal-out-month) {
-	border-bottom: 3px solid var(--color-accent) !important;
+// Indicador de día no cancelable: icono en esquina superior derecha
+.cal-month-view .day-symbol-icon {
+	position: absolute;
+	top: 2px;
+	right: 4px;
+
+	.mat-icon {
+		font-size: 28px !important;
+		width: 28px !important;
+		height: 28px !important;
+		color: var(--color-warn);
+		line-height: 1;
+	}
 }
 
 .edit-panel {

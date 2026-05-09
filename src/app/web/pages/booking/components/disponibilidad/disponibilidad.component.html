@@ -78,9 +78,7 @@
                         <span>{{ 'BOOKING.NON-CANCELABLE-DESC' | translate }}</span>
                     </div>
                     <div class="tarifa-card-price">
-                        <span class="precio-descuento">{{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}</span>
-                        {{ precioConDescuento | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
-                        <span class="badge-descuento">-{{ descuentoNoCancelable }}%</span>
+                        {{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
                     </div>
                 </div>
             </div>
