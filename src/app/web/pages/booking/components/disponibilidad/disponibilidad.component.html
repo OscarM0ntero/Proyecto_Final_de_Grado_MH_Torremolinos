@@ -8,7 +8,7 @@
 
         <mat-form-field>
             <mat-label>{{ 'BOOKING.GUEST-NUM' | translate }}</mat-label>
-            <mat-select name="huespedes" [(ngModel)]="reserva.huespedes" required class="guest"
+            <mat-select id="booking-huespedes" name="huespedes" [(ngModel)]="reserva.huespedes" required class="guest"
                 [panelClass]="'guest-panel'">
                 <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">
                     {{ i }} {{ i | i18nPlural: pluralMap | translate }}
@@ -113,17 +113,17 @@
 
         <mat-form-field>
             <mat-label>{{ 'BOOKING.NAME' | translate }}</mat-label>
-            <input matInput name="nombre" [(ngModel)]="reserva.nombre" required [disabled]="camposBloqueados" />
+            <input matInput id="booking-nombre" name="nombre" [(ngModel)]="reserva.nombre" required [disabled]="camposBloqueados" />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>{{ 'BOOKING.LAST-NAME' | translate }}</mat-label>
-            <input matInput name="apellidos" [(ngModel)]="reserva.apellidos" required [disabled]="camposBloqueados" />
+            <input matInput id="booking-apellidos" name="apellidos" [(ngModel)]="reserva.apellidos" required [disabled]="camposBloqueados" />
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Email</mat-label>
-            <input matInput type="email" name="email" [(ngModel)]="reserva.email" required #emailRef="ngModel" email
+            <input matInput id="booking-email" type="email" name="email" [(ngModel)]="reserva.email" required #emailRef="ngModel" email
                 [disabled]="camposBloqueados" />
             <mat-error *ngIf="emailRef.invalid && emailRef.touched">
                 <ng-container *ngIf="emailRef.errors?.['required']">
@@ -138,7 +138,7 @@
         <div class="tlf-container">
             <mat-form-field class="pre">
                 <mat-label>+</mat-label>
-                <mat-select [(ngModel)]="reserva.prefijo" name="prefijo" required [disabled]="camposBloqueados">
+                <mat-select id="booking-prefijo" [(ngModel)]="reserva.prefijo" name="prefijo" required [disabled]="camposBloqueados">
                     <mat-option *ngFor="let p of prefijos" [value]="p">
                         {{ p }}
                     </mat-option>
@@ -147,14 +147,14 @@
 
             <mat-form-field class="tlf">
                 <mat-label>{{ 'BOOKING.PHONE' | translate }}</mat-label>
-                <input matInput name="telefono" [(ngModel)]="reserva.telefono" required [disabled]="camposBloqueados" />
+                <input matInput id="booking-telefono" name="telefono" [(ngModel)]="reserva.telefono" required [disabled]="camposBloqueados" />
             </mat-form-field>
         </div>
 
         <div class="oneColumn">
             <mat-form-field class="note">
                 <mat-label>{{ 'BOOKING.NOTE' | translate }}</mat-label>
-                <textarea matInput name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
+                <textarea matInput id="booking-nota" name="nota" [(ngModel)]="reserva.nota" style="min-height: 110px;"></textarea>
             </mat-form-field>
         </div>
 
