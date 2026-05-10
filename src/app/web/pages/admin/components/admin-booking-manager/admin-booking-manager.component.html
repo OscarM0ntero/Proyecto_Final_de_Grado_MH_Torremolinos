@@ -73,7 +73,11 @@
                 <span>Cuna</span><span>{{ r.bebe ? 'Sí' : 'No' }}</span>
             </div>
             <div class="detail-row">
-                <span>Mascota</span><span>{{ r.mascota ? 'Sí' : 'No' }}</span>
+                <span>Mascota</span>
+                <span>{{ r.mascota ? 'Sí (+' + r.precio_mascota_noche + '€/noche)' : 'No' }}</span>
+            </div>
+            <div class="detail-row" *ngIf="r.tipo_tarifa === 'cancelable'">
+                <span>Cancelable hasta</span><span>{{ r.dias_cancelacion }} días antes</span>
             </div>
             <div class="detail-row">
                 <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
@@ -86,6 +90,9 @@
         <!-- Price section -->
         <div class="card-section">
             <p class="section-title"><mat-icon>payments</mat-icon> Precio</p>
+            <div class="detail-row">
+                <span>Precio base/noche</span><span>{{ r.precio_base_noche | number:'1.2-2' }} €</span>
+            </div>
             <div class="detail-row price-total">
                 <span>Total</span><span>{{ r.precio_total | number:'1.2-2' }} €</span>
             </div>

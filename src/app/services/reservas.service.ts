@@ -14,6 +14,10 @@ export interface Reserva {
 	precio_total: number;
 	tipo_tarifa: 'cancelable' | 'no_cancelable';
 	descuento_aplicado: number;
+	// Snapshot de configuración en el momento de la reserva
+	dias_cancelacion: number;
+	precio_mascota_noche: number;
+	precio_base_noche: number;
 	fecha_creacion: string;
 	estado_reserva: string;
 	actualizado: string;
