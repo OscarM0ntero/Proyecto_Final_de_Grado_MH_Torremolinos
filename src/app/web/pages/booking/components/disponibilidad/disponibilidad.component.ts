@@ -37,7 +37,7 @@ export class DisponibilidadComponent implements OnInit {
 	mostrarResumen = false;
 	camposBloqueados = false;
 
-	tipoTarifa: 'cancelable' | 'no_cancelable' = 'cancelable';
+	tipoTarifa: 'cancelable' | 'no_cancelable' = 'no_cancelable';
 	descuentoNoCancelable = 10;
 	descuentoEuros = 0;
 	diasCancelacion = 30;
