@@ -163,14 +163,25 @@ router.post('/', async (req, res) => {
             id_usuario = await crearUsuario(nombre, apellidos, email, telefono, prefijo, 'cliente');
         }
 
-        // 3. Insertar reserva en BD (con snapshot de datos del cliente)
+        // 3. Leer snapshot de configuración en el momento de la reserva
+        const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
+        const [[cfgMascota]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_mascota'`) as any[];
+        const [[cfgBase]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_base'`) as any[];
+
+        const diasCancelacion = parseInt(cfgDias?.valor || '30', 10);
+        const precioMascotaNoche = parseFloat(cfgMascota?.valor || '10');
+        const precioBaseNoche = parseFloat(cfgBase?.valor || '150');
+
+        // 4. Insertar reserva en BD (con snapshot de datos del cliente y de configuración)
         await pool.query(
             `INSERT INTO reservas
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
-                fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa, descuento_aplicado)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa,
+                descuento_aplicado, dias_cancelacion, precio_mascota_noche, precio_base_noche)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [id_usuario, nombre, apellidos, email, prefijo, telefono,
-             fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null, precio_total, tipo_tarifa, descuento_aplicado]
+             fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
+             precio_total, tipo_tarifa, descuento_aplicado, diasCancelacion, precioMascotaNoche, precioBaseNoche]
         );
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
@@ -192,11 +203,11 @@ router.post('/', async (req, res) => {
                 <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the ${ANTICIPO_PORCENTAJE}% deposit:</p>
                 <table style="width:100%;border-collapse:collapse;font-size:14px;">
                     <tr><td style="padding:4px 0;color:#555;">Deposit due now (${ANTICIPO_PORCENTAJE}%)</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${anticipo}€</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">Remaining balance (due 30 days before check-in)</td><td style="padding:4px 0;text-align:right;">${restante}€</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">Remaining balance (due ${diasCancelacion} days before check-in)</td><td style="padding:4px 0;text-align:right;">${restante}€</td></tr>
                     <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
                     <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
                 </table>
-                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to 30 days before check-in — deposit fully refunded.</p>
+                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${diasCancelacion} days before check-in — deposit fully refunded.</p>
                </div>`;
 
         // 4. Email de confirmación al cliente
@@ -261,7 +272,7 @@ router.post('/', async (req, res) => {
         // 5. Email a administradores
         const pagoEsperado = esNoCancelable
             ? `100% — ${precio_total}€ (non-refundable)`
-            : `${ANTICIPO_PORCENTAJE}% deposit — ${anticipo}€ now · ${restante}€ before 30 days`;
+            : `${ANTICIPO_PORCENTAJE}% deposit — ${anticipo}€ now · ${restante}€ before ${diasCancelacion} days`;
 
         for (const admin of adminEmails) {
             await enviarCorreo(admin, `New booking request — ${nombre} ${apellidos} (${fechaInicioFmt})`, `
