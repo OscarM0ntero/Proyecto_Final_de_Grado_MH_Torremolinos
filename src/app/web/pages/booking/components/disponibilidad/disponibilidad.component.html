@@ -43,17 +43,6 @@
 
             <!-- Ambas opciones cuando todos los días son cancelables -->
             <div class="tarifa-cards" *ngIf="todosLosDiasCancelables">
-                <div class="tarifa-card" [class.selected]="tipoTarifa === 'cancelable'"
-                    (click)="tipoTarifa = 'cancelable'; onTarifaChange()">
-                    <div class="tarifa-card-icon">✓</div>
-                    <div class="tarifa-card-body">
-                        <strong>{{ 'BOOKING.CANCELABLE' | translate }}</strong>
-                        <span>{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: diasCancelacion } }}</span>
-                    </div>
-                    <div class="tarifa-card-price">
-                        {{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
-                    </div>
-                </div>
                 <div class="tarifa-card" [class.selected]="tipoTarifa === 'no_cancelable'"
                     (click)="tipoTarifa = 'no_cancelable'; onTarifaChange()">
                     <div class="tarifa-card-icon">%</div>
@@ -65,6 +54,17 @@
                         <span class="precio-descuento">{{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}</span>
                         {{ precioConDescuento | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
                         <span class="badge-descuento">-{{ descuentoNoCancelable }}%</span>
+                    </div>
+                </div>
+                <div class="tarifa-card" [class.selected]="tipoTarifa === 'cancelable'"
+                    (click)="tipoTarifa = 'cancelable'; onTarifaChange()">
+                    <div class="tarifa-card-icon">✓</div>
+                    <div class="tarifa-card-body">
+                        <strong>{{ 'BOOKING.CANCELABLE' | translate }}</strong>
+                        <span>{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: diasCancelacion } }}</span>
+                    </div>
+                    <div class="tarifa-card-price">
+                        {{ precioBase | currency:'EUR':'symbol':'1.0-0':'es-ES' }}
                     </div>
                 </div>
             </div>
