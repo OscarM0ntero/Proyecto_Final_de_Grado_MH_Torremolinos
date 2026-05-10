@@ -1,52 +1,118 @@
-<!-- Componente del gestor de reservas -->
-<h2>Gestión de reservas</h2>
+<!-- Header -->
+<div class="booking-manager-header">
+    <h2>Gestión de reservas</h2>
+    <span class="booking-count">{{ reservasFiltradas.length }} reserva(s)</span>
+</div>
 
-<mat-form-field appearance="fill">
-    <mat-label>Filtrar por estado</mat-label>
-    <mat-select [(value)]="estadoFiltro" (selectionChange)="cargarReservas()">
-        <mat-option value="">Todas</mat-option>
-        <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
-    </mat-select>
-</mat-form-field>
+<!-- Filters -->
+<div class="booking-filters">
+    <mat-form-field appearance="outline" class="filter-estado">
+        <mat-label>Estado</mat-label>
+        <mat-select [(value)]="estadoFiltro" (selectionChange)="cargarReservas()">
+            <mat-option value="">Todas</mat-option>
+            <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
+        </mat-select>
+    </mat-form-field>
 
-<div *ngFor="let r of reservas" class="reserva-card">
-    <h3>{{ r.fecha_inicio | date:'dd/MM/yyyy'}} → {{ r.fecha_fin | date:'dd/MM/yyyy' }}</h3>
-    <div class="booking-content">
-        <div class="booking-column">
-            <p><strong>Cliente</strong></p>
-            <p> {{ r.nombre }} {{ r.apellidos }}</p>
-            <p>{{ r.email }}</p>
-            <p>{{ r.prefijo }} {{ r.telefono }}</p>
+    <mat-form-field appearance="outline" class="filter-search">
+        <mat-label>Buscar por nombre, email o ID</mat-label>
+        <input matInput [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltroTexto()">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+</div>
+
+<!-- No results -->
+<div *ngIf="reservasFiltradas.length === 0" class="no-results">
+    <mat-icon>inbox</mat-icon>
+    <p>No hay reservas que mostrar</p>
+</div>
+
+<!-- Booking cards -->
+<div *ngFor="let r of reservasFiltradas" class="reserva-card" [ngClass]="getCardClass(r.estado_reserva)">
+
+    <!-- Card header -->
+    <div class="card-header">
+        <div class="card-header-left">
+            <span class="booking-id">#{{ r.id_reserva }}</span>
+            <span class="booking-dates">
+                {{ r.fecha_inicio | date:'dd MMM yyyy' }} → {{ r.fecha_fin | date:'dd MMM yyyy' }}
+                <span class="nights-badge">{{ calcularNoches(r.fecha_inicio, r.fecha_fin) }} noches</span>
+            </span>
         </div>
-        <div class="booking-column">
-            <p><strong>Datos reserva</strong></p>
-            <p>Personas: {{ r.n_personas }}</p>
-            <p>Bebé: {{ r.bebe ? 'Sí' : 'No' }} | Mascota: {{ r.mascota ? 'Sí' : 'No' }}
+        <div class="card-header-right">
+            <span class="tarifa-badge"
+                [class.tarifa-cancelable]="r.tipo_tarifa === 'cancelable'"
+                [class.tarifa-no-cancelable]="r.tipo_tarifa === 'no_cancelable'">
+                {{ r.tipo_tarifa === 'cancelable' ? 'Flexible' : 'No cancelable' }}
+            </span>
+            <span class="estado-badge" [ngClass]="getBadgeClass(r.estado_reserva)">{{ r.estado_reserva }}</span>
+        </div>
+    </div>
+
+    <!-- Card body -->
+    <div class="card-body">
+
+        <!-- Client section -->
+        <div class="card-section">
+            <p class="section-title"><mat-icon>person</mat-icon> Cliente</p>
+            <p class="client-name">{{ getNombreCompleto(r) }}</p>
+            <p class="client-detail"><mat-icon class="detail-icon">email</mat-icon>{{ getEmail(r) }}</p>
+            <p class="client-detail"><mat-icon class="detail-icon">phone</mat-icon>{{ getTelefono(r) }}</p>
+            <p *ngIf="!r.id_usuario" class="deleted-account-badge">
+                <mat-icon>warning</mat-icon> Cuenta eliminada
             </p>
-            <p>Total: {{ r.precio_total | number:'1.2-2' }} € (Anticipo: {{ calcularAnticipo(r.precio_total) |
-                number:'1.2-2' }}€)</p>
         </div>
-    </div>
-    <div class="booking-content">
-        <div class="booking-column">
-            <p><strong>Estado</strong></p>
 
-            <div>
-                <mat-form-field>
-                    <mat-label>Estado</mat-label>
-                    <mat-select [(value)]="r.estado_reserva" (selectionChange)="confirmarCambioEstado(r)">
-                        <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+        <!-- Booking details section -->
+        <div class="card-section">
+            <p class="section-title"><mat-icon>event_note</mat-icon> Detalles</p>
+            <div class="detail-row">
+                <span>Personas</span><span><strong>{{ r.n_personas }}</strong></span>
+            </div>
+            <div class="detail-row">
+                <span>Cuna</span><span>{{ r.bebe ? 'Sí' : 'No' }}</span>
+            </div>
+            <div class="detail-row">
+                <span>Mascota</span><span>{{ r.mascota ? 'Sí' : 'No' }}</span>
+            </div>
+            <div class="detail-row">
+                <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="detail-row" *ngIf="r.actualizado && r.actualizado !== r.fecha_creacion">
+                <span>Actualizada</span><span>{{ r.actualizado | date:'dd/MM/yyyy' }}</span>
             </div>
         </div>
-        <div class="booking-column">
-            <div *ngIf="r.nota_adicional">
-                <p style="text-align: center;"><strong>Nota adicional</strong></p>
-            <p style="padding-left: 5%; padding-right: 5%;">{{ r.nota_adicional }}</p>
+
+        <!-- Price section -->
+        <div class="card-section">
+            <p class="section-title"><mat-icon>payments</mat-icon> Precio</p>
+            <div class="detail-row price-total">
+                <span>Total</span><span>{{ r.precio_total | number:'1.2-2' }} €</span>
+            </div>
+            <div class="detail-row discount-row" *ngIf="r.descuento_aplicado">
+                <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
+            </div>
+            <div class="detail-row anticipo-row">
+                <span>{{ r.tipo_tarifa === 'no_cancelable' ? 'Pago completo' : 'Anticipo (30%)' }}</span>
+                <span>{{ calcularAnticipo(r) | number:'1.2-2' }} €</span>
             </div>
         </div>
     </div>
 
-    <hr>
+    <!-- Note -->
+    <div *ngIf="r.nota_adicional" class="card-note">
+        <mat-icon>sticky_note_2</mat-icon>
+        <span>{{ r.nota_adicional }}</span>
+    </div>
+
+    <!-- Card footer: estado change -->
+    <div class="card-footer">
+        <mat-form-field appearance="outline" class="estado-select">
+            <mat-label>Cambiar estado</mat-label>
+            <mat-select [(value)]="r.estado_reserva" (selectionChange)="confirmarCambioEstado(r)">
+                <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
 </div>
