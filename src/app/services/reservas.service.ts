@@ -17,11 +17,18 @@ export interface Reserva {
 	fecha_creacion: string;
 	estado_reserva: string;
 	actualizado: string;
+	// Datos del usuario activo (via JOIN, si la cuenta existe)
 	nombre?: string;
 	apellidos?: string;
 	email?: string;
 	prefijo?: string;
 	telefono?: string;
+	// Snapshot guardado en el momento de la reserva (persiste aunque se elimine la cuenta)
+	cliente_nombre?: string;
+	cliente_apellidos?: string;
+	cliente_email?: string;
+	cliente_prefijo?: string;
+	cliente_telefono?: string;
 }
 
 @Injectable({

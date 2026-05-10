@@ -39,11 +39,16 @@ router.get('/', async (req, res) => {
 
         try {
             const [rows] = await pool.query(
-                `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
-             FROM reservas r
-             JOIN usuarios u ON r.id_usuario = u.id_usuario
-             WHERE r.estado_reserva = ?
-             ORDER BY r.fecha_inicio ASC`,
+                `SELECT r.*,
+                    COALESCE(u.nombre,    r.cliente_nombre)    AS nombre,
+                    COALESCE(u.apellidos, r.cliente_apellidos) AS apellidos,
+                    COALESCE(u.email,     r.cliente_email)     AS email,
+                    COALESCE(u.prefijo,   r.cliente_prefijo)   AS prefijo,
+                    COALESCE(u.telefono,  r.cliente_telefono)  AS telefono
+                 FROM reservas r
+                 LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
+                 WHERE r.estado_reserva = ?
+                 ORDER BY r.fecha_inicio ASC`,
                 [estado]
             );
             return res.json(rows);
@@ -54,10 +59,15 @@ router.get('/', async (req, res) => {
     } else {
         try {
             const [rows] = await pool.query(
-                `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
-             FROM reservas r
-             JOIN usuarios u ON r.id_usuario = u.id_usuario
-             ORDER BY r.fecha_inicio ASC`
+                `SELECT r.*,
+                    COALESCE(u.nombre,    r.cliente_nombre)    AS nombre,
+                    COALESCE(u.apellidos, r.cliente_apellidos) AS apellidos,
+                    COALESCE(u.email,     r.cliente_email)     AS email,
+                    COALESCE(u.prefijo,   r.cliente_prefijo)   AS prefijo,
+                    COALESCE(u.telefono,  r.cliente_telefono)  AS telefono
+                 FROM reservas r
+                 LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
+                 ORDER BY r.fecha_inicio ASC`
             );
             return res.json(rows);
         } catch (err) {
@@ -78,9 +88,14 @@ router.get('/cliente', async (req, res) => {
         const id_usuario = payload.id;
 
         const [rows] = await pool.query(
-            `SELECT r.*, u.nombre, u.apellidos, u.email, u.prefijo, u.telefono
+            `SELECT r.*,
+                COALESCE(u.nombre,    r.cliente_nombre)    AS nombre,
+                COALESCE(u.apellidos, r.cliente_apellidos) AS apellidos,
+                COALESCE(u.email,     r.cliente_email)     AS email,
+                COALESCE(u.prefijo,   r.cliente_prefijo)   AS prefijo,
+                COALESCE(u.telefono,  r.cliente_telefono)  AS telefono
              FROM reservas r
-             JOIN usuarios u ON r.id_usuario = u.id_usuario
+             LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
              WHERE r.id_usuario = ?
              ORDER BY r.fecha_inicio ASC`,
             [id_usuario]
@@ -148,11 +163,14 @@ router.post('/', async (req, res) => {
             id_usuario = await crearUsuario(nombre, apellidos, email, telefono, prefijo, 'cliente');
         }
 
-        // 3. Insertar reserva en BD
+        // 3. Insertar reserva en BD (con snapshot de datos del cliente)
         await pool.query(
-            `INSERT INTO reservas (id_usuario, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa, descuento_aplicado)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id_usuario, fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null, precio_total, tipo_tarifa, descuento_aplicado]
+            `INSERT INTO reservas
+               (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
+                fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa, descuento_aplicado)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id_usuario, nombre, apellidos, email, prefijo, telefono,
+             fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null, precio_total, tipo_tarifa, descuento_aplicado]
         );
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
@@ -329,9 +347,12 @@ router.put('/:id/estado', async (req, res) => {
     try {
         // 1. Obtener datos de la reserva
         const [rows] = await pool.query(`
-            SELECT r.*, u.nombre, u.apellidos, u.email
+            SELECT r.*,
+                COALESCE(u.nombre,    r.cliente_nombre)    AS nombre,
+                COALESCE(u.apellidos, r.cliente_apellidos) AS apellidos,
+                COALESCE(u.email,     r.cliente_email)     AS email
             FROM reservas r
-            JOIN usuarios u ON r.id_usuario = u.id_usuario
+            LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
             WHERE r.id_reserva = ?
         `, [id]) as any[];
 
