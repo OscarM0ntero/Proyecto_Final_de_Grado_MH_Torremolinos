@@ -166,22 +166,20 @@ router.post('/', async (req, res) => {
         // 3. Leer snapshot de configuración en el momento de la reserva
         const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
         const [[cfgMascota]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_mascota'`) as any[];
-        const [[cfgBase]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_base'`) as any[];
 
         const diasCancelacion = parseInt(cfgDias?.valor || '30', 10);
         const precioMascotaNoche = parseFloat(cfgMascota?.valor || '10');
-        const precioBaseNoche = parseFloat(cfgBase?.valor || '150');
 
         // 4. Insertar reserva en BD (con snapshot de datos del cliente y de configuración)
         await pool.query(
             `INSERT INTO reservas
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
                 fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa,
-                descuento_aplicado, dias_cancelacion, precio_mascota_noche, precio_base_noche)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                descuento_aplicado, dias_cancelacion, precio_mascota_noche)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [id_usuario, nombre, apellidos, email, prefijo, telefono,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
-             precio_total, tipo_tarifa, descuento_aplicado, diasCancelacion, precioMascotaNoche, precioBaseNoche]
+             precio_total, tipo_tarifa, descuento_aplicado, diasCancelacion, precioMascotaNoche]
         );
 
         const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
