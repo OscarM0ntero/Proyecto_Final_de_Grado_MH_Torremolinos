@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { MaterialModule } from '../../material/material.module';
+import { MaterialModule } from '../../../material/material.module';
 import { AccountModule } from '../../shared/account.module';
 import { ClientRoutingModule } from './client-routing.module';
 
