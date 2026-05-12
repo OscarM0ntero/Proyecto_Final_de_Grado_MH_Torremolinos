@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
-import { MaterialModule } from '../../material/material.module';
+import { MaterialModule } from '../../../material/material.module';
 import { AccountModule } from '../../shared/account.module';
 import { AdminRoutingModule } from './admin-routing.module';
 
