@@ -1,5 +1,4 @@
 # M&H Torremolinos – Self-managed Apartment Web Platform
-<!-- test PR -->
 
 ![Hero](img/hero.png)
 
