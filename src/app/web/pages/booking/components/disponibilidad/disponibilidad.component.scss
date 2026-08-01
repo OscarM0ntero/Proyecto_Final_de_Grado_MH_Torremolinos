@@ -54,6 +54,13 @@
         }
     }
 
+    /* El notch usa un border-left transparente solo para alinear el label;
+       al pintarlo con border-color aparecía una línea vertical dentro del campo */
+    .mdc-notched-outline__notch {
+        border-left-color: transparent !important;
+        border-right-color: transparent !important;
+    }
+
     label {
         font-size: 15px !important;
     }
