@@ -22,54 +22,8 @@
     box-sizing: border-box;
     font-size: 16px;
 
-    /* Campos Material: ancho completo de su celda, fondo blanco */
-    .mat-mdc-form-field {
-        width: 100%;
-        /* El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio
-           para que coincida con el del fondo (si difieren queda una fina línea en la esquina) */
-        --mdc-outlined-text-field-container-shape: 8px;
-    }
-
-    .mat-mdc-form-field-infix {
-        width: auto;
-    }
-
-    .mdc-text-field--outlined {
-        background: #fff;
-        border-radius: 8px;
-    }
-
-    .mdc-notched-outline__leading,
-    .mdc-notched-outline__notch,
-    .mdc-notched-outline__trailing {
-        border-color: #ddd8cc !important;
-    }
-
-    .mat-mdc-form-field.mat-focused {
-
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-            border-color: var(--color-primary) !important;
-        }
-    }
-
-    /* El notch trae un border-left transparente de Material solo para alinear el label;
-       se elimina por completo para que ninguna regla de color pueda hacerlo visible */
-    .mdc-notched-outline__notch {
-        border-left: none !important;
-        border-right: none !important;
-    }
-
-    label {
-        font-size: 15px !important;
-    }
-
-    input,
-    textarea,
-    .mat-mdc-select {
-        font-size: 16px;
-    }
+    /* Los estilos de los campos (outline blanco) viven en styles.scss como form.outline-form,
+       compartidos con el formulario de contacto */
 }
 
 /* Cabecera con título y paso */

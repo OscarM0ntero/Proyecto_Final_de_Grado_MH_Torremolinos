@@ -15,39 +15,40 @@
         </div>
     </div>
     <div class="form-section">
-    <form #contactForm="ngForm" (ngSubmit)="enviarMensaje()" class="form">
+    <form #contactForm="ngForm" (ngSubmit)="enviarMensaje()" class="form outline-form">
         <h2>{{ 'CONTACT.TITLE' | translate }}</h2>
 
         <div class="oneColumn">
-            <mat-form-field class="long-field">
+            <mat-form-field appearance="outline" class="long-field">
                 <mat-label>{{ 'BOOKING.NAME' | translate }}</mat-label>
                 <input matInput id="contact-nombre" name="nombre" [(ngModel)]="form.nombre" required />
             </mat-form-field>
         </div>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput id="contact-email" name="email" [(ngModel)]="form.email" required email />
         </mat-form-field>
 
         <div class="tlf-container">
-            <mat-form-field class="pre">
+            <mat-form-field appearance="outline" class="pre">
                 <mat-label>+</mat-label>
                 <mat-select id="contact-prefijo" [(ngModel)]="form.prefijo" name="prefijo">
                     <mat-option *ngFor="let p of prefijos" [value]="p">{{ p }}</mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="tlf">
+            <mat-form-field appearance="outline" class="tlf">
                 <mat-label>{{ 'BOOKING.PHONE' | translate }}</mat-label>
                 <input matInput id="contact-telefono" name="telefono" [(ngModel)]="form.telefono" />
             </mat-form-field>
         </div>
 
         <div class="oneColumn">
-            <mat-form-field class="long-field">
+            <mat-form-field appearance="outline" class="long-field">
                 <mat-label>{{ 'CONTACT.HELP' | translate }}</mat-label>
-                <textarea matInput id="contact-mensaje" name="mensaje" [(ngModel)]="form.mensaje" required></textarea>
+                <textarea matInput id="contact-mensaje" name="mensaje" [(ngModel)]="form.mensaje" required
+                    style="min-height: 110px;"></textarea>
             </mat-form-field>
         </div>
 
