@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:web-apartamento": "node dist/web-apartamento/server/server.mjs",
-    "build:ssr": "ng build --configuration=production && ng run web-apartamento:server:production"
+    "build:ssr": "ng build --configuration=production"
   },
   "private": true,
   "dependencies": {
