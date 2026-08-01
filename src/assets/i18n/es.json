@@ -62,7 +62,13 @@
         "NON-CANCELABLE": "No cancelable",
         "NON-CANCELABLE-DESC": "Precio reducido, sin posibilidad de cancelación",
         "DISCOUNT": "Descuento",
-        "RESERVATION": "Reserva"
+        "RESERVATION": "Reserva",
+        "NIGHT": "noche",
+        "NIGHTS-LC": "noches",
+        "SUMMARY-EMPTY": "Selecciona las fechas para ver el precio de tu estancia",
+        "COMPLETE-FIELDS": "Completa los campos obligatorios para continuar",
+        "STEP1": "Paso 1 de 2",
+        "STEP2": "Paso 2 de 2"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",

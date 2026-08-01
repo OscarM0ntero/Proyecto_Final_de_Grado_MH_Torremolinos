@@ -62,7 +62,13 @@
         "NON-CANCELABLE": "Ikke avbestillbar",
         "NON-CANCELABLE-DESC": "Lavere pris, ingen avbestilling mulig",
         "DISCOUNT": "Rabatt",
-        "RESERVATION": "Bestilling"
+        "RESERVATION": "Bestilling",
+        "NIGHT": "natt",
+        "NIGHTS-LC": "netter",
+        "SUMMARY-EMPTY": "Velg datoer for å se prisen på oppholdet ditt",
+        "COMPLETE-FIELDS": "Fyll ut de obligatoriske feltene for å fortsette",
+        "STEP1": "Steg 1 av 2",
+        "STEP2": "Steg 2 av 2"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",

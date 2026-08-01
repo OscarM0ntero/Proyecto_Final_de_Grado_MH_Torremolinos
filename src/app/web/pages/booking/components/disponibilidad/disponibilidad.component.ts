@@ -60,6 +60,7 @@ export class DisponibilidadComponent implements OnInit {
 		nombre: '',
 		apellidos: '',
 		email: '',
+		prefijo: '+34',
 		telefono: '',
 		huespedes: 4,
 		conBebe: false,
@@ -75,6 +76,11 @@ export class DisponibilidadComponent implements OnInit {
 	pluralMap = {
 		'=1': 'BOOKING.GUEST',
 		'other': 'BOOKING.GUESTS'
+	};
+
+	nochesPluralMap = {
+		'=1': 'BOOKING.NIGHT',
+		'other': 'BOOKING.NIGHTS-LC'
 	};
 
 	constructor(
@@ -181,7 +187,7 @@ export class DisponibilidadComponent implements OnInit {
 		}
 
 		this.aplicarDescuento();
-		this.precioPorNoche = this.precioBase / this.numeroNoches;
+		this.precioPorNoche = this.numeroNoches > 0 ? this.precioHabitacion / this.numeroNoches : 0;
 	}
 
 	onTarifaChange(): void {
