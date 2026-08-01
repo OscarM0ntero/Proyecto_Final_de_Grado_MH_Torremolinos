@@ -17,8 +17,6 @@ INSERT INTO configuracion VALUES ('precio_mascota', '10', 'Suplemento por mascot
 ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 
 
---no aplicado en prod:
-
 -- Añadir columnas snapshot del cliente en reservas
 ALTER TABLE `reservas`
   ADD COLUMN `cliente_nombre`    varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `id_usuario`,
