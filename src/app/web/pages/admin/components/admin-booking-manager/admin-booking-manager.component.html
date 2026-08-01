@@ -96,6 +96,12 @@
             <div class="detail-row discount-row" *ngIf="r.descuento_aplicado">
                 <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
             </div>
+            <div class="detail-row">
+                <span>Pago</span>
+                <span class="pago-badge" [ngClass]="'pago-' + (r.estado_pago || 'pendiente')">
+                    {{ r.estado_pago === 'pagado' ? 'Pagado' : r.estado_pago === 'reembolsado' ? 'Reembolsado' : 'Pendiente' }}<ng-container *ngIf="r.importe_pagado"> · {{ r.importe_pagado | number:'1.2-2' }} €</ng-container>
+                </span>
+            </div>
         </div>
     </div>
 

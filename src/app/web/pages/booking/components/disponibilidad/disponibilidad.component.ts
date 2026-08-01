@@ -1,11 +1,15 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { DisponibilidadService } from '../../../../../services/disponibilidad.service';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { LoaderService } from '../../../../../services/loader.service';
 import { ReservaConfirmadaComponent } from './dialogs/reserva-confirmada.component';
+import { PagoCompletadoComponent } from './dialogs/pago-completado.component';
 import { ReservaRequiereLoginComponent } from './dialogs/reserva-requiere-login.component';
 import { environment } from '../../../../../../environments/environment';
 import { LayoutComponent } from '../../../layout/layout.component';
@@ -43,6 +47,7 @@ export class DisponibilidadComponent implements OnInit {
 	diasCancelacion = 30;
 	precioMascotaNoche = 10;
 	minNoches = 1;
+	stripeActivo = false;
 
 	get precioConDescuento(): number {
 		const habitacionDescontada = Math.round((this.precioHabitacion * (1 - this.descuentoNoCancelable / 100)) * 100) / 100;
@@ -98,6 +103,10 @@ export class DisponibilidadComponent implements OnInit {
 		private dialog: MatDialog,
 		private loader: LoaderService,
 		public layout: LayoutComponent,
+		private route: ActivatedRoute,
+		private router: Router,
+		private snackBar: MatSnackBar,
+		private translate: TranslateService,
 		@Inject(PLATFORM_ID) private platformId: Object
 	) { }
 
@@ -150,6 +159,29 @@ export class DisponibilidadComponent implements OnInit {
 		this.layout.captchaResuelto$.subscribe(token => {
 			this.tokenCaptcha = token;
 			this.enviarReserva();
+		});
+
+		this.reservasService.getStripeConfig().subscribe({
+			next: (cfg) => { this.stripeActivo = cfg.activo; },
+			error: () => { this.stripeActivo = false; }
+		});
+
+		// Vuelta desde Stripe Checkout (?pago=ok | ?pago=cancelado)
+		this.route.queryParams.subscribe(params => {
+			const pago = params['pago'];
+			if (!pago || !isPlatformBrowser(this.platformId)) return;
+
+			if (pago === 'ok') {
+				this.dialog.open(PagoCompletadoComponent);
+			} else if (pago === 'cancelado') {
+				this.snackBar.open(
+					this.translate.instant('BOOKING.PAYMENT-CANCELLED'),
+					undefined,
+					{ duration: 5000, panelClass: ['snackbar-error'] }
+				);
+			}
+			// Limpiar el parámetro de la URL
+			this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
 		});
 	}
 
@@ -243,7 +275,12 @@ export class DisponibilidadComponent implements OnInit {
 		this.loader.mostrar();
 
 		this.reservasService.enviarReserva(payload).subscribe({
-			next: () => {
+			next: (res) => {
+				// Con Stripe activo el backend devuelve la URL de pago: redirigir al Checkout
+				if (res?.url && isPlatformBrowser(this.platformId)) {
+					window.location.href = res.url;
+					return;
+				}
 				this.dialog.open(ReservaConfirmadaComponent);
 				this.mostrarResumen = false;
 				this.layout.tokenCaptcha = '';

@@ -72,7 +72,12 @@
         "MIN-NIGHTS": "Mindestaufenthalt: {{n}} Nächte",
         "MIN-NIGHTS-ERROR": "Der Mindestaufenthalt beträgt {{n}} Nächte",
         "DATES-UNAVAILABLE": "Die ausgewählten Daten sind nicht verfügbar",
-        "DATES-UNAVAILABLE-MIN": "Daten nicht verfügbar – der Mindestaufenthalt beträgt {{n}} Nächte"
+        "DATES-UNAVAILABLE-MIN": "Daten nicht verfügbar – der Mindestaufenthalt beträgt {{n}} Nächte",
+        "PAY": "Bezahlen und bestätigen",
+        "PAYMENT-OK-TITLE": "Zahlung abgeschlossen!",
+        "PAYMENT-OK-TEXT": "Ihre Buchung ist bestätigt. Wir haben Ihnen die Details per E-Mail geschickt.",
+        "PAYMENT-CANCELLED": "Zahlung abgebrochen: Ihre Buchung wurde nicht abgeschlossen",
+        "CLOSE": "Schließen"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",

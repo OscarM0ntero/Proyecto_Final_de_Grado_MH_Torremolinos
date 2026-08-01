@@ -72,7 +72,12 @@
         "MIN-NIGHTS": "Estancia mínima: {{n}} noches",
         "MIN-NIGHTS-ERROR": "La estancia mínima es de {{n}} noches",
         "DATES-UNAVAILABLE": "Las fechas seleccionadas no están disponibles",
-        "DATES-UNAVAILABLE-MIN": "Fechas no disponibles: recuerda que la estancia mínima es de {{n}} noches"
+        "DATES-UNAVAILABLE-MIN": "Fechas no disponibles: recuerda que la estancia mínima es de {{n}} noches",
+        "PAY": "Pagar y confirmar",
+        "PAYMENT-OK-TITLE": "¡Pago completado!",
+        "PAYMENT-OK-TEXT": "Tu reserva está confirmada. Hemos enviado los detalles a tu correo.",
+        "PAYMENT-CANCELLED": "Pago cancelado: tu reserva no se ha completado",
+        "CLOSE": "Cerrar"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",

@@ -21,6 +21,7 @@ import contactRouter from './api/contact.routes.js';
 import icalRouter from './api/ical.routes.js';
 import configuracionRouter from './api/configuracion.routes.js';
 import resenasRouter from './api/resenas.routes.js';
+import stripeRouter from './api/stripe.routes.js';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
@@ -47,6 +48,9 @@ app.use('/uploads', express.static(uploadsDir, {
     maxAge: '30d',
     immutable: false
 }));
+
+// Stripe se monta antes del parser JSON: el webhook necesita el body en crudo para verificar la firma
+app.use('/api/stripe', stripeRouter);
 
 // Middleware para leer json del body
 app.use(express.json());

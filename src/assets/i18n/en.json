@@ -72,7 +72,12 @@
         "MIN-NIGHTS": "Minimum stay: {{n}} nights",
         "MIN-NIGHTS-ERROR": "The minimum stay is {{n}} nights",
         "DATES-UNAVAILABLE": "The selected dates are not available",
-        "DATES-UNAVAILABLE-MIN": "Dates not available — note the minimum stay is {{n}} nights"
+        "DATES-UNAVAILABLE-MIN": "Dates not available — note the minimum stay is {{n}} nights",
+        "PAY": "Pay and confirm",
+        "PAYMENT-OK-TITLE": "Payment completed!",
+        "PAYMENT-OK-TEXT": "Your booking is confirmed. We have emailed you the details.",
+        "PAYMENT-CANCELLED": "Payment cancelled: your booking was not completed",
+        "CLOSE": "Close"
     },
     "CONTACT": {
         "TITLE": "Contact Form",

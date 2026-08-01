@@ -1,11 +1,13 @@
 // Backend de reservas
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import { pool, secret } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
 import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 import { crearUsuario } from './utils/usuarios.js';
+import { getStripe, BASE_URL } from './stripe.routes.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
@@ -123,9 +125,8 @@ router.post('/', async (req, res) => {
     const {
         nombre, apellidos, email, telefono, prefijo,
         huespedes, conBebe, conMascota, nota,
-        fechaInicio, fechaFin, precio_total,
-        tipo_tarifa = 'cancelable',
-        descuento_aplicado = 0
+        fechaInicio, fechaFin,
+        tipo_tarifa = 'cancelable'
     } = req.body;
 
     const fechaInicioFmt = formatearFecha(fechaInicio);
@@ -142,6 +143,23 @@ router.post('/', async (req, res) => {
         const noches = Math.round((new Date(fechaFin).getTime() - new Date(fechaInicio).getTime()) / 86400000);
         if (noches < minNoches) {
             return res.status(400).json({ error: `La estancia mínima es de ${minNoches} noches` });
+        }
+
+        // 0.5 Disponibilidad y precio: siempre calculados en el servidor, nunca confiando en el cliente
+        const inicioSQL = formatearFechaSQL(fechaInicio);
+        const finSQL = formatearFechaSQL(fechaFin);
+        const [diasRows] = await pool.query(
+            `SELECT fecha, precio, estado, cancelable FROM disponibilidad WHERE fecha >= ? AND fecha < ? ORDER BY fecha`,
+            [inicioSQL, finSQL]
+        ) as any[];
+
+        if (diasRows.length !== noches || diasRows.some((d: any) => d.estado !== 'disponible')) {
+            return res.status(409).json({ error: 'Las fechas seleccionadas ya no están disponibles' });
+        }
+
+        const todosCancelables = diasRows.every((d: any) => d.cancelable !== 0);
+        if (!esNoCancelable && !todosCancelables) {
+            return res.status(400).json({ error: 'Estas fechas solo admiten la tarifa no cancelable' });
         }
 
         // 1. Si viene token, obtener ID
@@ -173,21 +191,66 @@ router.post('/', async (req, res) => {
         // 3. Leer snapshot de configuración en el momento de la reserva
         const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
         const [[cfgMascota]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_mascota'`) as any[];
+        const [[cfgDescuento]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'descuento_no_cancelable'`) as any[];
 
         const diasCancelacion = parseInt(cfgDias?.valor || '30', 10);
         const precioMascotaNoche = parseFloat(cfgMascota?.valor || '10');
 
+        // 3.5 Precio total calculado en servidor
+        const round2 = (n: number) => Math.round(n * 100) / 100;
+        const descuentoPct = (esNoCancelable && todosCancelables) ? (parseFloat(cfgDescuento?.valor) || 0) : 0;
+        const precioHabitacion = diasRows.reduce((t: number, d: any) => t + Number(d.precio), 0);
+        const descuentoEuros = round2(precioHabitacion * descuentoPct / 100);
+        const precioMascotaTotal = conMascota ? noches * precioMascotaNoche : 0;
+        const precio_total = round2(precioHabitacion - descuentoEuros + precioMascotaTotal);
+
         // 4. Insertar reserva en BD (con snapshot de datos del cliente y de configuración)
-        await pool.query(
+        const tokenAcceso = crypto.randomBytes(32).toString('hex');
+        const [insertResult] = await pool.query(
             `INSERT INTO reservas
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
                 fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa,
-                descuento_aplicado, dias_cancelacion, precio_mascota_noche)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                descuento_aplicado, dias_cancelacion, precio_mascota_noche, estado_pago, token_acceso)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
             [id_usuario, nombre, apellidos, email, prefijo, telefono,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
-             precio_total, tipo_tarifa, descuento_aplicado, diasCancelacion, precioMascotaNoche]
-        );
+             precio_total, tipo_tarifa, descuentoPct, diasCancelacion, precioMascotaNoche, tokenAcceso]
+        ) as any[];
+        const idReserva = insertResult.insertId;
+
+        // 5. Pago con Stripe: crear sesión de Checkout y redirigir al cliente.
+        //    Los emails de confirmación se envían desde el webhook cuando el pago se completa.
+        const stripe = getStripe();
+        if (stripe) {
+            const session = await stripe.checkout.sessions.create({
+                mode: 'payment',
+                customer_email: email,
+                line_items: [{
+                    quantity: 1,
+                    price_data: {
+                        currency: 'eur',
+                        unit_amount: Math.round(precio_total * 100),
+                        product_data: {
+                            name: `M&H Torremolinos · ${fechaInicioFmt} → ${fechaFinFmt}`,
+                            description: `${noches} noches · ${huespedes} huéspedes · Tarifa ${labelTarifa}`
+                        }
+                    }
+                }],
+                metadata: { id_reserva: String(idReserva) },
+                expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+                success_url: `${BASE_URL}/reservar?pago=ok`,
+                cancel_url: `${BASE_URL}/reservar?pago=cancelado`
+            });
+
+            await pool.query(
+                `UPDATE reservas SET stripe_checkout_session_id = ? WHERE id_reserva = ?`,
+                [session.id, idReserva]
+            );
+
+            return res.status(200).json({ url: session.url });
+        }
+
+        // 5-bis. Modo transferencia (Stripe no configurado): flujo antiguo con emails de solicitud
 
         const paymentBlock = esNoCancelable
             ? `<div style="background:#fff8f8;border-left:4px solid #8f0000;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
@@ -247,7 +310,7 @@ router.post('/', async (req, res) => {
                     ${conMascota ? `<tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;">Pet</td><td style="padding:10px 14px;font-weight:700;text-align:right;">Yes</td></tr>` : ''}
                     <tr style="border-top:2px solid #3F4B3A;">
                       <td style="padding:12px 14px;color:#3F4B3A;font-weight:700;">Total</td>
-                      <td style="padding:12px 14px;font-weight:700;text-align:right;font-size:17px;">${precio_total}€${esNoCancelable && descuento_aplicado > 0 ? ` <span style="font-size:12px;color:#555;font-weight:400;">(${descuento_aplicado}% discount applied)</span>` : ''}</td>
+                      <td style="padding:12px 14px;font-weight:700;text-align:right;font-size:17px;">${precio_total}€${esNoCancelable && descuentoPct > 0 ? ` <span style="font-size:12px;color:#555;font-weight:400;">(${descuentoPct}% discount applied)</span>` : ''}</td>
                     </tr>
                   </table>
 
@@ -315,7 +378,7 @@ router.post('/', async (req, res) => {
                     </tr>
                     <tr style="background:#f5f8f3;">
                       <td style="padding:10px 14px;color:#555;">Rate</td>
-                      <td style="padding:10px 14px;">${labelTarifa}${esNoCancelable && descuento_aplicado > 0 ? ` <span style="color:#8f0000;">(${descuento_aplicado}% discount)</span>` : ''}</td>
+                      <td style="padding:10px 14px;">${labelTarifa}${esNoCancelable && descuentoPct > 0 ? ` <span style="color:#8f0000;">(${descuentoPct}% discount)</span>` : ''}</td>
                     </tr>
                     <tr>
                       <td style="padding:10px 14px;color:#555;">Total</td>
@@ -378,6 +441,23 @@ router.put('/:id/estado', async (req, res) => {
         const nombre = reserva.nombre;
         const apellidos = reserva.apellidos;
         const email = reserva.email;
+
+        // 1.5 Reembolso Stripe si la reserva estaba pagada y se rechaza/cancela
+        let reembolsado = false;
+        if (['Rechazada', 'Cancelada'].includes(estado) && reserva.estado_pago === 'pagado' && reserva.stripe_payment_intent_id) {
+            const stripe = getStripe();
+            if (!stripe) {
+                return res.status(503).json({ error: 'No se puede reembolsar: Stripe no está configurado' });
+            }
+            try {
+                await stripe.refunds.create({ payment_intent: reserva.stripe_payment_intent_id });
+                await pool.query(`UPDATE reservas SET estado_pago = 'reembolsado' WHERE id_reserva = ?`, [id]);
+                reembolsado = true;
+            } catch (err) {
+                console.error('[PUT /api/reservas/:id/estado] error al reembolsar:', err);
+                return res.status(500).json({ error: 'Error al reembolsar el pago en Stripe. El estado no se ha cambiado.' });
+            }
+        }
 
         // 2. Actualizar el estado
         await pool.query(`UPDATE reservas SET estado_reserva = ? WHERE id_reserva = ?`, [estado, id]);
@@ -483,9 +563,13 @@ router.put('/:id/estado', async (req, res) => {
                 ? `We are sorry to inform you that we were unable to confirm your booking request for the selected dates.`
                 : `As requested, your booking has been cancelled.`;
 
-            const mensajeSecundario = estado === 'Rechazada'
+            let mensajeSecundario = estado === 'Rechazada'
                 ? `We apologise for the inconvenience. Please feel free to contact us to check alternative dates.`
                 : `If you have any questions regarding your cancellation, please don't hesitate to get in touch.`;
+
+            if (reembolsado) {
+                mensajeSecundario = `Your payment of ${Number(reserva.importe_pagado || reserva.precio_total).toFixed(2)}€ has been refunded in full to your original payment method. Depending on your bank, it may take a few days to appear. ` + mensajeSecundario;
+            }
 
             await enviarCorreo(email, asunto, `
             <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">

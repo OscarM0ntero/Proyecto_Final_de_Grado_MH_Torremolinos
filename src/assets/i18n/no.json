@@ -72,7 +72,12 @@
         "MIN-NIGHTS": "Minimumsopphold: {{n}} netter",
         "MIN-NIGHTS-ERROR": "Minimumsoppholdet er {{n}} netter",
         "DATES-UNAVAILABLE": "De valgte datoene er ikke tilgjengelige",
-        "DATES-UNAVAILABLE-MIN": "Datoene er ikke tilgjengelige – minimumsoppholdet er {{n}} netter"
+        "DATES-UNAVAILABLE-MIN": "Datoene er ikke tilgjengelige – minimumsoppholdet er {{n}} netter",
+        "PAY": "Betal og bekreft",
+        "PAYMENT-OK-TITLE": "Betaling fullført!",
+        "PAYMENT-OK-TEXT": "Bestillingen din er bekreftet. Vi har sendt deg detaljene på e-post.",
+        "PAYMENT-CANCELLED": "Betaling avbrutt: bestillingen din ble ikke fullført",
+        "CLOSE": "Lukk"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",

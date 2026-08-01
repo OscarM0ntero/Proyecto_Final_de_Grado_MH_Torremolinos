@@ -328,3 +328,20 @@
         border-right: none;
     }
 }
+
+/* Estado del pago (Stripe) */
+.pago-badge {
+    font-weight: 600;
+
+    &.pago-pagado {
+        color: #2d6a00;
+    }
+
+    &.pago-pendiente {
+        color: #b35c00;
+    }
+
+    &.pago-reembolsado {
+        color: #8f0000;
+    }
+}

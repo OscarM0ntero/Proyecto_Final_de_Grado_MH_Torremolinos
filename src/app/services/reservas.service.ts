@@ -20,6 +20,12 @@ export interface Reserva {
 	fecha_creacion: string;
 	estado_reserva: string;
 	actualizado: string;
+	// Pago con Stripe
+	estado_pago?: 'pendiente' | 'pagado' | 'reembolsado';
+	importe_pagado?: number;
+	stripe_checkout_session_id?: string;
+	stripe_payment_intent_id?: string;
+	token_acceso?: string;
 	// Datos del usuario activo (via JOIN, si la cuenta existe)
 	nombre?: string;
 	apellidos?: string;
@@ -56,6 +62,10 @@ export class ReservasService {
 
 	enviarReserva(payload: any): Observable<any> {
 		return this.http.post('/api/reservas', payload);
+	}
+
+	getStripeConfig(): Observable<{ activo: boolean }> {
+		return this.http.get<{ activo: boolean }>('/api/stripe/config');
 	}
 
 	actualizarEstadoReserva(id: number, estado: string): Observable<any> {
