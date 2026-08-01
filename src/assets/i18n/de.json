@@ -24,7 +24,7 @@
         "FROM_PRICE": "Ab {{precio}}€/Nacht"
     },
     "BOOKING": {
-        "TITLE": "Reservierungsanfrage",
+        "TITLE": "Buchen Sie Ihren Aufenthalt",
         "TITLE2": "Reservierungsdetails",
         "TITLE3": "Kundendaten",
         "TITLE4": "Zusammenfassung",

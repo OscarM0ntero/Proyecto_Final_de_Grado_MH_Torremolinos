@@ -24,7 +24,7 @@
         "FROM_PRICE": "Fra {{precio}}€/natt"
     },
     "BOOKING": {
-        "TITLE": "Bestillingsforespørsel",
+        "TITLE": "Bestill oppholdet ditt",
         "TITLE2": "Reservasjonsdetaljer",
         "TITLE3": "Kundedetaljer",
         "TITLE4": "Oppsummering",
