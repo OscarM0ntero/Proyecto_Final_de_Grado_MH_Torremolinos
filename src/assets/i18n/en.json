@@ -71,7 +71,8 @@
         "STEP2": "Step 2 of 2",
         "MIN-NIGHTS": "Minimum stay: {{n}} nights",
         "MIN-NIGHTS-ERROR": "The minimum stay is {{n}} nights",
-        "DATES-UNAVAILABLE": "The selected dates are not available"
+        "DATES-UNAVAILABLE": "The selected dates are not available",
+        "DATES-UNAVAILABLE-MIN": "Dates not available — note the minimum stay is {{n}} nights"
     },
     "CONTACT": {
         "TITLE": "Contact Form",

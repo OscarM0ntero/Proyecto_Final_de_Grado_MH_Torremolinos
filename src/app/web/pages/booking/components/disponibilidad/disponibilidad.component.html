@@ -36,12 +36,17 @@
                         <mat-date-range-picker #picker [dateClass]="dateClass"></mat-date-range-picker>
                         <mat-hint *ngIf="minNoches > 1">{{ 'BOOKING.MIN-NIGHTS' | translate: { n: minNoches } }}</mat-hint>
                         <mat-error>
-                            <ng-container *ngIf="nochesSeleccionadas > 0 && nochesSeleccionadas < minNoches; else fechasNoDisponibles">
+                            <ng-container *ngIf="nochesSeleccionadas > 0 && nochesSeleccionadas < minNoches">
                                 {{ 'BOOKING.MIN-NIGHTS-ERROR' | translate: { n: minNoches } }}
                             </ng-container>
-                            <ng-template #fechasNoDisponibles>
-                                {{ 'BOOKING.DATES-UNAVAILABLE' | translate }}
-                            </ng-template>
+                            <ng-container *ngIf="!(nochesSeleccionadas > 0 && nochesSeleccionadas < minNoches)">
+                                <ng-container *ngIf="minNoches > 1">
+                                    {{ 'BOOKING.DATES-UNAVAILABLE-MIN' | translate: { n: minNoches } }}
+                                </ng-container>
+                                <ng-container *ngIf="minNoches <= 1">
+                                    {{ 'BOOKING.DATES-UNAVAILABLE' | translate }}
+                                </ng-container>
+                            </ng-container>
                         </mat-error>
                     </mat-form-field>
                 </div>

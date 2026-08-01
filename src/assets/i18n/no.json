@@ -71,7 +71,8 @@
         "STEP2": "Steg 2 av 2",
         "MIN-NIGHTS": "Minimumsopphold: {{n}} netter",
         "MIN-NIGHTS-ERROR": "Minimumsoppholdet er {{n}} netter",
-        "DATES-UNAVAILABLE": "De valgte datoene er ikke tilgjengelige"
+        "DATES-UNAVAILABLE": "De valgte datoene er ikke tilgjengelige",
+        "DATES-UNAVAILABLE-MIN": "Datoene er ikke tilgjengelige – minimumsoppholdet er {{n}} netter"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",

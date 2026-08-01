@@ -71,7 +71,8 @@
         "STEP2": "Schritt 2 von 2",
         "MIN-NIGHTS": "Mindestaufenthalt: {{n}} Nächte",
         "MIN-NIGHTS-ERROR": "Der Mindestaufenthalt beträgt {{n}} Nächte",
-        "DATES-UNAVAILABLE": "Die ausgewählten Daten sind nicht verfügbar"
+        "DATES-UNAVAILABLE": "Die ausgewählten Daten sind nicht verfügbar",
+        "DATES-UNAVAILABLE-MIN": "Daten nicht verfügbar – der Mindestaufenthalt beträgt {{n}} Nächte"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
