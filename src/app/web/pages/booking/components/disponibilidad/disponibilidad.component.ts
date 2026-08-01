@@ -42,6 +42,7 @@ export class DisponibilidadComponent implements OnInit {
 	descuentoEuros = 0;
 	diasCancelacion = 30;
 	precioMascotaNoche = 10;
+	minNoches = 1;
 
 	get precioConDescuento(): number {
 		const habitacionDescontada = Math.round((this.precioHabitacion * (1 - this.descuentoNoCancelable / 100)) * 100) / 100;
@@ -123,6 +124,10 @@ export class DisponibilidadComponent implements OnInit {
 			next: (cfg) => { this.precioMascotaNoche = parseFloat(cfg.valor) || 10; },
 			error: () => { this.precioMascotaNoche = 10; }
 		});
+		this.configuracionService.getValor('min_noches').subscribe({
+			next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
+			error: () => { this.minNoches = 1; }
+		});
 
 		const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
 		if (token) {
@@ -181,7 +186,7 @@ export class DisponibilidadComponent implements OnInit {
 		this.numeroNoches = diasEsperados;
 		this.dias = fechas;
 
-		this.precioHabitacion = fechas.length === diasEsperados
+		this.precioHabitacion = (fechas.length === diasEsperados && diasEsperados >= this.minNoches)
 			? fechas.reduce((total, d) => total + d.precio, 0)
 			: 0;
 
@@ -264,17 +269,42 @@ export class DisponibilidadComponent implements OnInit {
 		return dia?.estado ? `dia-${dia.estado}` : '';
 	};
 
+	private esDisponible(fecha: Date): boolean {
+		const fechaStr = this.formatearFechaLocal(fecha);
+		const dia = this.disponibilidad.find(d => d.fecha === fechaStr);
+		return dia?.estado === 'disponible';
+	}
+
+	// Un día es check-in válido si las min_noches noches siguientes están disponibles
+	private esCheckInValido(date: Date): boolean {
+		const cursor = new Date(date);
+		for (let i = 0; i < this.minNoches; i++) {
+			if (!this.esDisponible(cursor)) return false;
+			cursor.setDate(cursor.getDate() + 1);
+		}
+		return true;
+	}
+
 	dateFilter = (date: Date | null): boolean => {
 		if (!date) return false;
-		const fechaStr = this.formatearFechaLocal(date);
-		const dia = this.disponibilidad.find(d => d.fecha === fechaStr);
-		if (dia?.estado === 'disponible') return true;
 
-		const anterior = new Date(date);
-		anterior.setDate(anterior.getDate() - 1);
-		const anteriorStr = this.formatearFechaLocal(anterior);
-		const diaAntes = this.disponibilidad.find(d => d.fecha === anteriorStr);
+		// Seleccionando check-out: exigir estancia mínima y todas las noches intermedias disponibles.
+		// Las fechas anteriores al inicio reinician el rango, así que se validan como check-in.
+		if (this.fechaInicio && !this.fechaFin) {
+			if (date <= this.fechaInicio) return this.esCheckInValido(date);
 
-		return diaAntes?.estado === 'disponible';
+			const noches = Math.round((date.getTime() - this.fechaInicio.getTime()) / 86400000);
+			if (noches < this.minNoches) return false;
+
+			const cursor = new Date(this.fechaInicio);
+			while (cursor < date) {
+				if (!this.esDisponible(cursor)) return false;
+				cursor.setDate(cursor.getDate() + 1);
+			}
+			return true;
+		}
+
+		// Seleccionando check-in
+		return this.esCheckInValido(date);
 	};
 }

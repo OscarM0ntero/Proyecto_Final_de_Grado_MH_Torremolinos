@@ -18,7 +18,6 @@ export class AdminBookingManagerComponent implements OnInit {
 	estadoFiltro: string = '';
 	textoBusqueda: string = '';
 	estados = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
-	anticipoPct: number = 30;
 
 	constructor(
 		private reservasService: ReservasService,
@@ -76,13 +75,6 @@ export class AdminBookingManagerComponent implements OnInit {
 		const d1 = new Date(inicio);
 		const d2 = new Date(fin);
 		return Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
-	}
-
-	calcularAnticipo(reserva: Reserva): number {
-		if (reserva.tipo_tarifa === 'no_cancelable') {
-			return reserva.precio_total;
-		}
-		return reserva.precio_total * (this.anticipoPct / 100);
 	}
 
 	getBadgeClass(estado: string): string {

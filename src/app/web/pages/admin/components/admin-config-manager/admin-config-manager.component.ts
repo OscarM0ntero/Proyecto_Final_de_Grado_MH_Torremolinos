@@ -14,6 +14,7 @@ export class AdminConfigManagerComponent implements OnInit {
     diasCancelacion: number = 30;
     precioBase: number = 150;
     precioMascota: number = 10;
+    minNoches: number = 1;
     guardando = false;
 
     constructor(
@@ -39,6 +40,10 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.precioMascota = parseFloat(cfg.valor) || 10; },
             error: () => { this.precioMascota = 10; }
         });
+        this.configuracionService.getValor('min_noches').subscribe({
+            next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
+            error: () => { this.minNoches = 1; }
+        });
     }
 
     guardar(): void {
@@ -47,7 +52,8 @@ export class AdminConfigManagerComponent implements OnInit {
             this.configuracionService.setValor('descuento_no_cancelable', this.descuentoNoCancelable.toString()),
             this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString()),
             this.configuracionService.setValor('precio_base', this.precioBase.toString()),
-            this.configuracionService.setValor('precio_mascota', this.precioMascota.toString())
+            this.configuracionService.setValor('precio_mascota', this.precioMascota.toString()),
+            this.configuracionService.setValor('min_noches', this.minNoches.toString())
         ];
 
         let completados = 0;

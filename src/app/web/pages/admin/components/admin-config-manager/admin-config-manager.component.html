@@ -68,6 +68,20 @@
                 </mat-form-field>
             </div>
         </div>
+
+        <div class="config-row">
+            <div class="config-label">
+                <strong>Mínimo de noches</strong>
+                <span>Duración mínima de la estancia. Los huecos de días disponibles más cortos que este mínimo no se pueden seleccionar en el formulario de reserva (siguen disponibles en el calendario por si se quiere gestionar una reserva manualmente).</span>
+            </div>
+            <div class="config-input">
+                <mat-form-field appearance="outline">
+                    <mat-label>Noches</mat-label>
+                    <input matInput type="number" [(ngModel)]="minNoches" min="1" max="30" step="1" />
+                    <span matSuffix>noches</span>
+                </mat-form-field>
+            </div>
+        </div>
     </div>
 
     <div class="config-actions">

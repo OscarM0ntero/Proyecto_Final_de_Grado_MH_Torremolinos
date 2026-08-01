@@ -111,7 +111,6 @@ router.get('/cliente', async (req, res) => {
 
 // Configuración desde .env
 const IBAN = process.env['RESERVA_IBAN'] || 'IBAN_NO_CONFIGURADO';
-const ANTICIPO_PORCENTAJE = parseInt(process.env['RESERVA_ANTICIPO_PORCENTAJE'] || '30', 10);
 const adminEmails = ['info@mhtorremolinos.com', 'mhtorremolinos@gmail.com'];
 
 router.post('/', async (req, res) => {
@@ -137,6 +136,14 @@ router.post('/', async (req, res) => {
     let id_usuario = null;
 
     try {
+        // 0. Estancia mínima
+        const [[cfgMin]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'min_noches'`) as any[];
+        const minNoches = parseInt(cfgMin?.valor || '1', 10);
+        const noches = Math.round((new Date(fechaFin).getTime() - new Date(fechaInicio).getTime()) / 86400000);
+        if (noches < minNoches) {
+            return res.status(400).json({ error: `La estancia mínima es de ${minNoches} noches` });
+        }
+
         // 1. Si viene token, obtener ID
         const authHeader = req.headers['authorization'];
         if (authHeader) {
@@ -182,9 +189,6 @@ router.post('/', async (req, res) => {
              precio_total, tipo_tarifa, descuento_aplicado, diasCancelacion, precioMascotaNoche]
         );
 
-        const anticipo = Math.round(precio_total * (ANTICIPO_PORCENTAJE / 100));
-        const restante = precio_total - anticipo;
-
         const paymentBlock = esNoCancelable
             ? `<div style="background:#fff8f8;border-left:4px solid #8f0000;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
                 <p style="margin:0 0 8px;font-size:15px;"><strong>Non-refundable rate — full payment required</strong></p>
@@ -197,15 +201,14 @@ router.post('/', async (req, res) => {
                 <p style="margin:12px 0 0;font-size:13px;color:#8f0000;">⚠ This rate does not allow cancellations or refunds once payment is made.</p>
                </div>`
             : `<div style="background:#f5f8f3;border-left:4px solid #3F4B3A;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
-                <p style="margin:0 0 8px;font-size:15px;"><strong>Refundable rate — deposit to confirm</strong></p>
-                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the ${ANTICIPO_PORCENTAJE}% deposit:</p>
+                <p style="margin:0 0 8px;font-size:15px;"><strong>Refundable rate — full payment to confirm</strong></p>
+                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the full amount:</p>
                 <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                    <tr><td style="padding:4px 0;color:#555;">Deposit due now (${ANTICIPO_PORCENTAJE}%)</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${anticipo}€</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">Remaining balance (due ${diasCancelacion} days before check-in)</td><td style="padding:4px 0;text-align:right;">${restante}€</td></tr>
+                    <tr><td style="padding:4px 0;color:#555;">Amount due now</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${precio_total}€</td></tr>
                     <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
                     <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
                 </table>
-                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${diasCancelacion} days before check-in — deposit fully refunded.</p>
+                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${diasCancelacion} days before check-in — full refund.</p>
                </div>`;
 
         // 4. Email de confirmación al cliente
@@ -270,7 +273,7 @@ router.post('/', async (req, res) => {
         // 5. Email a administradores
         const pagoEsperado = esNoCancelable
             ? `100% — ${precio_total}€ (non-refundable)`
-            : `${ANTICIPO_PORCENTAJE}% deposit — ${anticipo}€ now · ${restante}€ before ${diasCancelacion} days`;
+            : `100% — ${precio_total}€ (refundable up to ${diasCancelacion} days before check-in)`;
 
         for (const admin of adminEmails) {
             await enviarCorreo(admin, `New booking request — ${nombre} ${apellidos} (${fechaInicioFmt})`, `

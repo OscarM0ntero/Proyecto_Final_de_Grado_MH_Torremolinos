@@ -96,10 +96,6 @@
             <div class="detail-row discount-row" *ngIf="r.descuento_aplicado">
                 <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
             </div>
-            <div class="detail-row anticipo-row">
-                <span>{{ r.tipo_tarifa === 'no_cancelable' ? 'Pago completo' : 'Anticipo (30%)' }}</span>
-                <span>{{ calcularAnticipo(r) | number:'1.2-2' }} €</span>
-            </div>
         </div>
     </div>
 
