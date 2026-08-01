@@ -69,12 +69,26 @@ export class LayoutComponent implements OnInit {
 
 	ngOnInit(): void {
 		if (isPlatformBrowser(this.platformId)) {
-			const lang = localStorage.getItem('lang') || 'es';
+			// Prioridad: idioma elegido manualmente > idioma del navegador > inglés
+			const lang = localStorage.getItem('lang') || this.detectarIdiomaNavegador();
 			this.translate.use(lang).subscribe(() => {
 				document.body.classList.remove('hide-until-translate-loaded');
 			});
 			this.selectedLang = lang;
 		}
+	}
+
+	// Devuelve el idioma soportado que mejor encaja con las preferencias del navegador
+	private detectarIdiomaNavegador(): string {
+		const soportados = ['es', 'en', 'de', 'no'];
+		const candidatos = navigator.languages?.length ? navigator.languages : [navigator.language];
+		for (const candidato of candidatos) {
+			if (!candidato) continue;
+			let base = candidato.toLowerCase().split('-')[0];
+			if (base === 'nb' || base === 'nn') base = 'no'; // variantes escritas del noruego
+			if (soportados.includes(base)) return base;
+		}
+		return 'en';
 	}
 
 
