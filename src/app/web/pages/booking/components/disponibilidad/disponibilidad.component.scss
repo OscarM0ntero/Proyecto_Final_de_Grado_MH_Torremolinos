@@ -54,11 +54,11 @@
         }
     }
 
-    /* El notch usa un border-left transparente solo para alinear el label;
-       al pintarlo con border-color aparecía una línea vertical dentro del campo */
+    /* El notch trae un border-left transparente de Material solo para alinear el label;
+       se elimina por completo para que ninguna regla de color pueda hacerlo visible */
     .mdc-notched-outline__notch {
-        border-left-color: transparent !important;
-        border-right-color: transparent !important;
+        border-left: none !important;
+        border-right: none !important;
     }
 
     label {
