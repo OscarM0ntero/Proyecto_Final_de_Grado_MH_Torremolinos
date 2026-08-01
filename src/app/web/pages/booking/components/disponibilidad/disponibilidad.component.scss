@@ -25,6 +25,9 @@
     /* Campos Material: ancho completo de su celda, fondo blanco */
     .mat-mdc-form-field {
         width: 100%;
+        /* El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio
+           para que coincida con el del fondo (si difieren queda una fina línea en la esquina) */
+        --mdc-outlined-text-field-container-shape: 8px;
     }
 
     .mat-mdc-form-field-infix {
