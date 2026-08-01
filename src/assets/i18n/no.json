@@ -68,7 +68,10 @@
         "SUMMARY-EMPTY": "Velg datoer for å se prisen på oppholdet ditt",
         "COMPLETE-FIELDS": "Fyll ut de obligatoriske feltene for å fortsette",
         "STEP1": "Steg 1 av 2",
-        "STEP2": "Steg 2 av 2"
+        "STEP2": "Steg 2 av 2",
+        "MIN-NIGHTS": "Minimumsopphold: {{n}} netter",
+        "MIN-NIGHTS-ERROR": "Minimumsoppholdet er {{n}} netter",
+        "DATES-UNAVAILABLE": "De valgte datoene er ikke tilgjengelige"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",

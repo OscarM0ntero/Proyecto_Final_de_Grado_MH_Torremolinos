@@ -275,6 +275,11 @@ export class DisponibilidadComponent implements OnInit {
 		return dia?.estado === 'disponible';
 	}
 
+	get nochesSeleccionadas(): number {
+		if (!this.fechaInicio || !this.fechaFin) return 0;
+		return Math.round((this.fechaFin.getTime() - this.fechaInicio.getTime()) / 86400000);
+	}
+
 	// Un día es check-in válido si las min_noches noches siguientes están disponibles
 	private esCheckInValido(date: Date): boolean {
 		const cursor = new Date(date);

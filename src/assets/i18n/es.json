@@ -68,7 +68,10 @@
         "SUMMARY-EMPTY": "Selecciona las fechas para ver el precio de tu estancia",
         "COMPLETE-FIELDS": "Completa los campos obligatorios para continuar",
         "STEP1": "Paso 1 de 2",
-        "STEP2": "Paso 2 de 2"
+        "STEP2": "Paso 2 de 2",
+        "MIN-NIGHTS": "Estancia mínima: {{n}} noches",
+        "MIN-NIGHTS-ERROR": "La estancia mínima es de {{n}} noches",
+        "DATES-UNAVAILABLE": "Las fechas seleccionadas no están disponibles"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",

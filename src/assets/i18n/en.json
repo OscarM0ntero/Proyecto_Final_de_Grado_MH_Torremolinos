@@ -68,7 +68,10 @@
         "SUMMARY-EMPTY": "Select your dates to see the price of your stay",
         "COMPLETE-FIELDS": "Complete the required fields to continue",
         "STEP1": "Step 1 of 2",
-        "STEP2": "Step 2 of 2"
+        "STEP2": "Step 2 of 2",
+        "MIN-NIGHTS": "Minimum stay: {{n}} nights",
+        "MIN-NIGHTS-ERROR": "The minimum stay is {{n}} nights",
+        "DATES-UNAVAILABLE": "The selected dates are not available"
     },
     "CONTACT": {
         "TITLE": "Contact Form",

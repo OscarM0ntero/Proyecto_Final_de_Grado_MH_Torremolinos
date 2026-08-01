@@ -68,7 +68,10 @@
         "SUMMARY-EMPTY": "Wählen Sie die Daten aus, um den Preis Ihres Aufenthalts zu sehen",
         "COMPLETE-FIELDS": "Füllen Sie die Pflichtfelder aus, um fortzufahren",
         "STEP1": "Schritt 1 von 2",
-        "STEP2": "Schritt 2 von 2"
+        "STEP2": "Schritt 2 von 2",
+        "MIN-NIGHTS": "Mindestaufenthalt: {{n}} Nächte",
+        "MIN-NIGHTS-ERROR": "Der Mindestaufenthalt beträgt {{n}} Nächte",
+        "DATES-UNAVAILABLE": "Die ausgewählten Daten sind nicht verfügbar"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
