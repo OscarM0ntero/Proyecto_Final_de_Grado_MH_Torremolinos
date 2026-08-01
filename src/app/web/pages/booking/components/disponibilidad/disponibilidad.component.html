@@ -98,7 +98,7 @@
                 <!-- Resumen de precio (solo móvil; en escritorio se muestra en el lateral) -->
                 <div class="precio-card" *ngIf="precioBase > 0">
                     <div class="precio-row">
-                        <span>{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} × {{ numeroNoches }}
+                        <span>{{ preciosVariables ? '~' : '' }}{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} × {{ numeroNoches }}
                             {{ numeroNoches | i18nPlural: nochesPluralMap | translate }}</span>
                         <span>{{ precioHabitacion | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
                     </div>
@@ -213,7 +213,7 @@
                         <div class="aside-divider"></div>
 
                         <div class="aside-row">
-                            <span>{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} × {{ numeroNoches }}
+                            <span>{{ preciosVariables ? '~' : '' }}{{ precioPorNoche | currency:'EUR':'symbol':'1.2-2':'es-ES' }} × {{ numeroNoches }}
                                 {{ numeroNoches | i18nPlural: nochesPluralMap | translate }}</span>
                             <strong>{{ precioHabitacion | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                         </div>

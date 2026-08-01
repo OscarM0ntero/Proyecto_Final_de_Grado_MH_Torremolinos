@@ -48,6 +48,12 @@ export class DisponibilidadComponent implements OnInit {
 		return Math.round((habitacionDescontada + this.precioMascota) * 100) / 100;
 	}
 
+	// True cuando las noches del rango tienen precios distintos: el precio/noche mostrado es una media (~)
+	get preciosVariables(): boolean {
+		if (!this.dias || this.dias.length < 2) return false;
+		return this.dias.some((d: any) => d.precio !== this.dias[0].precio);
+	}
+
 	get todosLosDiasCancelables(): boolean {
 		if (!this.fechaInicio || !this.fechaFin) return true;
 		const inicio = this.formatearFechaLocal(this.fechaInicio);
