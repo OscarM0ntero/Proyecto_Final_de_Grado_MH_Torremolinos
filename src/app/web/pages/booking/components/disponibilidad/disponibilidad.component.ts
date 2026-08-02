@@ -45,6 +45,8 @@ export class DisponibilidadComponent implements OnInit {
 	precioMascotaNoche = 10;
 	minNoches = 1;
 	stripeActivo = false;
+	horaCheckin = '16:00';
+	horaCheckout = '11:00';
 
 	get precioConDescuento(): number {
 		const habitacionDescontada = Math.round((this.precioHabitacion * (1 - this.descuentoNoCancelable / 100)) * 100) / 100;
@@ -132,6 +134,14 @@ export class DisponibilidadComponent implements OnInit {
 		this.configuracionService.getValor('min_noches').subscribe({
 			next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
 			error: () => { this.minNoches = 1; }
+		});
+		this.configuracionService.getValor('hora_checkin').subscribe({
+			next: (cfg) => { this.horaCheckin = cfg.valor || '16:00'; },
+			error: () => { this.horaCheckin = '16:00'; }
+		});
+		this.configuracionService.getValor('hora_checkout').subscribe({
+			next: (cfg) => { this.horaCheckout = cfg.valor || '11:00'; },
+			error: () => { this.horaCheckout = '11:00'; }
 		});
 
 		this.layout.captchaResuelto$.subscribe(token => {

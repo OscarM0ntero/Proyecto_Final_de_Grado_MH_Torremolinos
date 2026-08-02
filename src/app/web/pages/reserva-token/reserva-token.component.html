@@ -26,10 +26,10 @@
             <div class="manage-card">
                 <div class="manage-card-header">{{ 'BOOKING.RESERVATION' | translate }}</div>
                 <div class="manage-row">
-                    <span>Check-in</span><strong>{{ reserva.fecha_inicio | date:'dd/MM/yyyy' }}</strong>
+                    <span>Check-in</span><strong>{{ reserva.fecha_inicio | date:'dd/MM/yyyy' }} · {{ horaCheckin }}</strong>
                 </div>
                 <div class="manage-row">
-                    <span>Check-out</span><strong>{{ reserva.fecha_fin | date:'dd/MM/yyyy' }}</strong>
+                    <span>Check-out</span><strong>{{ reserva.fecha_fin | date:'dd/MM/yyyy' }} · {{ horaCheckout }}</strong>
                 </div>
                 <div class="manage-row">
                     <span>{{ 'BOOKING.NIGHTS' | translate }}</span><strong>{{ noches }}</strong>

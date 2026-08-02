@@ -13,7 +13,7 @@
 				</mat-option>
 			</mat-select>
 
-			<button [routerLink]="['iniciar-sesion']" class="login-button">{{ botonLoginLabel | translate }}</button>
+			<button *ngIf="esAdmin" [routerLink]="['admin']" class="login-button">{{ 'NAVBAR.ADMIN' | translate }}</button>
 		</div>
 		<button class="hamburger" (click)="toggleMobileMenu()" aria-label="Menú">
 			&#9776;
@@ -77,8 +77,8 @@
 				(click)="closeMobileMenu()">{{
 				'NAVBAR.CONTACT' | translate
 				}}</a>
-			<a class="nav-item" style="color: var(--color-neutral); background-color: var(--color-primary)"
-				[routerLink]="['iniciar-sesion']" (click)="closeMobileMenu()">{{ botonLoginLabel | translate }}</a>
+			<a *ngIf="esAdmin" class="nav-item" style="color: var(--color-neutral); background-color: var(--color-primary)"
+				[routerLink]="['admin']" (click)="closeMobileMenu()">{{ 'NAVBAR.ADMIN' | translate }}</a>
 			<div class="spacer-small"></div>
 			<mat-select class="lang-select" [panelClass]="'lang-panel'" [value]="selectedLang"
 				(selectionChange)="cambiarIdioma($event.value)" disableRipple>

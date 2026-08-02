@@ -15,6 +15,8 @@ export class AdminConfigManagerComponent implements OnInit {
     precioBase: number = 150;
     precioMascota: number = 10;
     minNoches: number = 1;
+    horaCheckin: string = '16:00';
+    horaCheckout: string = '11:00';
     guardando = false;
 
     constructor(
@@ -44,6 +46,14 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
             error: () => { this.minNoches = 1; }
         });
+        this.configuracionService.getValor('hora_checkin').subscribe({
+            next: (cfg) => { this.horaCheckin = cfg.valor || '16:00'; },
+            error: () => { this.horaCheckin = '16:00'; }
+        });
+        this.configuracionService.getValor('hora_checkout').subscribe({
+            next: (cfg) => { this.horaCheckout = cfg.valor || '11:00'; },
+            error: () => { this.horaCheckout = '11:00'; }
+        });
     }
 
     guardar(): void {
@@ -53,7 +63,9 @@ export class AdminConfigManagerComponent implements OnInit {
             this.configuracionService.setValor('dias_cancelacion', this.diasCancelacion.toString()),
             this.configuracionService.setValor('precio_base', this.precioBase.toString()),
             this.configuracionService.setValor('precio_mascota', this.precioMascota.toString()),
-            this.configuracionService.setValor('min_noches', this.minNoches.toString())
+            this.configuracionService.setValor('min_noches', this.minNoches.toString()),
+            this.configuracionService.setValor('hora_checkin', this.horaCheckin),
+            this.configuracionService.setValor('hora_checkout', this.horaCheckout)
         ];
 
         let completados = 0;

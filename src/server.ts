@@ -10,6 +10,7 @@ import {
 } from '@angular/ssr/node';
 
 import { sincronizarIcal } from './icalSync.js';
+import { asegurarCalendario } from './api/utils/calendario.js';
 
 import contenidoRouter from './api/contenido.routes.js';
 import disponibilidadRoutes from './api/disponibilidad.routes.js';
@@ -109,6 +110,11 @@ if (isMainModule(import.meta.url)) {
 	const INTERVALO_RECONCILIACION_MS = 15 * 60 * 1000; // 15 minutos
 	reconciliarReservasPendientes();
 	setInterval(reconciliarReservasPendientes, INTERVALO_RECONCILIACION_MS);
+
+	// Calendario: rellena los días que falten hasta 12 meses vista (autorreparable)
+	const INTERVALO_CALENDARIO_MS = 6 * 60 * 60 * 1000; // 6 horas
+	asegurarCalendario();
+	setInterval(asegurarCalendario, INTERVALO_CALENDARIO_MS);
 }
 
 export const reqHandler = createNodeRequestHandler(app);

@@ -21,6 +21,8 @@ export class ReservaTokenComponent implements OnInit {
 	cargando = true;
 	noEncontrada = false;
 	cancelando = false;
+	horaCheckin = '16:00';
+	horaCheckout = '11:00';
 
 	constructor(
 		private route: ActivatedRoute,
@@ -34,6 +36,13 @@ export class ReservaTokenComponent implements OnInit {
 	ngOnInit(): void {
 		this.token = this.route.snapshot.paramMap.get('token') || '';
 		this.cargar();
+
+		this.http.get<any>('/api/configuracion/hora_checkin').subscribe({
+			next: (c) => { this.horaCheckin = c.valor || '16:00'; }, error: () => { }
+		});
+		this.http.get<any>('/api/configuracion/hora_checkout').subscribe({
+			next: (c) => { this.horaCheckout = c.valor || '11:00'; }, error: () => { }
+		});
 	}
 
 	private cargar(): void {

@@ -7,7 +7,8 @@ const router = express.Router();
 
 // Únicas claves que el sitio público necesita leer; el resto exige rol administrador
 // para que añadir una clave sensible a `configuracion` no la exponga sin querer.
-const CLAVES_PUBLICAS = ['descuento_no_cancelable', 'dias_cancelacion', 'precio_mascota', 'min_noches'];
+const CLAVES_PUBLICAS = ['descuento_no_cancelable', 'dias_cancelacion', 'precio_mascota', 'min_noches',
+    'hora_checkin', 'hora_checkout'];
 
 // GET /api/configuracion/:clave — público solo para CLAVES_PUBLICAS
 router.get('/:clave', (req, res, next) => {

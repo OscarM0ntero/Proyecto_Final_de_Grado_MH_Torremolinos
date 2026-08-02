@@ -130,11 +130,10 @@ export class LayoutComponent implements OnInit {
 		return lang ? lang.bandera : '';
 	}
 
-	get botonLoginLabel(): string {
-		const rol = this.authService.getRol();
-		this.authService.isLoggedIn();
-		if (rol === 'administrador') return 'NAVBAR.ADMIN';
-		return 'NAVBAR.LOGIN';
+	// El acceso al panel solo se muestra si ya hay sesión de administrador.
+	// Los visitantes no ven ningún botón de login; los admins entran por /admin.
+	get esAdmin(): boolean {
+		return this.authService.isLoggedIn() && this.authService.getRol() === 'administrador';
 	}
 
 }

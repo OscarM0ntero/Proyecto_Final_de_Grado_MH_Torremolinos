@@ -208,11 +208,11 @@
                     <ng-container *ngIf="fechaInicio && fechaFin && precioBase > 0; else asideEmpty">
                         <div class="aside-row">
                             <span>Check-in</span>
-                            <strong>{{ fechaInicio | date:'dd/MM/yyyy' }}</strong>
+                            <strong>{{ fechaInicio | date:'dd/MM/yyyy' }} · {{ horaCheckin }}</strong>
                         </div>
                         <div class="aside-row">
                             <span>Check-out</span>
-                            <strong>{{ fechaFin | date:'dd/MM/yyyy' }}</strong>
+                            <strong>{{ fechaFin | date:'dd/MM/yyyy' }} · {{ horaCheckout }}</strong>
                         </div>
                         <div class="aside-row">
                             <span>{{ 'BOOKING.GUESTS2' | translate }}</span>
@@ -291,11 +291,11 @@
                     <div class="summary-card-header">{{ 'BOOKING.RESERVATION' | translate }}</div>
                     <div class="summary-card-row">
                         <span>Check-in</span>
-                        <strong>{{ fechaInicio | date:'dd-MM-yyyy' }}</strong>
+                        <strong>{{ fechaInicio | date:'dd-MM-yyyy' }} · {{ horaCheckin }}</strong>
                     </div>
                     <div class="summary-card-row">
                         <span>Check-out</span>
-                        <strong>{{ fechaFin | date:'dd-MM-yyyy' }}</strong>
+                        <strong>{{ fechaFin | date:'dd-MM-yyyy' }} · {{ horaCheckout }}</strong>
                     </div>
                     <div class="summary-card-row">
                         <span>{{ 'BOOKING.GUESTS2' | translate }}</span>

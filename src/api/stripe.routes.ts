@@ -164,6 +164,11 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
         [session.id, paymentIntentId, importePagado, idReserva]
     );
 
+    const [[cfgIn]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'hora_checkin'`) as any[];
+    const [[cfgOut]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'hora_checkout'`) as any[];
+    const horaCheckin = cfgIn?.valor || '16:00';
+    const horaCheckout = cfgOut?.valor || '11:00';
+
     const esNoCancelable = reserva.tipo_tarifa === 'no_cancelable';
     const politicaCancelacion = esNoCancelable
         ? `<p style="margin:12px 0 0;font-size:13px;color:#8f0000;">⚠ Non-refundable rate: this booking cannot be cancelled or refunded.</p>`
@@ -178,11 +183,11 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
           <tr style="background:#f5f8f3;">
             <td style="padding:12px 16px;color:#555;">Check-in</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaInicioFmt}</td>
+            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaInicioFmt} · from ${horaCheckin}</td>
           </tr>
           <tr>
             <td style="padding:12px 16px;color:#555;">Check-out</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaFinFmt}</td>
+            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaFinFmt} · before ${horaCheckout}</td>
           </tr>
           <tr style="background:#f5f8f3;">
             <td style="padding:12px 16px;color:#555;">Guests</td>
