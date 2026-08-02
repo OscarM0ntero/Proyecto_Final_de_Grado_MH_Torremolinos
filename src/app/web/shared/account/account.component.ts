@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
+import { PREFIJOS_TELEFONO } from '../../../shared/prefijos';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UsuariosService, UsuarioPerfil } from '../../../../../services/usuarios.service';
+import { UsuariosService, UsuarioPerfil } from '../../../services/usuarios.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

@@ -1,6 +1,6 @@
 // Dialog para confirmar el cierre de sesión
 import { Component } from '@angular/core';
-import { MaterialModule } from '../../../../material/material.module';
+import { MaterialModule } from '../../material/material.module';
 
 @Component({
 	selector: 'app-logout-confirm-dialog',
