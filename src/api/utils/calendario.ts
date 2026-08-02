@@ -42,24 +42,35 @@ export async function asegurarCalendario(): Promise<void> {
             cursor.setDate(cursor.getDate() + 1);
         }
 
-        if (faltan.length === 0) return;
-
         const [[cfg]] = await pool.query(
             `SELECT valor FROM configuracion WHERE clave = 'precio_base'`
         ) as any[];
         const precioBase = parseFloat(cfg?.valor) || 150;
+
+        // Saneado: un día sin precio no se puede vender si algún día se abre
+        const [arreglados] = await pool.query(
+            `UPDATE disponibilidad SET precio = ? WHERE precio IS NULL AND fecha BETWEEN ? AND ?`,
+            [precioBase, desdeSQL, hastaSQL]
+        ) as any[];
+        if (arreglados.affectedRows > 0) {
+            console.log(`[calendario] asignado precio base a ${arreglados.affectedRows} día(s) que estaban sin precio`);
+        }
+
+        if (faltan.length === 0) return;
 
         // Los días nuevos nacen cerrados: el administrador decide cuándo abrirlos a la venta
         const valores = faltan.map(() => '(?, ?, ?, ?)').join(', ');
         const params: any[] = [];
         for (const f of faltan) params.push(f, precioBase, 'cerrada', 'local');
 
-        await pool.query(
+        const [res] = await pool.query(
             `INSERT IGNORE INTO disponibilidad (fecha, precio, estado, fuente) VALUES ${valores}`,
             params
-        );
+        ) as any[];
 
-        console.log(`[calendario] creados ${faltan.length} día(s) que faltaban (hasta ${hastaSQL}, precio base ${precioBase}€)`);
+        if (res.affectedRows > 0) {
+            console.log(`[calendario] creados ${res.affectedRows} día(s) que faltaban (hasta ${hastaSQL}, precio base ${precioBase}€)`);
+        }
     } catch (err) {
         console.error('[calendario] error al asegurar el rango de fechas:', err);
     }

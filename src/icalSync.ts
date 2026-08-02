@@ -77,10 +77,17 @@ async function sincronizarIcal() {
                 console.log(`[iCal] ${source}: ${fechasOcupadas.length} fechas ocupadas.`);
 
                 if (fechasOcupadas.length > 0) {
-                    const placeholders = fechasOcupadas.map(() => '(?, ?, ?, NULL)').join(', ');
-                    const values = fechasOcupadas.flatMap(f => [f, source, source]);
+                    // Las fechas que aún no existían se crean con el precio base: si quedaran a NULL
+                    // no se podrían poner a la venta cuando el bloqueo externo desaparezca.
+                    const [[cfgPrecio]] = await connection.query(
+                        `SELECT valor FROM configuracion WHERE clave = 'precio_base'`
+                    ) as any[];
+                    const precioBase = parseFloat(cfgPrecio?.valor) || 150;
+
+                    const placeholders = fechasOcupadas.map(() => '(?, ?, ?, ?, NULL)').join(', ');
+                    const values = fechasOcupadas.flatMap(f => [f, precioBase, source, source]);
                     await connection.query(`
-                        INSERT INTO disponibilidad (fecha, estado, fuente, id_reserva)
+                        INSERT INTO disponibilidad (fecha, precio, estado, fuente, id_reserva)
                         VALUES ${placeholders}
                         ON DUPLICATE KEY UPDATE estado = VALUES(estado), fuente = VALUES(fuente), actualizado = CURRENT_TIMESTAMP
                     `, values);
