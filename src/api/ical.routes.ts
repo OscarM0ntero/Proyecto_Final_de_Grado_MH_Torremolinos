@@ -1,7 +1,19 @@
 import express from 'express';
-import { pool } from '../db.js';
+import crypto from 'node:crypto';
+import { pool, secret } from '../db.js';
 
 const router = express.Router();
+
+const ORGANIZER = 'mailto:info@mhtorremolinos.com';
+
+// UID opaco y estable por reserva.
+// NO se usa `token_acceso` directamente: este feed es público (lo leen Booking y Airbnb) y ese
+// token permite ver y CANCELAR la reserva. Se publica un hash con el secreto del servidor, que
+// es igual de estable pero no se puede revertir.
+function uidReserva(idReserva: number): string {
+    const hash = crypto.createHash('sha256').update(`reserva:${idReserva}:${secret}`).digest('hex');
+    return `${hash.slice(0, 32)}@mhtorremolinos.com`;
+}
 
 function toIcalDate(dateStr: string): string {
     return dateStr.replace(/-/g, '');
@@ -58,7 +70,7 @@ function agruparConsecutivos(fechas: string[]): { inicio: string; fin: string }[
     return rangos;
 }
 
-router.get('/export', async (req, res) => {
+async function generarIcs(res: express.Response, incluirCerrados: boolean, nombreFichero: string) {
     try {
         // 1. Reservas confirmadas desde la tabla reservas (UIDs estables por id_reserva)
         const [reservasRows] = await pool.query(
@@ -72,12 +84,14 @@ router.get('/export', async (req, res) => {
         ) as any[];
 
         // 2. Días cerrados manualmente por admin (no vinculados a una reserva)
-        const [cerradasRows] = await pool.query(
-            `SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha
-             FROM disponibilidad
-             WHERE estado = 'cerrada' AND fecha >= CURDATE()
-             ORDER BY fecha ASC`
-        ) as any[];
+        const [cerradasRows] = incluirCerrados
+            ? await pool.query(
+                `SELECT DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha
+                 FROM disponibilidad
+                 WHERE estado = 'cerrada' AND fecha >= CURDATE()
+                 ORDER BY fecha ASC`
+            ) as any[]
+            : [[]];
 
         const now = new Date();
         const dtstamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -90,11 +104,12 @@ router.get('/export', async (req, res) => {
                 .toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
             eventos.push(buildVEvent({
-                'UID': `mht-reserva-${r.id_reserva}@mhtorremolinos.com`,
+                'UID': uidReserva(r.id_reserva),
                 'DTSTAMP': dtstamp,
                 'DTSTART;VALUE=DATE': toIcalDate(r.fecha_inicio),
                 'DTEND;VALUE=DATE': toIcalDate(r.fecha_fin),
-                'SUMMARY': 'Reserved',
+                'SUMMARY': 'CLOSED - Not available',
+                'ORGANIZER': ORGANIZER,
                 'CREATED': created,
             }));
         }
@@ -107,7 +122,8 @@ router.get('/export', async (req, res) => {
                 'DTSTAMP': dtstamp,
                 'DTSTART;VALUE=DATE': toIcalDate(rango.inicio),
                 'DTEND;VALUE=DATE': toIcalDate(rango.fin),
-                'SUMMARY': 'Closed',
+                'SUMMARY': 'CLOSED - Not available',
+                'ORGANIZER': ORGANIZER,
             }));
         }
 
@@ -122,12 +138,18 @@ router.get('/export', async (req, res) => {
         ].join('\r\n');
 
         res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-        res.setHeader('Content-Disposition', 'attachment; filename="mhtorremolinos.ics"');
+        res.setHeader('Content-Disposition', `attachment; filename="${nombreFichero}"`);
         res.send(ics);
     } catch (err) {
         console.error('[GET /api/ical/export]', err);
         res.status(500).json({ error: 'Error al generar el calendario' });
     }
-});
+}
+
+// Calendario completo: reservas + días cerrados manualmente (el que ya usaban Booking/Airbnb)
+router.get('/export', (_req, res) => generarIcs(res, true, 'mhtorremolinos.ics'));
+
+// Solo reservas confirmadas, sin los días que el administrador cerró a mano
+router.get('/export/reservas', (_req, res) => generarIcs(res, false, 'mhtorremolinos-reservas.ics'));
 
 export default router;
