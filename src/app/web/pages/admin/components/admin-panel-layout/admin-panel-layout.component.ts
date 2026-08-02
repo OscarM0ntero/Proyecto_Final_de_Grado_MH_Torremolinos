@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../../../services/auth.service';
-import { LogoutConfirmDialogComponent } from '../../../client/dialogs/logout-confirm-dialog.component';
+import { LogoutConfirmDialogComponent } from '../../../../shared/logout-confirm-dialog.component';
 
 @Component({
   selector: 'app-admin-panel-layout',

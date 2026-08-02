@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material/material.module';
-import { ClientAccountComponent } from '../pages/client/components/client-account/client-account.component';
+import { AccountComponent } from './account/account.component';
 
 /**
- * Módulo compartido que declara ClientAccountComponent,
+ * Módulo compartido que declara AccountComponent,
  * usado tanto en /admin/cuenta como en /cliente/cuenta.
  */
 @NgModule({
-    declarations: [ClientAccountComponent],
+    declarations: [AccountComponent],
     imports: [
         CommonModule,
         FormsModule,
         MaterialModule,
         TranslateModule,
     ],
-    exports: [ClientAccountComponent],
+    exports: [AccountComponent],
 })
 export class AccountModule { }

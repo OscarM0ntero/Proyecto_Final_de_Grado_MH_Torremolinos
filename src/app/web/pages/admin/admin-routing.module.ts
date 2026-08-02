@@ -11,7 +11,7 @@ import { ContentEditorComponent } from './components/content-editor/content-edit
 import { AdminImagesManagerComponent } from './components/admin-images-manager/admin-images-manager.component';
 import { ImagesListComponent } from './components/images-list/images-list.component';
 import { UploadImageComponent } from './components/upload-image/upload-image.component';
-import { ClientAccountComponent } from '../client/components/client-account/client-account.component';
+import { AccountComponent } from '../../shared/account/account.component';
 
 const routes: Routes = [
     {
@@ -19,7 +19,7 @@ const routes: Routes = [
         component: AdminComponent,
         children: [
             { path: '', redirectTo: 'cuenta', pathMatch: 'full' },
-            { path: 'cuenta', component: ClientAccountComponent },
+            { path: 'cuenta', component: AccountComponent },
             { path: 'calendario', component: AdminCalendarManagerComponent },
             { path: 'reservas', component: AdminBookingManagerComponent },
             { path: 'usuarios', component: AdminUsersManagerComponent },
