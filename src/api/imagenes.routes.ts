@@ -5,6 +5,7 @@ import { pool } from '../db.js';
 import path from 'path';
 import { generarThumbnail } from './utils/image-tools.js';
 import fs from 'fs/promises';
+import { verificarAdmin } from './middleware/verificarAdmin.js';
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
     res.json(rows);
 });
 
-router.post('/', upload.single('imagen'), async (req, res) => {
+router.post('/', verificarAdmin, upload.single('imagen'), async (req, res) => {
     const { alt, orden, pagina } = req.body;
     const imagen = req.file;
 
@@ -54,7 +55,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verificarAdmin, async (req, res) => {
     const { id } = req.params;
 
     const [rawRows] = await pool.query('SELECT url, url_thumbnail FROM imagenes WHERE id = ?', [id]);

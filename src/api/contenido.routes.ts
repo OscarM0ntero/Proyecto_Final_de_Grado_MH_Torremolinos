@@ -1,6 +1,7 @@
 // Backend de contenido/textos
 import { Router } from 'express';
 import { pool } from '../db.js';
+import { verificarAdmin } from './middleware/verificarAdmin.js';
 
 const router = Router();
 const idiomasPermitidos = ['es', 'en', 'de', 'no'];
@@ -44,7 +45,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verificarAdmin, async (req, res) => {
 	const { id } = req.params;
 	const { pagina, ...campos } = req.body;
 

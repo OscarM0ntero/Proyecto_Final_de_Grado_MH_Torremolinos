@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 import { crearUsuario } from './utils/usuarios.js';
 import { getStripe, BASE_URL } from './stripe.routes.js';
+import { verificarAdmin } from './middleware/verificarAdmin.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
@@ -32,7 +33,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', verificarAdmin, async (req, res) => {
     const estado = req.query['estado'] as string;
     if (estado) {
         if (!ESTADOS_RESERVA.includes(estado)) {
@@ -411,7 +412,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id/estado', async (req, res) => {
+router.put('/:id/estado', verificarAdmin, async (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;
 

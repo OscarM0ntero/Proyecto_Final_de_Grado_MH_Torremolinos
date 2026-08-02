@@ -80,6 +80,16 @@
     gap: 4px 20px;
 }
 
+/* Las fechas son de solo lectura: todo el campo abre el calendario */
+.campo-fechas {
+    cursor: pointer;
+
+    input,
+    .mat-date-range-input-container {
+        cursor: pointer;
+    }
+}
+
 .booking-checkboxes {
     display: flex;
     flex-direction: column;

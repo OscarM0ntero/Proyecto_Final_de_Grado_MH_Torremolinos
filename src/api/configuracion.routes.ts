@@ -1,11 +1,19 @@
 import express from 'express';
 import { pool } from '../db.js';
 import { verificarToken } from './middleware/verificarToken.js';
+import { verificarAdmin } from './middleware/verificarAdmin.js';
 
 const router = express.Router();
 
-// GET /api/configuracion/:clave — público
-router.get('/:clave', async (req, res) => {
+// Únicas claves que el sitio público necesita leer; el resto exige rol administrador
+// para que añadir una clave sensible a `configuracion` no la exponga sin querer.
+const CLAVES_PUBLICAS = ['descuento_no_cancelable', 'dias_cancelacion', 'precio_mascota', 'min_noches'];
+
+// GET /api/configuracion/:clave — público solo para CLAVES_PUBLICAS
+router.get('/:clave', (req, res, next) => {
+    if (CLAVES_PUBLICAS.includes(req.params.clave)) return next();
+    return verificarAdmin(req, res, next);
+}, async (req, res) => {
     const { clave } = req.params;
     try {
         const [rows] = await pool.query(

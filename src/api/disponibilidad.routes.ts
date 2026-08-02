@@ -2,6 +2,7 @@
 import express from 'express';
 import { pool } from '../db.js';
 import { sincronizarIcalThrottled } from '../icalSync.js';
+import { verificarAdmin } from './middleware/verificarAdmin.js';
 
 const router = express.Router();
 
@@ -62,7 +63,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/actualizar', async (req, res) => {
+router.post('/actualizar', verificarAdmin, async (req, res) => {
 	const { fechas, precio, estado, cancelable } = req.body;
 
 	if (!fechas || !Array.isArray(fechas) || !estado) {

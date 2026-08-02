@@ -24,13 +24,16 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-form-field appearance="outline" floatLabel="always" class="campo-fechas"
+                        (click)="picker.open()">
                         <mat-label>{{ 'BOOKING.DATES' | translate }}</mat-label>
+                        <!-- readonly: las fechas solo se eligen en el calendario. Escribirlas a mano fallaba
+                             porque NativeDateAdapter ignora MAT_DATE_LOCALE y parsea en formato de EE.UU. -->
                         <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" required>
                             <input matStartDate name="fechaInicio" placeholder="Check-in" [(ngModel)]="fechaInicio"
-                                (ngModelChange)="onRangoModelChanged()" required />
+                                (ngModelChange)="onRangoModelChanged()" required readonly />
                             <input matEndDate name="fechaFin" placeholder="Check-out" [(ngModel)]="fechaFin"
-                                (ngModelChange)="onRangoModelChanged()" required />
+                                (ngModelChange)="onRangoModelChanged()" required readonly />
                         </mat-date-range-input>
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-date-range-picker #picker [dateClass]="dateClass"></mat-date-range-picker>
