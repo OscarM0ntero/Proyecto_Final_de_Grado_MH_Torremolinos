@@ -7,7 +7,7 @@
 //
 // Esta versión es autorreparable: mira todo el rango, detecta las fechas que faltan
 // (da igual cuánto tiempo llevara parado) y las crea de una vez.
-import { pool } from '../db.js';
+import { pool } from '../../db.js';
 
 const MESES_HORIZONTE = 12;
 
