@@ -113,6 +113,21 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
         : session.payment_intent?.id || null;
     const importePagado = (session.amount_total ?? 0) / 100;
 
+    // País del cliente: dirección de facturación y, si Stripe no la pidió, país emisor de la tarjeta.
+    // Nunca debe impedir la confirmación de la reserva.
+    let paisCliente: string | null = session.customer_details?.address?.country ?? null;
+    if (!paisCliente && paymentIntentId) {
+        try {
+            const pi = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge'] });
+            paisCliente = (pi.latest_charge as any)?.payment_method_details?.card?.country ?? null;
+        } catch (err) {
+            console.warn('[stripe webhook] no se pudo obtener el país del cliente:', err);
+        }
+    }
+    if (paisCliente) {
+        await pool.query(`UPDATE reservas SET cliente_pais = ? WHERE id_reserva = ?`, [paisCliente, idReserva]);
+    }
+
     const nombre = reserva.cliente_nombre;
     const email = reserva.cliente_email;
     const fechaInicioFmt = formatearFecha(reserva.fecha_inicio);
@@ -198,6 +213,10 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
           </tr>
         </table>
         ${politicaCancelacion}
+        <div style="text-align:center;margin:28px 0 8px;">
+          <a href="${BASE_URL}/reserva/${reserva.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">View or manage my booking</a>
+          <p style="margin:10px 0 0;font-size:12px;color:#999;">Keep this email: the link above is your private access to the booking.</p>
+        </div>
         <p style="font-size:14px;color:#555;margin:24px 0 0;">If you have any questions before your arrival, contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>. <em>We look forward to seeing you soon!</em></p>
     `));
 

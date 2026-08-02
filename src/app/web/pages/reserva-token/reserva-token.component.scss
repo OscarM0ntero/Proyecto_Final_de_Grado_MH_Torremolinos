@@ -1,0 +1,184 @@
+.manage-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.manage-loading {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+}
+
+.manage-header {
+    text-align: center;
+    margin-bottom: 24px;
+
+    h1 {
+        margin: 0 0 10px;
+    }
+}
+
+.estado-badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 20px;
+    padding: 5px 16px;
+    background: var(--color-accent);
+    color: var(--color-primary);
+
+    &.estado-confirmada {
+        background: #e6f0e0;
+        color: #2d6a00;
+    }
+
+    &.estado-cancelada,
+    &.estado-rechazada {
+        background: #f7e4e4;
+        color: #8f0000;
+    }
+
+    &.estado-pendiente {
+        background: #fff3e0;
+        color: #b35c00;
+    }
+}
+
+.manage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.manage-card {
+    background: #fff;
+    border: 1px solid #e2ded4;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    .manage-card-header {
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-primary);
+        border-bottom: 1px solid #eae6dc;
+        padding-bottom: 9px;
+        margin-bottom: 3px;
+    }
+
+    .manage-card-header--second {
+        margin-top: 14px;
+    }
+}
+
+.manage-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 14px;
+    color: #555;
+
+    strong {
+        color: var(--color-primary);
+        text-align: right;
+    }
+}
+
+.manage-note {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+
+    em {
+        color: #666;
+        font-size: 13px;
+    }
+}
+
+.tarifa-badge,
+.pago-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    background: #e6f0e0;
+    color: var(--color-primary);
+
+    &.no-cancelable {
+        background: #fff3e0;
+        color: #b35c00;
+    }
+
+    &.pago-pagado {
+        background: #e8f5e1;
+        color: #2d6a00;
+    }
+
+    &.pago-pendiente {
+        background: #fff3e0;
+        color: #b35c00;
+    }
+
+    &.pago-reembolsado {
+        background: #f7e4e4;
+        color: #8f0000;
+    }
+}
+
+.manage-actions {
+    text-align: center;
+    margin-top: 28px;
+
+    .manage-policy {
+        font-size: 14px;
+        color: #777;
+        margin: 0 0 14px;
+    }
+
+    .manage-help {
+        font-size: 13px;
+        color: #999;
+        margin: 22px 0 0;
+
+        a {
+            color: var(--color-primary);
+        }
+    }
+}
+
+.manage-empty {
+    text-align: center;
+    align-items: center;
+
+    h1 {
+        font-size: 30px;
+        margin: 0 0 10px;
+    }
+
+    p {
+        color: #777;
+        margin: 0 0 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .manage-page {
+        padding: 0 16px;
+    }
+
+    .manage-grid {
+        grid-template-columns: 1fr;
+    }
+}

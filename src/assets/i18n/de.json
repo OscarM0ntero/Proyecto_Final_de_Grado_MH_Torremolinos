@@ -140,5 +140,30 @@
         "MESSAGE-SENT": "Nachricht erfolgreich gesendet",
         "MESSAGE-SENT-ERROR": "Fehler beim Senden der Nachricht",
         "LOGIN-DATA-ERROR": "Falsche E-Mail oder Passwort"
+    },
+    "MANAGE": {
+        "TITLE": "Ihre Buchung",
+        "LOADING": "Buchung wird geladen...",
+        "NOT-FOUND-TITLE": "Buchung nicht gefunden",
+        "NOT-FOUND-TEXT": "Dieser Link ist ungültig oder die Buchung existiert nicht mehr. Bitte kontaktieren Sie uns bei Fragen.",
+        "STATUS-PENDIENTE": "Zahlung ausstehend",
+        "STATUS-CONFIRMADA": "Bestätigt",
+        "STATUS-CANCELADA": "Storniert",
+        "STATUS-RECHAZADA": "Abgelehnt",
+        "STATUS-FINALIZADA": "Abgeschlossen",
+        "PAYMENT": "Zahlung",
+        "PAYMENT-PENDIENTE": "Ausstehend",
+        "PAYMENT-PAGADO": "Bezahlt",
+        "PAYMENT-REEMBOLSADO": "Erstattet",
+        "CANCEL-BUTTON": "Buchung stornieren",
+        "CANCEL-CONFIRM-TITLE": "Buchung stornieren?",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € werden auf Ihr ursprüngliches Zahlungsmittel erstattet. Dies kann nicht rückgängig gemacht werden.",
+        "CANCEL-NO": "Nein, zurück",
+        "CANCEL-YES": "Ja, stornieren",
+        "CANCEL-OK": "Buchung storniert. Die Erstattung ist unterwegs.",
+        "CANCEL-ERROR": "Die Buchung konnte nicht storniert werden. Bitte erneut versuchen oder uns kontaktieren.",
+        "NO-CANCEL-RATE": "Diese Buchung nutzt den nicht stornierbaren Tarif und kann nicht storniert oder erstattet werden.",
+        "NO-CANCEL-WINDOW": "Die Frist für die kostenlose Stornierung ({{days}} Tage vor Anreise) ist bereits abgelaufen.",
+        "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an"
     }
 }

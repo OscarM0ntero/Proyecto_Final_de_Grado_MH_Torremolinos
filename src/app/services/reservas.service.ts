@@ -38,6 +38,8 @@ export interface Reserva {
 	cliente_email?: string;
 	cliente_prefijo?: string;
 	cliente_telefono?: string;
+	cliente_idioma?: string;
+	cliente_pais?: string;
 }
 
 @Injectable({

@@ -263,6 +263,7 @@ export class DisponibilidadComponent implements OnInit {
 
 		const payload = {
 			...this.reserva,
+			idioma: this.translate.currentLang || 'en',
 			fechaInicio: this.formatearFechaLocal(this.fechaInicio),
 			fechaFin: this.formatearFechaLocal(this.fechaFin),
 			numeroNoches: this.numeroNoches,

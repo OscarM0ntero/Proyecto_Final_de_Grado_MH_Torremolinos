@@ -58,6 +58,9 @@
             <p class="client-name">{{ getNombreCompleto(r) }}</p>
             <p class="client-detail"><mat-icon class="detail-icon">email</mat-icon>{{ getEmail(r) }}</p>
             <p class="client-detail"><mat-icon class="detail-icon">phone</mat-icon>{{ getTelefono(r) }}</p>
+            <p class="client-detail" *ngIf="r.cliente_idioma || r.cliente_pais">
+                <mat-icon class="detail-icon">translate</mat-icon>{{ getIdiomaPais(r) }}
+            </p>
             <p *ngIf="!r.id_usuario" class="deleted-account-badge">
                 <mat-icon>warning</mat-icon> Cuenta eliminada
             </p>

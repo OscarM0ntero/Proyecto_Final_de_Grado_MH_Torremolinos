@@ -140,5 +140,30 @@
         "MESSAGE-SENT": "Melding sendt",
         "MESSAGE-SENT-ERROR": "Feil ved sending av melding",
         "LOGIN-DATA-ERROR": "Feil e-post eller passord"
+    },
+    "MANAGE": {
+        "TITLE": "Bestillingen din",
+        "LOADING": "Laster bestillingen din...",
+        "NOT-FOUND-TITLE": "Bestillingen ble ikke funnet",
+        "NOT-FOUND-TEXT": "Denne lenken er ugyldig, eller bestillingen finnes ikke lenger. Ta kontakt hvis du tror dette er en feil.",
+        "STATUS-PENDIENTE": "Venter på betaling",
+        "STATUS-CONFIRMADA": "Bekreftet",
+        "STATUS-CANCELADA": "Kansellert",
+        "STATUS-RECHAZADA": "Avvist",
+        "STATUS-FINALIZADA": "Fullført",
+        "PAYMENT": "Betaling",
+        "PAYMENT-PENDIENTE": "Venter",
+        "PAYMENT-PAGADO": "Betalt",
+        "PAYMENT-REEMBOLSADO": "Refundert",
+        "CANCEL-BUTTON": "Kanseller bestillingen",
+        "CANCEL-CONFIRM-TITLE": "Kansellere bestillingen?",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € refunderes til betalingsmåten din. Dette kan ikke angres.",
+        "CANCEL-NO": "Nei, tilbake",
+        "CANCEL-YES": "Ja, kanseller",
+        "CANCEL-OK": "Bestillingen er kansellert. Refusjonen er på vei.",
+        "CANCEL-ERROR": "Bestillingen kunne ikke kanselleres. Prøv igjen eller kontakt oss.",
+        "NO-CANCEL-RATE": "Denne bestillingen bruker den ikke-refunderbare prisen og kan ikke kanselleres eller refunderes.",
+        "NO-CANCEL-WINDOW": "Fristen for gratis kansellering ({{days}} dager før ankomst) er allerede passert.",
+        "HELP": "Trenger du å endre noe? Skriv til oss på"
     }
 }

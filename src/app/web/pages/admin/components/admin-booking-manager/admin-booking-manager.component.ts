@@ -65,6 +65,15 @@ export class AdminBookingManagerComponent implements OnInit {
 		return r.email || r.cliente_email || '—';
 	}
 
+	// Idioma en que el huésped usó la web (para saber cómo escribirle) y país de la tarjeta
+	getIdiomaPais(r: Reserva): string {
+		const idiomas: Record<string, string> = { es: 'Español', en: 'English', de: 'Deutsch', no: 'Norsk' };
+		const partes = [];
+		if (r.cliente_idioma) partes.push(idiomas[r.cliente_idioma] || r.cliente_idioma);
+		if (r.cliente_pais) partes.push(r.cliente_pais);
+		return partes.join(' · ');
+	}
+
 	getTelefono(r: Reserva): string {
 		const prefijo = r.prefijo || r.cliente_prefijo || '';
 		const tel = r.telefono || r.cliente_telefono || '';

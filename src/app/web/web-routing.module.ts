@@ -12,6 +12,7 @@ import { ApartmentComponent } from './pages/apartment/apartment.component';
 import { LegalComponent } from './pages/legal/legal.component';
 import { RecoverPasswordComponent } from './pages/login/recover-password/recover-password.component';
 import { LoginMenuComponent } from './pages/login/login-menu/login-menu.component';
+import { ReservaTokenComponent } from './pages/reserva-token/reserva-token.component';
 
 import { PublicGuard } from '../guards/public.guard';
 import { AdminGuard } from '../guards/admin.guard';
@@ -30,6 +31,7 @@ const routes: Routes = [
             { path: 'contacto', component: ContactComponent, canActivate: [PublicGuard] },
             { path: 'reservar', component: BookingComponent, canActivate: [PublicGuard] },
             { path: 'legal', component: LegalComponent, canActivate: [PublicGuard] },
+            { path: 'reserva/:token', component: ReservaTokenComponent, canActivate: [PublicGuard] },
             {
                 path: 'iniciar-sesion',
                 component: LoginComponent,

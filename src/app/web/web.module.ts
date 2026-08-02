@@ -30,6 +30,7 @@ import { GridOverlayComponent } from './pages/home/components/grid-overlay/grid-
 import { DisponibilidadComponent } from './pages/booking/components/disponibilidad/disponibilidad.component';
 import { RecoverPasswordComponent } from './pages/login/recover-password/recover-password.component';
 import { LoginMenuComponent } from './pages/login/login-menu/login-menu.component';
+import { ReservaTokenComponent } from './pages/reserva-token/reserva-token.component';
 
 registerLocaleData(localeEs);
 
@@ -49,6 +50,7 @@ registerLocaleData(localeEs);
         DisponibilidadComponent,
         RecoverPasswordComponent,
         LoginMenuComponent,
+        ReservaTokenComponent,
         // AdminModule y ClientModule se cargan lazy → no se declaran aquí
     ],
     imports: [

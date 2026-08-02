@@ -140,5 +140,30 @@
         "MESSAGE-SENT": "Mensaje enviado correctamente",
         "MESSAGE-SENT-ERROR": "Error al enviar el mensaje",
         "LOGIN-DATA-ERROR": "Correo o contraseña incorrectos"
+    },
+    "MANAGE": {
+        "TITLE": "Tu reserva",
+        "LOADING": "Cargando tu reserva...",
+        "NOT-FOUND-TITLE": "Reserva no encontrada",
+        "NOT-FOUND-TEXT": "Este enlace no es válido o la reserva ya no existe. Si crees que es un error, escríbenos.",
+        "STATUS-PENDIENTE": "Pendiente de pago",
+        "STATUS-CONFIRMADA": "Confirmada",
+        "STATUS-CANCELADA": "Cancelada",
+        "STATUS-RECHAZADA": "Rechazada",
+        "STATUS-FINALIZADA": "Finalizada",
+        "PAYMENT": "Pago",
+        "PAYMENT-PENDIENTE": "Pendiente",
+        "PAYMENT-PAGADO": "Pagado",
+        "PAYMENT-REEMBOLSADO": "Reembolsado",
+        "CANCEL-BUTTON": "Cancelar mi reserva",
+        "CANCEL-CONFIRM-TITLE": "¿Cancelar la reserva?",
+        "CANCEL-CONFIRM-TEXT": "Se te devolverán {{amount}} € en el mismo método de pago. Esta acción no se puede deshacer.",
+        "CANCEL-NO": "No, volver",
+        "CANCEL-YES": "Sí, cancelar",
+        "CANCEL-OK": "Reserva cancelada. El reembolso está en camino.",
+        "CANCEL-ERROR": "No se pudo cancelar la reserva. Inténtalo de nuevo o escríbenos.",
+        "NO-CANCEL-RATE": "Esta reserva usa la tarifa no cancelable, por lo que no admite cancelación ni reembolso.",
+        "NO-CANCEL-WINDOW": "El plazo de cancelación gratuita ({{days}} días antes de la llegada) ya ha pasado.",
+        "HELP": "¿Necesitas cambiar algo? Escríbenos a"
     }
 }

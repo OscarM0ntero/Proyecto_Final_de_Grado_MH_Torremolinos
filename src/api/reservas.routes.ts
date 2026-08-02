@@ -112,6 +112,167 @@ router.get('/cliente', async (req, res) => {
 });
 
 
+// ---------------------------------------------------------------------------
+// Acceso del cliente a su reserva mediante enlace mágico (sin cuenta ni contraseña)
+// ---------------------------------------------------------------------------
+
+// Límite simple por IP para que el token no se pueda descubrir por fuerza bruta
+const intentosPorIp = new Map<string, { n: number; hasta: number }>();
+const LIMITE_INTENTOS = 20;
+const VENTANA_MS = 10 * 60 * 1000;
+
+function limiteSuperado(ip: string): boolean {
+    const ahora = Date.now();
+    const registro = intentosPorIp.get(ip);
+    if (!registro || ahora > registro.hasta) {
+        intentosPorIp.set(ip, { n: 1, hasta: ahora + VENTANA_MS });
+        return false;
+    }
+    registro.n++;
+    return registro.n > LIMITE_INTENTOS;
+}
+
+// Solo los campos que el huésped necesita ver: nada de ids internos ni datos de Stripe
+function reservaPublica(r: any) {
+    const diasParaLlegada = Math.ceil((new Date(r.fecha_inicio).getTime() - Date.now()) / 86400000);
+    const cancelable = r.tipo_tarifa === 'cancelable'
+        && r.estado_reserva === 'Confirmada'
+        && r.estado_pago === 'pagado'
+        && diasParaLlegada >= r.dias_cancelacion;
+
+    return {
+        nombre: r.cliente_nombre,
+        apellidos: r.cliente_apellidos,
+        email: r.cliente_email,
+        prefijo: r.cliente_prefijo,
+        telefono: r.cliente_telefono,
+        fecha_inicio: r.fecha_inicio,
+        fecha_fin: r.fecha_fin,
+        n_personas: r.n_personas,
+        bebe: !!r.bebe,
+        mascota: !!r.mascota,
+        nota_adicional: r.nota_adicional,
+        precio_total: r.precio_total,
+        importe_pagado: r.importe_pagado,
+        tipo_tarifa: r.tipo_tarifa,
+        descuento_aplicado: r.descuento_aplicado,
+        dias_cancelacion: r.dias_cancelacion,
+        precio_mascota_noche: r.precio_mascota_noche,
+        estado_reserva: r.estado_reserva,
+        estado_pago: r.estado_pago,
+        fecha_creacion: r.fecha_creacion,
+        puede_cancelar: cancelable
+    };
+}
+
+// GET /api/reservas/token/:token — consultar la reserva desde el enlace del email
+router.get('/token/:token', async (req, res) => {
+    const ip = req.ip || 'desconocida';
+    if (limiteSuperado(ip)) {
+        return res.status(429).json({ error: 'Demasiados intentos, prueba de nuevo más tarde' });
+    }
+
+    const { token } = req.params;
+    if (!token || token.length < 32) return res.status(404).json({ error: 'Reserva no encontrada' });
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM reservas WHERE token_acceso = ?`, [token]) as any[];
+        if (rows.length === 0) return res.status(404).json({ error: 'Reserva no encontrada' });
+        return res.json(reservaPublica(rows[0]));
+    } catch (err) {
+        console.error('[GET /api/reservas/token/:token]', err);
+        return res.status(500).json({ error: 'Error al obtener la reserva' });
+    }
+});
+
+// POST /api/reservas/token/:token/cancelar — cancelación por el propio huésped
+router.post('/token/:token/cancelar', async (req, res) => {
+    const ip = req.ip || 'desconocida';
+    if (limiteSuperado(ip)) {
+        return res.status(429).json({ error: 'Demasiados intentos, prueba de nuevo más tarde' });
+    }
+
+    const { token } = req.params;
+    if (!token || token.length < 32) return res.status(404).json({ error: 'Reserva no encontrada' });
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM reservas WHERE token_acceso = ?`, [token]) as any[];
+        if (rows.length === 0) return res.status(404).json({ error: 'Reserva no encontrada' });
+
+        const reserva = rows[0];
+        const publica = reservaPublica(reserva);
+        if (!publica.puede_cancelar) {
+            return res.status(400).json({ error: 'Esta reserva ya no se puede cancelar' });
+        }
+
+        // Reembolso íntegro antes de tocar el estado: si Stripe falla, no se cancela nada
+        const stripe = getStripe();
+        if (!stripe || !reserva.stripe_payment_intent_id) {
+            return res.status(503).json({ error: 'No se puede procesar el reembolso automáticamente. Contacta con nosotros.' });
+        }
+        try {
+            await stripe.refunds.create({ payment_intent: reserva.stripe_payment_intent_id });
+        } catch (err) {
+            console.error('[POST /api/reservas/token/:token/cancelar] Stripe:', err);
+            return res.status(500).json({ error: 'No se pudo procesar el reembolso. Contacta con nosotros.' });
+        }
+
+        await pool.query(
+            `UPDATE reservas SET estado_reserva = 'Cancelada', estado_pago = 'reembolsado' WHERE id_reserva = ?`,
+            [reserva.id_reserva]
+        );
+
+        // Liberar los días del calendario
+        const inicio = new Date(reserva.fecha_inicio);
+        const fin = new Date(reserva.fecha_fin);
+        const cursor = new Date(inicio);
+        while (cursor < fin) {
+            await pool.query(
+                `UPDATE disponibilidad SET estado = 'disponible', fuente = 'local', id_reserva = NULL
+                 WHERE fecha = ? AND id_reserva = ?`,
+                [formatearFechaSQL(cursor), reserva.id_reserva]
+            );
+            cursor.setDate(cursor.getDate() + 1);
+        }
+
+        const importe = Number(reserva.importe_pagado || reserva.precio_total).toFixed(2);
+        const fechaInicioFmt = formatearFecha(reserva.fecha_inicio);
+        const fechaFinFmt = formatearFecha(reserva.fecha_fin);
+
+        await enviarCorreo(reserva.cliente_email, 'Booking cancelled — M&H Torremolinos', `
+        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
+            <tr><td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
+                <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
+                  <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
+                </td></tr>
+                <tr><td style="padding:36px 40px;">
+                  <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${reserva.cliente_nombre},</h2>
+                  <p style="margin:0 0 16px;color:#555;font-size:15px;">Your booking for ${fechaInicioFmt} → ${fechaFinFmt} has been cancelled as requested.</p>
+                  <p style="margin:0 0 16px;color:#555;font-size:15px;"><strong>${importe}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.</p>
+                  <p style="margin:0;color:#555;font-size:15px;">We hope to welcome you another time.</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>`);
+
+        for (const admin of adminEmails) {
+            await enviarCorreo(admin, `Reserva cancelada por el cliente — #${reserva.id_reserva}`, `
+            <body style="font-family:Arial,sans-serif;color:#3F4B3A;">
+              <p>${reserva.cliente_nombre} ${reserva.cliente_apellidos || ''} ha cancelado su reserva (${fechaInicioFmt} → ${fechaFinFmt}) desde el enlace de gestión.</p>
+              <p>Se han reembolsado ${importe}€ y los días han vuelto a quedar disponibles.</p>
+            </body>`);
+        }
+
+        return res.json({ mensaje: 'Reserva cancelada y reembolsada' });
+    } catch (err) {
+        console.error('[POST /api/reservas/token/:token/cancelar]', err);
+        return res.status(500).json({ error: 'Error al cancelar la reserva' });
+    }
+});
+
 // Configuración desde .env
 const IBAN = process.env['RESERVA_IBAN'] || 'IBAN_NO_CONFIGURADO';
 const adminEmails = ['info@mhtorremolinos.com', 'mhtorremolinos@gmail.com'];
@@ -126,9 +287,12 @@ router.post('/', async (req, res) => {
     const {
         nombre, apellidos, email, telefono, prefijo,
         huespedes, conBebe, conMascota, nota,
-        fechaInicio, fechaFin,
+        fechaInicio, fechaFin, idioma,
         tipo_tarifa = 'cancelable'
     } = req.body;
+
+    const IDIOMAS = ['es', 'en', 'de', 'no'];
+    const clienteIdioma = IDIOMAS.includes(idioma) ? idioma : 'en';
 
     const fechaInicioFmt = formatearFecha(fechaInicio);
     const fechaFinFmt = formatearFecha(fechaFin);
@@ -210,10 +374,10 @@ router.post('/', async (req, res) => {
         const [insertResult] = await pool.query(
             `INSERT INTO reservas
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
-                fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total, tipo_tarifa,
-                descuento_aplicado, dias_cancelacion, precio_mascota_noche, estado_pago, token_acceso)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
-            [id_usuario, nombre, apellidos, email, prefijo, telefono,
+                cliente_idioma, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total,
+                tipo_tarifa, descuento_aplicado, dias_cancelacion, precio_mascota_noche, estado_pago, token_acceso)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
+            [id_usuario, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
              precio_total, tipo_tarifa, descuentoPct, diasCancelacion, precioMascotaNoche, tokenAcceso]
         ) as any[];

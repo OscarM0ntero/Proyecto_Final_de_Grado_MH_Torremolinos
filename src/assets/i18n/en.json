@@ -140,5 +140,30 @@
         "MESSAGE-SENT": "Message sent successfully",
         "MESSAGE-SENT-ERROR": "Error sending message",
         "LOGIN-DATA-ERROR": "Incorrect email or password"
+    },
+    "MANAGE": {
+        "TITLE": "Your booking",
+        "LOADING": "Loading your booking...",
+        "NOT-FOUND-TITLE": "Booking not found",
+        "NOT-FOUND-TEXT": "This link is not valid or the booking no longer exists. If you think this is a mistake, get in touch.",
+        "STATUS-PENDIENTE": "Awaiting payment",
+        "STATUS-CONFIRMADA": "Confirmed",
+        "STATUS-CANCELADA": "Cancelled",
+        "STATUS-RECHAZADA": "Declined",
+        "STATUS-FINALIZADA": "Completed",
+        "PAYMENT": "Payment",
+        "PAYMENT-PENDIENTE": "Pending",
+        "PAYMENT-PAGADO": "Paid",
+        "PAYMENT-REEMBOLSADO": "Refunded",
+        "CANCEL-BUTTON": "Cancel my booking",
+        "CANCEL-CONFIRM-TITLE": "Cancel this booking?",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € will be refunded to your original payment method. This cannot be undone.",
+        "CANCEL-NO": "No, go back",
+        "CANCEL-YES": "Yes, cancel",
+        "CANCEL-OK": "Booking cancelled. Your refund is on its way.",
+        "CANCEL-ERROR": "The booking could not be cancelled. Please try again or contact us.",
+        "NO-CANCEL-RATE": "This booking uses the non-refundable rate, so it cannot be cancelled or refunded.",
+        "NO-CANCEL-WINDOW": "The free cancellation window ({{days}} days before arrival) has already passed.",
+        "HELP": "Need to change something? Write to us at"
     }
 }
