@@ -457,9 +457,9 @@ h1 {
     width: 350px;
 }
 
-// Formularios con campos outline blancos (reserva y contacto).
+// Formularios con campos outline blancos (reserva, contacto, login...).
 // Requiere appearance="outline" en los mat-form-field.
-form.outline-form {
+.outline-form {
     .mat-mdc-form-field {
         width: 100%;
         // El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio

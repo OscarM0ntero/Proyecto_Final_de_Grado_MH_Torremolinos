@@ -11,7 +11,9 @@
 	height: 60px;
 	width: 100%;
 	max-width: 100vw;
-	padding: 5px;
+	/* Margen extra a la derecha para que el selector de idioma no quede pegado al borde */
+	padding: 5px 24px 5px 5px;
+	box-sizing: border-box;
 	display: flex;
 	justify-content: flex-end;
 	align-content: start;

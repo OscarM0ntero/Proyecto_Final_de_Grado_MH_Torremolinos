@@ -1,14 +1,14 @@
 <!-- Componente de menú de inicio de sesión -->
 <div class="login-container">
-    <div class="login-items">
+    <div class="login-items outline-form">
         <h1>{{ 'LOGIN.TITLE' | translate}}</h1>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput type="email" [(ngModel)]="email" required (keydown.enter)="login()" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>{{ 'LOGIN.PASS' | translate}}</mat-label>
             <input matInput type="password" [(ngModel)]="contrasena" required (keydown.enter)="login()" />
         </mat-form-field>
