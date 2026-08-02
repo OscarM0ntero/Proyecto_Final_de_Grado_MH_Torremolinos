@@ -6,9 +6,9 @@ import { pool, secret } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
 import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
-import { crearUsuario } from './utils/usuarios.js';
 import { getStripe, BASE_URL } from './stripe.routes.js';
 import { verificarAdmin } from './middleware/verificarAdmin.js';
+import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
@@ -77,37 +77,6 @@ router.get('/', verificarAdmin, async (req, res) => {
             console.error('[GET /api/reservas]', err);
             return res.status(500).json({ error: 'Error al obtener las reservas' });
         }
-    }
-});
-
-
-router.get('/cliente', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.status(401).json({ error: 'No autorizado' });
-
-    try {
-        const token = authHeader.split(' ')[1];
-        const payload = jwt.verify(token, secret!) as any;
-        const id_usuario = payload.id;
-
-        const [rows] = await pool.query(
-            `SELECT r.*,
-                COALESCE(u.nombre,    r.cliente_nombre)    AS nombre,
-                COALESCE(u.apellidos, r.cliente_apellidos) AS apellidos,
-                COALESCE(u.email,     r.cliente_email)     AS email,
-                COALESCE(u.prefijo,   r.cliente_prefijo)   AS prefijo,
-                COALESCE(u.telefono,  r.cliente_telefono)  AS telefono
-             FROM reservas r
-             LEFT JOIN usuarios u ON r.id_usuario = u.id_usuario
-             WHERE r.id_usuario = ?
-             ORDER BY r.fecha_inicio ASC`,
-            [id_usuario]
-        );
-
-        return res.json(rows);
-    } catch (err) {
-        console.error('[GET /api/reservas/cliente]', err);
-        return res.status(500).json({ error: 'Error al obtener tus reservas' });
     }
 });
 
@@ -239,31 +208,31 @@ router.post('/token/:token/cancelar', async (req, res) => {
         const fechaInicioFmt = formatearFecha(reserva.fecha_inicio);
         const fechaFinFmt = formatearFecha(reserva.fecha_fin);
 
-        await enviarCorreo(reserva.cliente_email, 'Booking cancelled — M&H Torremolinos', `
-        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-            <tr><td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-                <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
-                  <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
-                </td></tr>
-                <tr><td style="padding:36px 40px;">
-                  <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${reserva.cliente_nombre},</h2>
-                  <p style="margin:0 0 16px;color:#555;font-size:15px;">Your booking for ${fechaInicioFmt} → ${fechaFinFmt} has been cancelled as requested.</p>
-                  <p style="margin:0 0 16px;color:#555;font-size:15px;"><strong>${importe}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.</p>
-                  <p style="margin:0;color:#555;font-size:15px;">We hope to welcome you another time.</p>
-                </td></tr>
-              </table>
-            </td></tr>
-          </table>
-        </body>`);
+        await enviarCorreo(reserva.cliente_email, 'Booking cancelled — M&H Torremolinos', plantillaEmail(`
+            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${reserva.cliente_nombre},</h2>
+            <p style="margin:0 0 20px;color:#555;font-size:15px;">Your booking has been cancelled as requested.</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
+                ${filaEmail('Check-in', fechaInicioFmt, true)}
+                ${filaEmail('Check-out', fechaFinFmt)}
+                ${filaEmail('Refunded', `${importe}€`, true)}
+            </table>
+            <p style="margin:0 0 16px;color:#555;font-size:15px;"><strong>${importe}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.</p>
+            <p style="margin:0;color:#555;font-size:15px;">We hope to welcome you another time.</p>
+        `));
 
         for (const admin of adminEmails) {
-            await enviarCorreo(admin, `Reserva cancelada por el cliente — #${reserva.id_reserva}`, `
-            <body style="font-family:Arial,sans-serif;color:#3F4B3A;">
-              <p>${reserva.cliente_nombre} ${reserva.cliente_apellidos || ''} ha cancelado su reserva (${fechaInicioFmt} → ${fechaFinFmt}) desde el enlace de gestión.</p>
-              <p>Se han reembolsado ${importe}€ y los días han vuelto a quedar disponibles.</p>
-            </body>`);
+            await enviarCorreo(admin, `Reserva cancelada por el cliente — #${reserva.id_reserva}`, plantillaEmail(`
+                <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Reserva cancelada por el cliente</h2>
+                <p style="margin:0 0 20px;color:#555;font-size:15px;">${reserva.cliente_nombre} ${reserva.cliente_apellidos || ''} ha cancelado su reserva desde el enlace de gestión. Los días han vuelto a quedar disponibles.</p>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    ${filaEmail('Reserva', `#${reserva.id_reserva}`, true)}
+                    ${filaEmail('Cliente', `${reserva.cliente_nombre} ${reserva.cliente_apellidos || ''}`)}
+                    ${filaEmail('Email', reserva.cliente_email, true)}
+                    ${filaEmail('Check-in', fechaInicioFmt)}
+                    ${filaEmail('Check-out', fechaFinFmt, true)}
+                    ${filaEmail('Reembolsado', `${importe}€`)}
+                </table>
+            `));
         }
 
         return res.json({ mensaje: 'Reserva cancelada y reembolsada' });
@@ -299,8 +268,6 @@ router.post('/', async (req, res) => {
     const esNoCancelable = tipo_tarifa === 'no_cancelable';
     const labelTarifa = esNoCancelable ? 'No cancelable' : 'Cancelable';
 
-    let id_usuario = null;
-
     try {
         // 0. Estancia mínima
         const [[cfgMin]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'min_noches'`) as any[];
@@ -327,31 +294,8 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Estas fechas solo admiten la tarifa no cancelable' });
         }
 
-        // 1. Si viene token, obtener ID
-        const authHeader = req.headers['authorization'];
-        if (authHeader) {
-            const token = authHeader.split(' ')[1];
-            try {
-                const payload = jwt.verify(token, secret!) as any;
-                id_usuario = payload.id;
-            } catch {
-                return res.status(401).json({ error: 'Token inválido' });
-            }
-        }
-
-        // 2. Si no hay token, comprobar si el correo ya existe, si no existe creamos el usuario
-        if (!id_usuario) {
-            const [usuarios] = await pool.query(
-                `SELECT id_usuario FROM usuarios WHERE email = ?`,
-                [email]
-            ) as any[];
-
-            if (usuarios.length > 0) {
-                return res.status(409).json({ requiereLogin: true });
-            }
-
-            id_usuario = await crearUsuario(nombre, apellidos, email, telefono, prefijo, 'cliente');
-        }
+        // Sin cuentas de cliente: la reserva guarda su propio snapshot de datos
+        // y se gestiona con el enlace mágico enviado por email.
 
         // 3. Leer snapshot de configuración en el momento de la reserva
         const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
@@ -377,7 +321,7 @@ router.post('/', async (req, res) => {
                 cliente_idioma, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total,
                 tipo_tarifa, descuento_aplicado, dias_cancelacion, precio_mascota_noche, estado_pago, token_acceso)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
-            [id_usuario, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
+            [null, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
              precio_total, tipo_tarifa, descuentoPct, diasCancelacion, precioMascotaNoche, tokenAcceso]
         ) as any[];

@@ -4,6 +4,7 @@ import express from 'express';
 import Stripe from 'stripe';
 import { pool } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
+import { plantillaEmail } from './utils/emailTemplate.js';
 
 const router = express.Router();
 
@@ -43,26 +44,6 @@ function generarDiasArray(inicio: Date, fin: Date): string[] {
         actual.setDate(actual.getDate() + 1);
     }
     return dias;
-}
-
-function plantillaEmail(contenido: string): string {
-    return `
-    <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-        <tr><td align="center">
-          <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-            <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
-              <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
-              <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
-            </td></tr>
-            <tr><td style="padding:36px 40px;">${contenido}</td></tr>
-            <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
-              <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
-            </td></tr>
-          </table>
-        </td></tr>
-      </table>
-    </body>`;
 }
 
 // GET /api/stripe/config — indica al frontend si el pago con Stripe está activo
@@ -236,6 +217,46 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
             </table>
             <p style="text-align:center;margin:20px 0 0;"><a href="${BASE_URL}/admin" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;">Abrir panel de administración</a></p>
         `));
+    }
+}
+
+// Red de seguridad por si el servidor estaba caído cuando Stripe envió el webhook.
+// Para cada reserva que sigue pendiente se le pregunta a Stripe cuál es la verdad:
+//   pagada  -> se confirma como habría hecho el webhook (procesarPagoCompletado es idempotente)
+//   expirada -> se cancela
+//   abierta  -> se deja, el cliente todavía puede estar pagando
+export async function reconciliarReservasPendientes(): Promise<void> {
+    const stripe = getStripe();
+    if (!stripe) return;
+
+    try {
+        const [rows] = await pool.query(
+            `SELECT id_reserva, stripe_checkout_session_id FROM reservas
+             WHERE estado_reserva = 'Pendiente' AND estado_pago = 'pendiente'
+               AND stripe_checkout_session_id IS NOT NULL
+               AND fecha_creacion < (NOW() - INTERVAL 30 MINUTE)`
+        ) as any[];
+
+        if (rows.length === 0) return;
+        console.log(`[reconciliación] revisando ${rows.length} reserva(s) pendientes en Stripe`);
+
+        for (const fila of rows) {
+            try {
+                const session = await stripe.checkout.sessions.retrieve(fila.stripe_checkout_session_id);
+
+                if (session.payment_status === 'paid') {
+                    console.log(`[reconciliación] la reserva #${fila.id_reserva} sí estaba pagada, confirmando`);
+                    await procesarPagoCompletado(stripe, session);
+                } else if (session.status === 'expired') {
+                    await procesarSesionExpirada(session);
+                    console.log(`[reconciliación] reserva #${fila.id_reserva} cancelada (sesión expirada)`);
+                }
+            } catch (err) {
+                console.error(`[reconciliación] error con la reserva #${fila.id_reserva}:`, err);
+            }
+        }
+    } catch (err) {
+        console.error('[reconciliación] error general:', err);
     }
 }
 

@@ -48,11 +48,6 @@ export interface Reserva {
 export class ReservasService {
 	constructor(private http: HttpClient) { }
 
-	getReservasCliente(): Observable<Reserva[]> {
-		return this.http.get<Reserva[]>('/api/reservas/cliente');
-	}
-
-
 	getTodasReservas(): Observable<Reserva[]> {
 		return this.http.get<Reserva[]>('/api/reservas');
 	}

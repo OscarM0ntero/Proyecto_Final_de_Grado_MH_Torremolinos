@@ -21,7 +21,7 @@ import contactRouter from './api/contact.routes.js';
 import icalRouter from './api/ical.routes.js';
 import configuracionRouter from './api/configuracion.routes.js';
 import resenasRouter from './api/resenas.routes.js';
-import stripeRouter from './api/stripe.routes.js';
+import stripeRouter, { reconciliarReservasPendientes } from './api/stripe.routes.js';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
@@ -104,6 +104,11 @@ if (isMainModule(import.meta.url)) {
 	const INTERVALO_ICAL_MS = 15 * 60 * 1000; // 15 minutos
 	sincronizarIcal(); // ejecución inicial al arrancar
 	setInterval(sincronizarIcal, INTERVALO_ICAL_MS);
+
+	// Reconciliación con Stripe: recupera los pagos cuyo webhook no llegó (servidor caído, etc.)
+	const INTERVALO_RECONCILIACION_MS = 15 * 60 * 1000; // 15 minutos
+	reconciliarReservasPendientes();
+	setInterval(reconciliarReservasPendientes, INTERVALO_RECONCILIACION_MS);
 }
 
 export const reqHandler = createNodeRequestHandler(app);

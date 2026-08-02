@@ -10,12 +10,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoaderService } from '../../../../../services/loader.service';
 import { ReservaConfirmadaComponent } from './dialogs/reserva-confirmada.component';
 import { PagoCompletadoComponent } from './dialogs/pago-completado.component';
-import { ReservaRequiereLoginComponent } from './dialogs/reserva-requiere-login.component';
 import { environment } from '../../../../../../environments/environment';
 import { LayoutComponent } from '../../../layout/layout.component';
 import { PREFIJOS_TELEFONO } from '../../../../../shared/prefijos';
 import { ReservasService } from '../../../../../services/reservas.service';
-import { UsuariosService } from '../../../../../services/usuarios.service';
 import { ConfiguracionService } from '../../../../../services/configuracion.service';
 
 @Component({
@@ -39,7 +37,6 @@ export class DisponibilidadComponent implements OnInit {
 	precioTotal = 0;
 	numeroNoches = 0;
 	mostrarResumen = false;
-	camposBloqueados = false;
 
 	tipoTarifa: 'cancelable' | 'no_cancelable' = 'no_cancelable';
 	descuentoNoCancelable = 10;
@@ -98,7 +95,6 @@ export class DisponibilidadComponent implements OnInit {
 	constructor(
 		private disponibilidadService: DisponibilidadService,
 		private reservasService: ReservasService,
-		private usuariosService: UsuariosService,
 		private configuracionService: ConfiguracionService,
 		private dialog: MatDialog,
 		private loader: LoaderService,
@@ -137,24 +133,6 @@ export class DisponibilidadComponent implements OnInit {
 			next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
 			error: () => { this.minNoches = 1; }
 		});
-
-		const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
-		if (token) {
-			this.usuariosService.getUsuarioActual().subscribe({
-				next: (usuario) => {
-					this.reserva.nombre = usuario.nombre;
-					this.reserva.apellidos = usuario.apellidos;
-					this.reserva.email = usuario.email;
-					this.reserva.prefijo = usuario.prefijo;
-					this.reserva.telefono = usuario.telefono;
-					this.camposBloqueados = true;
-				},
-				error: () => {
-					if (isPlatformBrowser(this.platformId)) localStorage.removeItem('token');
-					this.camposBloqueados = false;
-				}
-			});
-		}
 
 		this.layout.captchaResuelto$.subscribe(token => {
 			this.tokenCaptcha = token;
@@ -292,11 +270,7 @@ export class DisponibilidadComponent implements OnInit {
 				this.loader.ocultar();
 				this.layout.resetCaptcha();
 
-				if (err.status === 409 && err.error?.requiereLogin) {
-					this.dialog.open(ReservaRequiereLoginComponent);
-				} else {
-					alert('Error al enviar la reserva');
-				}
+				alert(err?.error?.error || 'Error al enviar la reserva');
 			}
 		});
 	}

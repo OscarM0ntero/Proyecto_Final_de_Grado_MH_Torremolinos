@@ -16,7 +16,6 @@ import { ReservaTokenComponent } from './pages/reserva-token/reserva-token.compo
 
 import { PublicGuard } from '../guards/public.guard';
 import { AdminGuard } from '../guards/admin.guard';
-import { ClientGuard } from '../guards/client.guard';
 
 const routes: Routes = [
     {
@@ -40,11 +39,6 @@ const routes: Routes = [
                     { path: '', component: LoginMenuComponent },
                     { path: 'recover', component: RecoverPasswordComponent },
                 ]
-            },
-            {
-                path: 'cliente',
-                canActivate: [ClientGuard],
-                loadChildren: () => import('./pages/client/client.module').then(m => m.ClientModule),
             },
             {
                 path: 'admin',

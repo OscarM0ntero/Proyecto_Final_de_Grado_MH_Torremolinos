@@ -134,7 +134,6 @@ export class LayoutComponent implements OnInit {
 		const rol = this.authService.getRol();
 		this.authService.isLoggedIn();
 		if (rol === 'administrador') return 'NAVBAR.ADMIN';
-		if (rol === 'cliente') return 'NAVBAR.CLIENT';
 		return 'NAVBAR.LOGIN';
 	}
 
