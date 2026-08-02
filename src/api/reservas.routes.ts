@@ -269,7 +269,7 @@ router.post('/', async (req, res) => {
     const labelTarifa = esNoCancelable ? 'No cancelable' : 'Cancelable';
 
     try {
-        // 0. Estancia mínima
+        // 1. Estancia mínima
         const [[cfgMin]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'min_noches'`) as any[];
         const minNoches = parseInt(cfgMin?.valor || '1', 10);
         const noches = Math.round((new Date(fechaFin).getTime() - new Date(fechaInicio).getTime()) / 86400000);
@@ -277,7 +277,7 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: `La estancia mínima es de ${minNoches} noches` });
         }
 
-        // 0.5 Disponibilidad y precio: siempre calculados en el servidor, nunca confiando en el cliente
+        // 2. Disponibilidad y tarifa: se comprueban en el servidor, nunca se confía en el cliente
         const inicioSQL = formatearFechaSQL(fechaInicio);
         const finSQL = formatearFechaSQL(fechaFin);
         const [diasRows] = await pool.query(
@@ -297,7 +297,8 @@ router.post('/', async (req, res) => {
         // Sin cuentas de cliente: la reserva guarda su propio snapshot de datos
         // y se gestiona con el enlace mágico enviado por email.
 
-        // 3. Leer snapshot de configuración en el momento de la reserva
+        // 3. Snapshot de la configuración en el momento de la reserva (para que cambiarla luego
+        //    no altere las reservas ya hechas)
         const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
         const [[cfgMascota]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_mascota'`) as any[];
         const [[cfgDescuento]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'descuento_no_cancelable'`) as any[];
@@ -305,7 +306,7 @@ router.post('/', async (req, res) => {
         const diasCancelacion = parseInt(cfgDias?.valor || '30', 10);
         const precioMascotaNoche = parseFloat(cfgMascota?.valor || '10');
 
-        // 3.5 Precio total calculado en servidor
+        // 4. Precio total, calculado en el servidor a partir de los precios reales de cada día
         const round2 = (n: number) => Math.round(n * 100) / 100;
         const descuentoPct = (esNoCancelable && todosCancelables) ? (parseFloat(cfgDescuento?.valor) || 0) : 0;
         const precioHabitacion = diasRows.reduce((t: number, d: any) => t + Number(d.precio), 0);
@@ -313,7 +314,7 @@ router.post('/', async (req, res) => {
         const precioMascotaTotal = conMascota ? noches * precioMascotaNoche : 0;
         const precio_total = round2(precioHabitacion - descuentoEuros + precioMascotaTotal);
 
-        // 4. Insertar reserva en BD (con snapshot de datos del cliente y de configuración)
+        // 5. Insertar la reserva (queda Pendiente hasta que Stripe confirme el pago)
         const tokenAcceso = crypto.randomBytes(32).toString('hex');
         const [insertResult] = await pool.query(
             `INSERT INTO reservas
@@ -327,8 +328,8 @@ router.post('/', async (req, res) => {
         ) as any[];
         const idReserva = insertResult.insertId;
 
-        // 5. Pago con Stripe: crear sesión de Checkout y redirigir al cliente.
-        //    Los emails de confirmación se envían desde el webhook cuando el pago se completa.
+        // 6. Pago con Stripe: crear la sesión de Checkout y devolver su URL al frontend.
+        //    Los emails de confirmación NO se envían aquí, sino desde el webhook cuando el pago cuaja.
         const stripe = getStripe();
         if (stripe) {
             const session = await stripe.checkout.sessions.create({
@@ -359,7 +360,8 @@ router.post('/', async (req, res) => {
             return res.status(200).json({ url: session.url });
         }
 
-        // 5-bis. Modo transferencia (Stripe no configurado): flujo antiguo con emails de solicitud
+        // 7. Sin Stripe configurado: se mantiene el flujo antiguo por transferencia bancaria,
+        //    en el que el administrador confirma la reserva a mano tras recibir el pago.
 
         const paymentBlock = esNoCancelable
             ? `<div style="background:#fff8f8;border-left:4px solid #8f0000;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
@@ -383,7 +385,7 @@ router.post('/', async (req, res) => {
                 <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${diasCancelacion} days before check-in — full refund.</p>
                </div>`;
 
-        // 4. Email de confirmación al cliente
+        // 7a. Email de solicitud recibida para el cliente
         await enviarCorreo(email, 'Booking request received — M&H Torremolinos', `
         <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
@@ -442,7 +444,7 @@ router.post('/', async (req, res) => {
         </body>
         `);
 
-        // 5. Email a administradores
+        // 7b. Aviso para los administradores
         const pagoEsperado = esNoCancelable
             ? `100% — ${precio_total}€ (non-refundable)`
             : `100% — ${precio_total}€ (refundable up to ${diasCancelacion} days before check-in)`;
@@ -551,7 +553,8 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
         const apellidos = reserva.apellidos;
         const email = reserva.email;
 
-        // 1.5 Reembolso Stripe si la reserva estaba pagada y se rechaza/cancela
+        // 2. Reembolso en Stripe si la reserva estaba pagada y se rechaza o cancela.
+        //    Se hace antes de tocar el estado: si Stripe falla, la reserva no se modifica.
         let reembolsado = false;
         if (['Rechazada', 'Cancelada'].includes(estado) && reserva.estado_pago === 'pagado' && reserva.stripe_payment_intent_id) {
             const stripe = getStripe();
@@ -568,7 +571,7 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
             }
         }
 
-        // 2. Actualizar el estado
+        // 3. Actualizar el estado
         await pool.query(`UPDATE reservas SET estado_reserva = ? WHERE id_reserva = ?`, [estado, id]);
 
         const generarDiasArray = (inicio: Date, fin: Date) => {
@@ -581,7 +584,7 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
             return dias;
         };
 
-        // 3. Si se confirma
+        // 4. Si se confirma: bloquear los días del calendario y avisar al cliente
         if (estado === 'Confirmada') {
             // Generar array de días
             const dias = generarDiasArray(fechaInicio, fechaFin);

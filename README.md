@@ -14,10 +14,13 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 
 ### Key Features
 
-- Responsive and multilingual front-end interface
-- Real-time calendar synchronization with Booking and Airbnb
+- Responsive and multilingual front-end interface (Spanish, English, German and Norwegian, selected automatically from the visitor's browser)
+- **Instant online booking paid by card through Stripe**, with automatic confirmation and no manual approval step
+- **Guest self-service without accounts**: every booking is reachable through a private link sent by email, where the guest can review it and cancel it if the rate allows
+- Two rate types per booking: refundable and non-refundable (discounted)
+- Real-time calendar synchronization with Booking and Airbnb, plus iCal feeds published for them to consume
 - Custom CMS to manage text and image content
-- Reservation and user management through a dedicated back office
+- Reservation management through a dedicated back office
 - Automated email notifications throughout the booking process
 - Hosted on a local server with HTTPS and secure configurations
 
@@ -27,8 +30,9 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 
 | Layer        | Technology                            |
 |--------------|---------------------------------------|
-| Frontend     | Angular 19, Angular Material, PrimeNG |
+| Frontend     | Angular 19 (SSR), Angular Material, PrimeNG |
 | Backend      | Node.js 20 with Express               |
+| Payments     | Stripe Checkout + webhooks            |
 | Database     | MySQL                                 |
 | Hosting      | Self-hosted with Ubuntu               |
 | Web Server   | Apache2 with SSL                      |
@@ -69,10 +73,12 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 ![Contact 1](img/front-contact-1.png)
 ![Contact 2](img/front-contact-2.png)
 
-### Client Panel
+### Booking Management (private link)
 
-![Client 1](img/front-client-1.png)
-![Client 2](img/front-client-2.png)
+Guests do not create an account. When a booking is paid, the confirmation email includes a private
+link (`/reserva/<token>`) where the guest can review the booking, check the payment status and, if
+the rate is refundable and the cancellation window is still open, cancel it and be refunded
+automatically.
 
 ### Mobile Version
 
@@ -118,17 +124,108 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 
 ## Automated Email System
 
-The platform includes an automated email service to streamline communication with guests. Emails are sent during the following key stages:
+The platform includes an automated email service to streamline communication with guests. All emails
+share a common template (`src/api/utils/emailTemplate.ts`). They are sent at the following stages:
 
-- Upon reservation request submission
-- When a reservation is confirmed or rejected
-- To deliver or recover login credentials
+- When a payment succeeds: booking confirmation for the guest (including the private management
+  link and the check-in/check-out times) and a notification for the administrators
+- When a booking is cancelled, either by the guest through the private link or by an administrator,
+  including the refunded amount
+- When a payment succeeds but the dates were taken in the meantime: an apology explaining the
+  automatic refund
+- To recover administrator credentials
 
 Example emails:
 
 ![Email 1](img/email-confirmation.png)
 ![Email 2](img/email-reservation.png)
 ![Email 3](img/email-request.png)
+
+---
+
+## Booking Flow
+
+1. The guest picks dates in the calendar. Days that are unavailable, and gaps shorter than the
+   configured minimum stay, cannot be selected.
+2. They choose a rate (refundable or non-refundable) and fill in their details.
+3. The server **recalculates the price and re-checks availability** — the amount is never taken from
+   the browser — creates the booking as `Pendiente` and redirects to Stripe Checkout.
+4. Stripe notifies the webhook when the payment succeeds. The server checks the dates are *still*
+   free, then marks them as booked, sets the booking to `Confirmada` / `pagado` and sends the emails.
+   If another guest took the dates while the payment was in progress, the charge is **refunded
+   automatically** and both parties are notified.
+5. Days are **not** blocked while a booking is `Pendiente`, so an abandoned checkout never locks the
+   calendar.
+
+---
+
+## Configuration
+
+### Environment variables (`.env`)
+
+| Variable | Purpose |
+|---|---|
+| `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | MySQL connection |
+| `SECRET` | JWT signing key, also used to derive the opaque iCal event UIDs |
+| `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS` | SMTP account used to send emails |
+| `RECAPTCHA_SECRET_KEY` | reCAPTCHA verification for the booking and contact forms |
+| `STRIPE_SECRET_KEY` | Stripe API key. **If it is missing the site falls back to the old bank-transfer flow** |
+| `STRIPE_WEBHOOK_SECRET` | Signature verification for the Stripe webhook |
+| `BASE_URL` | Public site URL, used for Stripe redirects and the links inside emails |
+
+The Stripe webhook must be registered at `<BASE_URL>/api/stripe/webhook`, subscribed to
+`checkout.session.completed` **and** `checkout.session.expired`.
+
+### Settings editable from the back office
+
+Stored in the `configuracion` table and editable at `/admin/configuracion`: base nightly price,
+minimum stay, pet surcharge, non-refundable discount, free-cancellation window, and the check-in and
+check-out times. Only the keys the public site needs are readable without authentication; the rest
+require an administrator token.
+
+### Database migrations
+
+Apply in this order on a fresh database, after the main dump:
+
+```
+migration_tarifa.sql          rate type and discount per booking
+migration_cancelable.sql      per-day flag for days that only allow the non-refundable rate
+migration_precio_base.sql     configurable base nightly price
+migration_resenas.sql         reviews
+migration_otros_cambios.sql   guest data snapshot stored on each booking
+migration_min_noches.sql      minimum stay
+migration_stripe.sql          payment columns and the private access token
+migration_pais_idioma.sql     guest language and country
+migration_horarios.sql        check-in / check-out times
+```
+
+---
+
+## Background Jobs
+
+These run inside the Node server (`src/server.ts`), independently of incoming requests:
+
+| Job | Interval | Purpose |
+|---|---|---|
+| `sincronizarIcal` | 15 min | Imports the Booking and Airbnb calendars |
+| `reconciliarReservasPendientes` | 15 min | Asks Stripe about bookings still pending. Confirms those that were actually paid (recovering webhooks lost while the server was down) and cancels the ones whose checkout expired |
+| `asegurarCalendario` | 6 h | Guarantees every day exists up to 12 months ahead, filling any gap left while the server was stopped, and assigns the base price to days created without one |
+
+`asegurarCalendario` supersedes the old `extender_calendario` MySQL event, which only ever inserted
+*today + 12 months* and therefore left permanent holes whenever it failed to run on a given day.
+
+---
+
+## iCal Feeds
+
+| Endpoint | Contents |
+|---|---|
+| `/api/ical/export` | Confirmed bookings **and** days closed manually by an administrator |
+| `/api/ical/export/reservas` | Confirmed bookings only |
+
+Both are public so Booking and Airbnb can poll them. Event UIDs are an irreversible hash of the
+booking id and the server secret: the private access token is deliberately **never** published,
+since it would let anyone read and cancel the booking.
 
 ---
 
