@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
         <p style="margin: 0 0 8px;">{{ 'MANAGE.CANCEL-CONFIRM-TEXT' | translate: { amount: data.importe } }}</p>
         <mat-dialog-actions align="center">
           <button mat-stroked-button [mat-dialog-close]="false">{{ 'MANAGE.CANCEL-NO' | translate }}</button>
-          <button mat-raised-button color="warn" [mat-dialog-close]="true">{{ 'MANAGE.CANCEL-YES' | translate }}</button>
+          <button mat-raised-button class="btn-peligro" [mat-dialog-close]="true">{{ 'MANAGE.CANCEL-YES' | translate }}</button>
         </mat-dialog-actions>
       </div>
   `,

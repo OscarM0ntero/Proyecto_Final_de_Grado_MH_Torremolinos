@@ -86,7 +86,8 @@
         <div class="manage-actions">
             <ng-container *ngIf="reserva.puede_cancelar">
                 <p class="manage-policy">{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: reserva.dias_cancelacion } }}</p>
-                <button mat-stroked-button color="warn" [disabled]="cancelando" (click)="confirmarCancelacion()">
+                <button mat-stroked-button class="btn-peligro" [disabled]="cancelando"
+                    (click)="confirmarCancelacion()">
                     {{ 'MANAGE.CANCEL-BUTTON' | translate }}
                 </button>
             </ng-container>

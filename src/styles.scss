@@ -331,6 +331,18 @@ h1 {
     color: var(--color-primary) !important;
 }
 
+// Acción destructiva (cancelar una reserva). Necesita su propia clase porque las reglas
+// de arriba fuerzan el verde con !important y anulan el color="warn" de Material.
+.btn-peligro.mat-mdc-outlined-button:not(:disabled) {
+    color: var(--color-warn) !important;
+    border-color: var(--color-warn) !important;
+}
+
+.btn-peligro.mat-mdc-raised-button:not(:disabled) {
+    background-color: var(--color-warn) !important;
+    color: #fff !important;
+}
+
 .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,
 .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
     background-color: var(--color-primary) !important;
