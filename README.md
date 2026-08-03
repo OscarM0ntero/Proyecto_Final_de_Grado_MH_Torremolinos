@@ -17,7 +17,9 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 - Responsive and multilingual front-end interface (Spanish, English, German and Norwegian, selected automatically from the visitor's browser)
 - **Instant online booking paid by card through Stripe**, with automatic confirmation and no manual approval step
 - **Guest self-service without accounts**: every booking is reachable through a private link sent by email, where the guest can review it and cancel it if the rate allows
-- Two rate types per booking: refundable and non-refundable (discounted)
+- Two rate types per booking: refundable and non-refundable (discounted). Cancelling a refundable
+  booking refunds the amount minus a small bank fee, disclosed before payment
+- Cookie notice that actually gates the tracking: analytics only load once the visitor accepts
 - Real-time calendar synchronization with Booking and Airbnb, plus iCal feeds published for them to consume
 - Custom CMS to manage text and image content
 - Reservation management through a dedicated back office
@@ -160,6 +162,25 @@ Example emails:
    calendar. Unfinished payments are cleaned up automatically when the Stripe session expires, so
    they never need to be cancelled by hand.
 
+### Cancellations and the bank fee
+
+Stripe does not return its processing fee when a payment is refunded, so refunding in full would
+leave the owner out of pocket on every cancellation. A configurable percentage is therefore retained
+(`comision_cancelacion`, currently 2%).
+
+- The percentage in force is **copied onto each booking** (`comision_cancelacion_pct`), so changing
+  the setting later never alters bookings already made.
+- The exact euro amount is shown **on the final summary, immediately above the pay button**, before
+  the contract is concluded — never as small print afterwards.
+- The refundable rate is described as *"everything is refunded except the bank fee"*; it is
+  deliberately never advertised as a free cancellation.
+- The fee Stripe actually charged is stored too (`comision_stripe`, read from the charge's balance
+  transaction). It takes no part in the refund calculation — it is there so the retained percentage
+  can be checked against the real cost.
+
+Prices are VAT-exempt (art. 20.Uno.23 of Spanish Act 37/1992: a holiday dwelling let without hotel
+services), shown as an explicit `IVA (exento) 0,00 €` line rather than silently omitted.
+
 ---
 
 ## Configuration
@@ -171,7 +192,7 @@ Example emails:
 | `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | MySQL connection |
 | `SECRET` | JWT signing key, also used to derive the opaque iCal event UIDs |
 | `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS` | SMTP account used to send emails |
-| `RECAPTCHA_SECRET_KEY` | reCAPTCHA verification for the booking and contact forms |
+| `RECAPTCHA_SECRET_KEY` | reCAPTCHA verification for the booking, contact and login forms |
 | `STRIPE_SECRET_KEY` | Stripe API key. **Required** — without it the booking endpoint returns an error instead of accepting bookings that cannot be charged |
 | `STRIPE_WEBHOOK_SECRET` | Signature verification for the Stripe webhook |
 | `BASE_URL` | Public site URL, used for Stripe redirects and the links inside emails |
@@ -182,9 +203,19 @@ The Stripe webhook must be registered at `<BASE_URL>/api/stripe/webhook`, subscr
 ### Settings editable from the back office
 
 Stored in the `configuracion` table and editable at `/admin/configuracion`: base nightly price,
-minimum stay, pet surcharge, non-refundable discount, free-cancellation window, and the check-in and
-check-out times. Only the keys the public site needs are readable without authentication; the rest
+minimum stay, pet surcharge, non-refundable discount, cancellation window, the retained bank-fee
+percentage, and the check-in and check-out times. Only the keys the public site needs are readable without authentication; the rest
 require an administrator token.
+
+### Privacy and consent
+
+Google Analytics is **not** in `index.html`; `ConsentimientoService` injects it at runtime only once
+the visitor accepts the cookie notice, and rejecting deletes any `_ga` cookies already set. The
+notice offers Accept and Reject with equal prominence and one click each, as the Spanish DPA
+requires, and does not block browsing — a wall that forces acceptance is not valid consent.
+
+reCAPTCHA protects the booking, contact and login forms and is treated as strictly necessary. Card
+details never reach this server: payment happens entirely on Stripe's hosted page.
 
 ### Database migrations
 
@@ -200,6 +231,8 @@ migration_min_noches.sql      minimum stay
 migration_stripe.sql          payment columns and the private access token
 migration_pais_idioma.sql     guest language and country
 migration_horarios.sql        check-in / check-out times
+migration_nota_admin.sql      private administrator note on each booking
+migration_comision.sql        non-refundable bank fee retained on cancellation
 ```
 
 ---
