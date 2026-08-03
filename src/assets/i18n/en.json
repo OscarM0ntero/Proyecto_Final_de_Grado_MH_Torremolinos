@@ -165,5 +165,13 @@
         "NO-CANCEL-RATE": "This booking uses the non-refundable rate, so it cannot be cancelled or refunded.",
         "NO-CANCEL-WINDOW": "The free cancellation window ({{days}} days before arrival) has already passed.",
         "HELP": "Need to change something? Write to us at"
+    },
+    "COOKIES": {
+        "TITLE": "Cookies",
+        "TEXT": "We use our own cookies, required for the site to work, and Google Analytics cookies to understand how it is used. The analytics ones are only enabled if you accept them.",
+        "MORE": "More information",
+        "ACCEPT": "Accept",
+        "REJECT": "Reject",
+        "CHANGE": "Change my cookie preferences"
     }
 }

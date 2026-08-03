@@ -1,0 +1,18 @@
+<!-- Aviso de cookies: no bloquea la navegación, y rechazar cuesta lo mismo que aceptar -->
+<div class="cookie-banner" *ngIf="visible" role="dialog" aria-live="polite"
+    [attr.aria-label]="'COOKIES.TITLE' | translate">
+
+    <div class="cookie-texto">
+        <h3>{{ 'COOKIES.TITLE' | translate }}</h3>
+        <p>
+            {{ 'COOKIES.TEXT' | translate }}
+            <a routerLink="/legal" fragment="cookies">{{ 'COOKIES.MORE' | translate }}</a>
+        </p>
+    </div>
+
+    <div class="cookie-botones">
+        <button mat-stroked-button (click)="rechazar()">{{ 'COOKIES.REJECT' | translate }}</button>
+        <button mat-raised-button (click)="aceptar()">{{ 'COOKIES.ACCEPT' | translate }}</button>
+    </div>
+
+</div>

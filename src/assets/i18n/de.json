@@ -165,5 +165,13 @@
         "NO-CANCEL-RATE": "Diese Buchung nutzt den nicht stornierbaren Tarif und kann nicht storniert oder erstattet werden.",
         "NO-CANCEL-WINDOW": "Die Frist für die kostenlose Stornierung ({{days}} Tage vor Anreise) ist bereits abgelaufen.",
         "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an"
+    },
+    "COOKIES": {
+        "TITLE": "Cookies",
+        "TEXT": "Wir verwenden eigene Cookies, die für den Betrieb der Website notwendig sind, sowie Google-Analytics-Cookies, um die Nutzung zu verstehen. Die Analyse-Cookies werden nur aktiviert, wenn Sie zustimmen.",
+        "MORE": "Weitere Informationen",
+        "ACCEPT": "Akzeptieren",
+        "REJECT": "Ablehnen",
+        "CHANGE": "Cookie-Einstellungen ändern"
     }
 }

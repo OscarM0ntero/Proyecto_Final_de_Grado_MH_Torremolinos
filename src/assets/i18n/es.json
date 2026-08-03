@@ -165,5 +165,13 @@
         "NO-CANCEL-RATE": "Esta reserva usa la tarifa no cancelable, por lo que no admite cancelación ni reembolso.",
         "NO-CANCEL-WINDOW": "El plazo de cancelación gratuita ({{days}} días antes de la llegada) ya ha pasado.",
         "HELP": "¿Necesitas cambiar algo? Escríbenos a"
+    },
+    "COOKIES": {
+        "TITLE": "Cookies",
+        "TEXT": "Usamos cookies propias necesarias para el funcionamiento de la web y cookies de Google Analytics para saber cómo se usa. Las de análisis solo se activan si las aceptas.",
+        "MORE": "Más información",
+        "ACCEPT": "Aceptar",
+        "REJECT": "Rechazar",
+        "CHANGE": "Cambiar mis preferencias de cookies"
     }
 }

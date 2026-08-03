@@ -165,5 +165,13 @@
         "NO-CANCEL-RATE": "Denne bestillingen bruker den ikke-refunderbare prisen og kan ikke kanselleres eller refunderes.",
         "NO-CANCEL-WINDOW": "Fristen for gratis kansellering ({{days}} dager før ankomst) er allerede passert.",
         "HELP": "Trenger du å endre noe? Skriv til oss på"
+    },
+    "COOKIES": {
+        "TITLE": "Informasjonskapsler",
+        "TEXT": "Vi bruker egne informasjonskapsler som er nødvendige for at nettstedet skal fungere, og Google Analytics for å forstå hvordan det brukes. Analysekapslene aktiveres bare hvis du godtar dem.",
+        "MORE": "Mer informasjon",
+        "ACCEPT": "Godta",
+        "REJECT": "Avslå",
+        "CHANGE": "Endre innstillinger for informasjonskapsler"
     }
 }

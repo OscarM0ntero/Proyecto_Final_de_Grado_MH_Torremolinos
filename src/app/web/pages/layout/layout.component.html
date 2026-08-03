@@ -128,5 +128,8 @@
 	</section>
 </div>
 
+<!-- Aviso de cookies: visible hasta que el visitante acepta o rechaza -->
+<app-cookie-banner></app-cookie-banner>
+
 <re-captcha #captchaRef [siteKey]="siteKey" [size]="'invisible'" (resolved)="onCaptchaResuelto($event)">
 </re-captcha>

@@ -31,6 +31,7 @@ import { DisponibilidadComponent } from './pages/booking/components/disponibilid
 import { RecoverPasswordComponent } from './pages/login/recover-password/recover-password.component';
 import { LoginMenuComponent } from './pages/login/login-menu/login-menu.component';
 import { ReservaTokenComponent } from './pages/reserva-token/reserva-token.component';
+import { CookieBannerComponent } from './pages/layout/components/cookie-banner/cookie-banner.component';
 
 registerLocaleData(localeEs);
 
@@ -51,6 +52,7 @@ registerLocaleData(localeEs);
         RecoverPasswordComponent,
         LoginMenuComponent,
         ReservaTokenComponent,
+        CookieBannerComponent,
         // AdminModule y ClientModule se cargan lazy → no se declaran aquí
     ],
     imports: [
