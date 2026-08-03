@@ -302,6 +302,14 @@ export class DisponibilidadComponent implements OnInit {
 		return true;
 	}
 
+	// Un día vale como check-out si la noche anterior está libre: el día de salida no se
+	// duerme, así que no necesita estar disponible él mismo.
+	private esCheckOutPosible(date: Date): boolean {
+		const anterior = new Date(date);
+		anterior.setDate(anterior.getDate() - 1);
+		return this.esDisponible(anterior);
+	}
+
 	dateFilter = (date: Date | null): boolean => {
 		if (!date) return false;
 
@@ -321,7 +329,9 @@ export class DisponibilidadComponent implements OnInit {
 			return true;
 		}
 
-		// Seleccionando check-in
-		return this.esCheckInValido(date);
+		// Todavía no hay fechas: el calendario usa este mismo filtro para todas las celdas, así que
+		// un día debe quedar activo si puede ser check-in O check-out. Si solo se comprobara el
+		// check-in, los últimos días de un hueco quedaban grises y no se podía salir en ellos.
+		return this.esCheckInValido(date) || this.esCheckOutPosible(date);
 	};
 }
