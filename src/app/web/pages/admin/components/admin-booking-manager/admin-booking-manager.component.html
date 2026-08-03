@@ -137,12 +137,16 @@
             </button>
         </div>
 
-        <mat-form-field appearance="outline" class="estado-select">
-            <mat-label>Cambiar estado</mat-label>
-            <mat-select [(value)]="r.estado_reserva" (selectionChange)="confirmarCambioEstado(r)">
-                <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
-            </mat-select>
-        </mat-form-field>
+        <!-- Solo los cambios de estado válidos desde el estado actual -->
+        <div class="card-estado-acciones">
+            <button *ngFor="let a of accionesEstado(r)" mat-stroked-button
+                [class.btn-peligro]="a.peligro" (click)="cambiarEstado(r, a.estado)">
+                <mat-icon>{{ a.icono }}</mat-icon> {{ a.etiqueta }}
+            </button>
+            <span class="estado-final" *ngIf="accionesEstado(r).length === 0">
+                <mat-icon>lock</mat-icon> Estado final
+            </span>
+        </div>
     </div>
 
 </div>

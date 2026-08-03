@@ -185,33 +185,79 @@ export class AdminBookingManagerComponent implements OnInit {
 		});
 	}
 
-	confirmarCambioEstado(reserva: Reserva): void {
-		const confirmacion = this.dialog.open(ConfirmStateDialogComponent, {
-			data: { estado: reserva.estado_reserva }
+	// Solo se ofrecen los cambios de estado que tienen sentido desde el estado actual.
+	// Debe coincidir con la tabla TRANSICIONES del backend, que es quien manda.
+	accionesEstado(r: Reserva): { estado: string; etiqueta: string; icono: string; peligro: boolean }[] {
+		const estanciaTerminada = new Date(r.fecha_fin) < new Date();
+
+		if (r.estado_reserva === 'Pendiente') {
+			return [
+				{ estado: 'Confirmada', etiqueta: 'Confirmar', icono: 'check_circle', peligro: false },
+				{ estado: 'Cancelada', etiqueta: 'Cancelar', icono: 'cancel', peligro: true },
+				{ estado: 'Rechazada', etiqueta: 'Rechazar', icono: 'block', peligro: true }
+			];
+		}
+
+		if (r.estado_reserva === 'Confirmada') {
+			const acciones = [{ estado: 'Cancelada', etiqueta: 'Cancelar', icono: 'cancel', peligro: true }];
+			if (estanciaTerminada) {
+				acciones.unshift({ estado: 'Finalizada', etiqueta: 'Marcar finalizada', icono: 'task_alt', peligro: false });
+			}
+			return acciones;
+		}
+
+		// Cancelada, Rechazada y Finalizada son estados finales
+		return [];
+	}
+
+	cambiarEstado(reserva: Reserva, destino: string): void {
+		const importe = Number(reserva.importe_pagado || reserva.precio_total).toFixed(2);
+		const hayQueReembolsar = reserva.estado_pago === 'pagado'
+			&& ['Cancelada', 'Rechazada'].includes(destino);
+
+		const textos: Record<string, { titulo: string; mensaje: string }> = {
+			'Confirmada': {
+				titulo: '¿Confirmar la reserva?',
+				mensaje: 'Se bloquearán esos días en el calendario y se enviará al huésped un email de confirmación.'
+			},
+			'Finalizada': {
+				titulo: '¿Marcar como finalizada?',
+				mensaje: 'La estancia pasa al histórico. Los días siguen bloqueados y no se envía ningún email.'
+			},
+			'Cancelada': {
+				titulo: '¿Cancelar la reserva?',
+				mensaje: 'Los días volverán a estar disponibles y se avisará al huésped por email.'
+			},
+			'Rechazada': {
+				titulo: '¿Rechazar la reserva?',
+				mensaje: 'Los días volverán a estar disponibles y se avisará al huésped por email.'
+			}
+		};
+
+		const ref = this.dialog.open(ConfirmStateDialogComponent, {
+			data: {
+				titulo: textos[destino].titulo,
+				mensaje: textos[destino].mensaje,
+				aviso: hayQueReembolsar
+					? `Se devolverán ${importe} € al huésped por Stripe. Esta acción no se puede deshacer.`
+					: undefined,
+				textoBoton: 'Sí, continuar',
+				peligro: destino === 'Cancelada' || destino === 'Rechazada'
+			}
 		});
 
-		confirmacion.afterClosed().subscribe(confirmado => {
-			if (confirmado) {
-				this.reservasService.actualizarEstadoReserva(reserva.id_reserva, reserva.estado_reserva).subscribe({
-					next: () => {
-						this.snackBar.open(this.translate.instant('SNACKBAR.STATE-UPDATE-SUCCESS'), undefined, {
-							duration: 3000,
-							panelClass: ['snackbar-success']
-						});
-						this.cargarReservas();
-					},
-					error: () => {
-						this.snackBar.open(this.translate.instant('SNACKBAR.STATE-UPDATE-ERROR'), undefined, {
-							duration: 3000,
-							panelClass: ['snackbar-error']
-						});
-						this.cargarReservas();
-					}
-				});
-			} else {
-				// Revert mat-select to original backend value
-				this.cargarReservas();
-			}
+		ref.afterClosed().subscribe(confirmado => {
+			if (!confirmado) return;
+			this.reservasService.actualizarEstadoReserva(reserva.id_reserva, destino).subscribe({
+				next: () => {
+					this.aviso(hayQueReembolsar ? `Reserva cancelada y ${importe} € reembolsados` : 'Estado actualizado', true);
+					this.cargarReservas();
+				},
+				error: (err) => {
+					this.aviso(err?.error?.error || 'No se pudo cambiar el estado', false);
+					this.cargarReservas();
+				}
+			});
 		});
 	}
 }

@@ -399,3 +399,32 @@
         }
     }
 }
+
+/* Acciones de estado: solo las válidas desde el estado actual */
+.card-estado-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+
+    button {
+        font-size: 13px;
+    }
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
+        vertical-align: middle;
+    }
+
+    .estado-final {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #999;
+        font-style: italic;
+    }
+}

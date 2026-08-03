@@ -12,6 +12,17 @@ import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
+// Cambios de estado permitidos. Antes se podía saltar de cualquier estado a cualquier otro, lo que
+// permitía combinaciones imposibles (p. ej. reconfirmar una reserva ya reembolsada, que dejaba una
+// estancia "Confirmada" que nadie ha pagado). Los estados finales no admiten más cambios.
+const TRANSICIONES: Record<string, string[]> = {
+    'Pendiente': ['Confirmada', 'Cancelada', 'Rechazada'],
+    'Confirmada': ['Finalizada', 'Cancelada'],
+    'Rechazada': [],
+    'Cancelada': [],
+    'Finalizada': []
+};
+
 function formatearFecha(fecha: string | Date): string {
     const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
     const dia = d.getDate().toString().padStart(2, '0');
@@ -661,8 +672,47 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
         const apellidos = reserva.apellidos;
         const email = reserva.email;
 
-        // 2. Reembolso en Stripe si la reserva estaba pagada y se rechaza o cancela.
-        //    Se hace antes de tocar el estado: si Stripe falla, la reserva no se modifica.
+        // 2. El cambio pedido tiene que ser legal desde el estado actual
+        if (reserva.estado_reserva === estado) {
+            return res.status(400).json({ error: `La reserva ya está en estado ${estado}` });
+        }
+        const permitidos = TRANSICIONES[reserva.estado_reserva] || [];
+        if (!permitidos.includes(estado)) {
+            return res.status(400).json({
+                error: `No se puede pasar de ${reserva.estado_reserva} a ${estado}`
+            });
+        }
+        if (estado === 'Finalizada' && new Date(reserva.fecha_fin) > new Date()) {
+            return res.status(400).json({ error: 'La estancia todavía no ha terminado' });
+        }
+
+        const generarDiasArray = (inicio: Date, fin: Date) => {
+            const dias = [];
+            const actual = new Date(inicio);
+            while (actual < fin) {
+                dias.push(formatearFechaSQL(new Date(actual)));
+                actual.setDate(actual.getDate() + 1);
+            }
+            return dias;
+        };
+        const dias = generarDiasArray(fechaInicio, fechaFin);
+
+        // 3. Al confirmar: comprobar la disponibilidad ANTES de tocar nada.
+        //    Si se guardaba el estado primero, un fallo aquí dejaba la reserva "Confirmada"
+        //    con los días sin bloquear: vendida en la lista y libre en el calendario.
+        if (estado === 'Confirmada') {
+            const placeholders = dias.map(() => '?').join(',');
+            const [disponibles] = await pool.query(`
+                SELECT id_disponibilidad FROM disponibilidad
+                WHERE fecha IN (${placeholders}) AND estado = 'disponible'
+            `, dias) as any[];
+
+            if (disponibles.length !== dias.length) {
+                return res.status(409).json({ error: 'Uno o más días ya no están disponibles' });
+            }
+        }
+
+        // 4. Reembolso en Stripe antes de cambiar el estado: si Stripe falla, no se toca la reserva
         let reembolsado = false;
         if (['Rechazada', 'Cancelada'].includes(estado) && reserva.estado_pago === 'pagado' && reserva.stripe_payment_intent_id) {
             const stripe = getStripe();
@@ -679,37 +729,11 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
             }
         }
 
-        // 3. Actualizar el estado
+        // 5. Ya es seguro guardar el estado
         await pool.query(`UPDATE reservas SET estado_reserva = ? WHERE id_reserva = ?`, [estado, id]);
 
-        const generarDiasArray = (inicio: Date, fin: Date) => {
-            const dias = [];
-            const actual = new Date(inicio);
-            while (actual < fin) {
-                dias.push(formatearFechaSQL(new Date(actual)));
-                actual.setDate(actual.getDate() + 1);
-            }
-            return dias;
-        };
-
-        // 4. Si se confirma: bloquear los días del calendario y avisar al cliente
+        // 6. Al confirmar: bloquear los días y avisar al cliente
         if (estado === 'Confirmada') {
-            // Generar array de días
-            const dias = generarDiasArray(fechaInicio, fechaFin);
-
-
-            // 3.1 Verificar disponibilidad
-            const placeholders = dias.map(() => '?').join(',');
-            const [disponibles] = await pool.query(`
-                SELECT id_disponibilidad FROM disponibilidad
-                WHERE fecha IN (${placeholders}) AND estado = 'disponible'
-            `, dias) as any[];
-
-            if (disponibles.length !== dias.length) {
-                return res.status(400).json({ error: 'Uno o más días no están disponibles para reservar.' });
-            }
-
-            // 3.2 Marcar como reservados
             for (const fecha of dias) {
                 await pool.query(`
                     UPDATE disponibilidad
@@ -765,8 +789,6 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
         }
 
         if (['Rechazada', 'Cancelada'].includes(estado)) {
-            const dias = generarDiasArray(fechaInicio, fechaFin);
-
             for (const fecha of dias) {
                 await pool.query(`
                     UPDATE disponibilidad
