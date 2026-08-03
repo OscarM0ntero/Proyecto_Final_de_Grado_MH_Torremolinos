@@ -63,10 +63,6 @@ export class ReservasService {
 		return this.http.post('/api/reservas', payload);
 	}
 
-	getStripeConfig(): Observable<{ activo: boolean }> {
-		return this.http.get<{ activo: boolean }>('/api/stripe/config');
-	}
-
 	actualizarEstadoReserva(id: number, estado: string): Observable<any> {
 		return this.http.put(`/api/reservas/${id}/estado`, { estado });
 	}

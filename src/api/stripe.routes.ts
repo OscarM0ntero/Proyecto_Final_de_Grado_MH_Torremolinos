@@ -1,5 +1,5 @@
-// Integración con Stripe: configuración, webhook de pagos y emails de confirmación.
-// Si STRIPE_SECRET_KEY no está definida, el sistema funciona en modo transferencia (flujo antiguo).
+// Integración con Stripe: webhook de pagos, reconciliación y emails de confirmación.
+// El pago con tarjeta es obligatorio: sin STRIPE_SECRET_KEY no se pueden aceptar reservas.
 import express from 'express';
 import Stripe from 'stripe';
 import { pool } from '../db.js';
@@ -46,7 +46,7 @@ function generarDiasArray(inicio: Date, fin: Date): string[] {
     return dias;
 }
 
-// GET /api/stripe/config — indica al frontend si el pago con Stripe está activo
+// GET /api/stripe/config — comprobación de que la pasarela está configurada (diagnóstico)
 router.get('/config', (_req, res) => {
     res.json({ activo: !!process.env['STRIPE_SECRET_KEY'] });
 });

@@ -15,8 +15,11 @@ const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'F
 // Cambios de estado permitidos. Antes se podía saltar de cualquier estado a cualquier otro, lo que
 // permitía combinaciones imposibles (p. ej. reconfirmar una reserva ya reembolsada, que dejaba una
 // estancia "Confirmada" que nadie ha pagado). Los estados finales no admiten más cambios.
+// Pendiente ya no se cancela a mano: son pagos a medias que limpia el job de reconciliación.
+// Hacerlo desde el panel abría un hueco — si el huésped pagaba justo después, el dinero
+// entraba en una reserva ya cancelada.
 const TRANSICIONES: Record<string, string[]> = {
-    'Pendiente': ['Confirmada', 'Cancelada', 'Rechazada'],
+    'Pendiente': ['Confirmada'],
     'Confirmada': ['Finalizada', 'Cancelada'],
     'Rechazada': [],
     'Cancelada': [],
@@ -253,8 +256,6 @@ router.post('/token/:token/cancelar', async (req, res) => {
     }
 });
 
-// Configuración desde .env
-const IBAN = process.env['RESERVA_IBAN'] || 'IBAN_NO_CONFIGURADO';
 const adminEmails = ['info@mhtorremolinos.com', 'mhtorremolinos@gmail.com'];
 
 router.post('/', async (req, res) => {
@@ -341,195 +342,45 @@ router.post('/', async (req, res) => {
 
         // 6. Pago con Stripe: crear la sesión de Checkout y devolver su URL al frontend.
         //    Los emails de confirmación NO se envían aquí, sino desde el webhook cuando el pago cuaja.
+        // 6. Pago con Stripe. Es obligatorio: sin pasarela no se acepta la reserva, porque
+        //    confirmarla sin cobrar dejaría días bloqueados sin ninguna garantía de pago.
         const stripe = getStripe();
-        if (stripe) {
-            const session = await stripe.checkout.sessions.create({
-                mode: 'payment',
-                // Solo tarjeta (Apple Pay, Google Pay y Link van incluidos): se autoriza al momento.
-                // Métodos como Klarna, Bancontact o los adeudos SEPA confirman horas o días
-                // después, y no queremos dar por buena una reserva cuyo dinero aún no ha llegado.
-                payment_method_types: ['card'],
-                customer_email: email,
-                line_items: [{
-                    quantity: 1,
-                    price_data: {
-                        currency: 'eur',
-                        unit_amount: Math.round(precio_total * 100),
-                        product_data: {
-                            name: `M&H Torremolinos · ${fechaInicioFmt} → ${fechaFinFmt}`,
-                            description: `${noches} noches · ${huespedes} huéspedes · Tarifa ${labelTarifa}`
-                        }
+        if (!stripe) {
+            console.error('[POST /api/reservas] STRIPE_SECRET_KEY no configurada: no se puede cobrar');
+            return res.status(503).json({ error: 'El pago no está disponible en este momento. Inténtalo más tarde o escríbenos.' });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            mode: 'payment',
+            // Solo tarjeta (Apple Pay, Google Pay y Link van incluidos): se autoriza al momento.
+            // Métodos como Klarna, Bancontact o los adeudos SEPA confirman horas o días
+            // después, y no queremos dar por buena una reserva cuyo dinero aún no ha llegado.
+            payment_method_types: ['card'],
+            customer_email: email,
+            line_items: [{
+                quantity: 1,
+                price_data: {
+                    currency: 'eur',
+                    unit_amount: Math.round(precio_total * 100),
+                    product_data: {
+                        name: `M&H Torremolinos · ${fechaInicioFmt} → ${fechaFinFmt}`,
+                        description: `${noches} noches · ${huespedes} huéspedes · Tarifa ${labelTarifa}`
                     }
-                }],
-                metadata: { id_reserva: String(idReserva) },
-                expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-                success_url: `${BASE_URL}/reservar?pago=ok`,
-                cancel_url: `${BASE_URL}/reservar?pago=cancelado`
-            });
+                }
+            }],
+            metadata: { id_reserva: String(idReserva) },
+            expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+            success_url: `${BASE_URL}/reservar?pago=ok`,
+            cancel_url: `${BASE_URL}/reservar?pago=cancelado`
+        });
 
-            await pool.query(
-                `UPDATE reservas SET stripe_checkout_session_id = ? WHERE id_reserva = ?`,
-                [session.id, idReserva]
-            );
+        await pool.query(
+            `UPDATE reservas SET stripe_checkout_session_id = ? WHERE id_reserva = ?`,
+            [session.id, idReserva]
+        );
 
-            return res.status(200).json({ url: session.url });
-        }
-
-        // 7. Sin Stripe configurado: se mantiene el flujo antiguo por transferencia bancaria,
-        //    en el que el administrador confirma la reserva a mano tras recibir el pago.
-
-        const paymentBlock = esNoCancelable
-            ? `<div style="background:#fff8f8;border-left:4px solid #8f0000;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
-                <p style="margin:0 0 8px;font-size:15px;"><strong>Non-refundable rate — full payment required</strong></p>
-                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the full amount:</p>
-                <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                    <tr><td style="padding:4px 0;color:#555;">Amount due now</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${precio_total}€</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
-                </table>
-                <p style="margin:12px 0 0;font-size:13px;color:#8f0000;">⚠ This rate does not allow cancellations or refunds once payment is made.</p>
-               </div>`
-            : `<div style="background:#f5f8f3;border-left:4px solid #3F4B3A;padding:16px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
-                <p style="margin:0 0 8px;font-size:15px;"><strong>Refundable rate — full payment to confirm</strong></p>
-                <p style="margin:0 0 12px;color:#555;font-size:14px;">To confirm your booking, please transfer the full amount:</p>
-                <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                    <tr><td style="padding:4px 0;color:#555;">Amount due now</td><td style="padding:4px 0;text-align:right;font-weight:700;font-size:16px;">${precio_total}€</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">IBAN</td><td style="padding:4px 0;text-align:right;">${IBAN}</td></tr>
-                    <tr><td style="padding:4px 0;color:#555;">Reference</td><td style="padding:4px 0;text-align:right;">${nombre} ${apellidos}</td></tr>
-                </table>
-                <p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${diasCancelacion} days before check-in — full refund.</p>
-               </div>`;
-
-        // 7a. Email de solicitud recibida para el cliente
-        await enviarCorreo(email, 'Booking request received — M&H Torremolinos', `
-        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-            <tr><td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-
-                <!-- Header -->
-                <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
-                  <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
-                  <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
-                </td></tr>
-
-                <!-- Body -->
-                <tr><td style="padding:36px 40px;">
-                  <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${nombre},</h2>
-                  <p style="margin:0 0 24px;color:#555;font-size:15px;">Thank you for your booking request. Here is a summary:</p>
-
-                  <!-- Booking details -->
-                  <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:8px;">
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Check-in</td>
-                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${fechaInicioFmt}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:10px 14px;color:#555;">Check-out</td>
-                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${fechaFinFmt}</td>
-                    </tr>
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Guests</td>
-                      <td style="padding:10px 14px;font-weight:700;text-align:right;">${huespedes}</td>
-                    </tr>
-                    ${conBebe ? `<tr><td style="padding:10px 14px;color:#555;">Baby cot</td><td style="padding:10px 14px;font-weight:700;text-align:right;">Yes</td></tr>` : ''}
-                    ${conMascota ? `<tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;">Pet</td><td style="padding:10px 14px;font-weight:700;text-align:right;">Yes</td></tr>` : ''}
-                    <tr style="border-top:2px solid #3F4B3A;">
-                      <td style="padding:12px 14px;color:#3F4B3A;font-weight:700;">Total</td>
-                      <td style="padding:12px 14px;font-weight:700;text-align:right;font-size:17px;">${precio_total}€${esNoCancelable && descuentoPct > 0 ? ` <span style="font-size:12px;color:#555;font-weight:400;">(${descuentoPct}% discount applied)</span>` : ''}</td>
-                    </tr>
-                  </table>
-
-                  ${paymentBlock}
-
-                  <p style="font-size:14px;color:#555;margin:20px 0 8px;">Once we receive your payment, we will confirm your booking by email.</p>
-                  <p style="font-size:14px;color:#555;margin:0 0 24px;">If you have any questions, feel free to reply to this email or contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
-
-                  <p style="font-size:12px;color:#999;margin:0;">By making this payment you confirm that you have read and agree to our <a href="https://www.mhtorremolinos.com/legal" style="color:#3F4B3A;">Privacy Policy and Booking Conditions</a>.</p>
-                </td></tr>
-
-                <!-- Footer -->
-                <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
-                  <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
-                </td></tr>
-
-              </table>
-            </td></tr>
-          </table>
-        </body>
-        `);
-
-        // 7b. Aviso para los administradores
-        const pagoEsperado = esNoCancelable
-            ? `100% — ${precio_total}€ (non-refundable)`
-            : `100% — ${precio_total}€ (refundable up to ${diasCancelacion} days before check-in)`;
-
-        for (const admin of adminEmails) {
-            await enviarCorreo(admin, `New booking request — ${nombre} ${apellidos} (${fechaInicioFmt})`, `
-        <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-            <tr><td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-
-                <tr><td style="background:#3F4B3A;padding:20px 32px;">
-                  <h2 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:18px;">New booking request</h2>
-                  <p style="margin:4px 0 0;color:#b8c4b3;font-size:13px;">M&amp;H Torremolinos · Pending payment</p>
-                </td></tr>
-
-                <tr><td style="padding:28px 32px;">
-                  <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;width:45%;">Guest</td>
-                      <td style="padding:10px 14px;font-weight:700;">${nombre} ${apellidos}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:10px 14px;color:#555;">Email</td>
-                      <td style="padding:10px 14px;"><a href="mailto:${email}" style="color:#3F4B3A;">${email}</a></td>
-                    </tr>
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Phone</td>
-                      <td style="padding:10px 14px;">${prefijo} ${telefono}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:10px 14px;color:#555;">Check-in</td>
-                      <td style="padding:10px 14px;font-weight:700;">${fechaInicioFmt}</td>
-                    </tr>
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Check-out</td>
-                      <td style="padding:10px 14px;font-weight:700;">${fechaFinFmt}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:10px 14px;color:#555;">Guests</td>
-                      <td style="padding:10px 14px;">${huespedes}${conBebe ? ' · cot' : ''}${conMascota ? ' · pet' : ''}</td>
-                    </tr>
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Rate</td>
-                      <td style="padding:10px 14px;">${labelTarifa}${esNoCancelable && descuentoPct > 0 ? ` <span style="color:#8f0000;">(${descuentoPct}% discount)</span>` : ''}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:10px 14px;color:#555;">Total</td>
-                      <td style="padding:10px 14px;font-weight:700;font-size:16px;">${precio_total}€</td>
-                    </tr>
-                    <tr style="background:#f5f8f3;">
-                      <td style="padding:10px 14px;color:#555;">Expected payment</td>
-                      <td style="padding:10px 14px;font-weight:700;color:${esNoCancelable ? '#8f0000' : '#3F4B3A'};">${pagoEsperado}</td>
-                    </tr>
-                    ${nota ? `<tr><td style="padding:10px 14px;color:#555;vertical-align:top;">Note</td><td style="padding:10px 14px;">${nota}</td></tr>` : ''}
-                  </table>
-                </td></tr>
-
-                <tr><td style="background:#f5f8f3;padding:16px 32px;text-align:center;border-top:1px solid #e0e0d8;">
-                  <a href="https://www.mhtorremolinos.com/admin" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;">Open admin panel</a>
-                </td></tr>
-
-              </table>
-            </td></tr>
-          </table>
-        </body>
-      `);
-        }
-
-        return res.status(200).json({ mensaje: 'Reserva enviada correctamente' });
+        // Los emails de confirmación se envían desde el webhook, cuando el pago se completa
+        return res.status(200).json({ url: session.url });
 
     } catch (err) {
         console.error('[POST /api/reservas]', err);

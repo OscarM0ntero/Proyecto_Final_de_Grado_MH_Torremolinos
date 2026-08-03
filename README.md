@@ -149,13 +149,16 @@ Example emails:
    configured minimum stay, cannot be selected.
 2. They choose a rate (refundable or non-refundable) and fill in their details.
 3. The server **recalculates the price and re-checks availability** — the amount is never taken from
-   the browser — creates the booking as `Pendiente` and redirects to Stripe Checkout.
+   the browser — creates the booking as `Pendiente` and redirects to Stripe Checkout. Only card
+   payments are offered, so the charge is authorised immediately; deferred methods such as Klarna
+   or SEPA direct debit would confirm days later and are deliberately not accepted.
 4. Stripe notifies the webhook when the payment succeeds. The server checks the dates are *still*
    free, then marks them as booked, sets the booking to `Confirmada` / `pagado` and sends the emails.
    If another guest took the dates while the payment was in progress, the charge is **refunded
    automatically** and both parties are notified.
 5. Days are **not** blocked while a booking is `Pendiente`, so an abandoned checkout never locks the
-   calendar.
+   calendar. Unfinished payments are cleaned up automatically when the Stripe session expires, so
+   they never need to be cancelled by hand.
 
 ---
 
@@ -169,7 +172,7 @@ Example emails:
 | `SECRET` | JWT signing key, also used to derive the opaque iCal event UIDs |
 | `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS` | SMTP account used to send emails |
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA verification for the booking and contact forms |
-| `STRIPE_SECRET_KEY` | Stripe API key. **If it is missing the site falls back to the old bank-transfer flow** |
+| `STRIPE_SECRET_KEY` | Stripe API key. **Required** — without it the booking endpoint returns an error instead of accepting bookings that cannot be charged |
 | `STRIPE_WEBHOOK_SECRET` | Signature verification for the Stripe webhook |
 | `BASE_URL` | Public site URL, used for Stripe redirects and the links inside emails |
 

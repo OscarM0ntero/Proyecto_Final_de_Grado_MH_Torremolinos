@@ -190,12 +190,10 @@ export class AdminBookingManagerComponent implements OnInit {
 	accionesEstado(r: Reserva): { estado: string; etiqueta: string; icono: string; peligro: boolean }[] {
 		const estanciaTerminada = new Date(r.fecha_fin) < new Date();
 
+		// Pendiente = pago sin terminar. Se limpia solo (sesión de Stripe caducada + job de
+		// reconciliación), así que no se ofrece cancelar a mano.
 		if (r.estado_reserva === 'Pendiente') {
-			return [
-				{ estado: 'Confirmada', etiqueta: 'Confirmar', icono: 'check_circle', peligro: false },
-				{ estado: 'Cancelada', etiqueta: 'Cancelar', icono: 'cancel', peligro: true },
-				{ estado: 'Rechazada', etiqueta: 'Rechazar', icono: 'block', peligro: true }
-			];
+			return [{ estado: 'Confirmada', etiqueta: 'Confirmar', icono: 'check_circle', peligro: false }];
 		}
 
 		if (r.estado_reserva === 'Confirmada') {

@@ -8,7 +8,6 @@ import { DisponibilidadService } from '../../../../../services/disponibilidad.se
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { LoaderService } from '../../../../../services/loader.service';
-import { ReservaConfirmadaComponent } from './dialogs/reserva-confirmada.component';
 import { PagoCompletadoComponent } from './dialogs/pago-completado.component';
 import { environment } from '../../../../../../environments/environment';
 import { LayoutComponent } from '../../../layout/layout.component';
@@ -44,7 +43,6 @@ export class DisponibilidadComponent implements OnInit {
 	diasCancelacion = 30;
 	precioMascotaNoche = 10;
 	minNoches = 1;
-	stripeActivo = false;
 	horaCheckin = '16:00';
 	horaCheckout = '11:00';
 
@@ -147,11 +145,6 @@ export class DisponibilidadComponent implements OnInit {
 		this.layout.captchaResuelto$.subscribe(token => {
 			this.tokenCaptcha = token;
 			this.enviarReserva();
-		});
-
-		this.reservasService.getStripeConfig().subscribe({
-			next: (cfg) => { this.stripeActivo = cfg.activo; },
-			error: () => { this.stripeActivo = false; }
 		});
 
 		// Vuelta desde Stripe Checkout (?pago=ok | ?pago=cancelado)
@@ -265,16 +258,13 @@ export class DisponibilidadComponent implements OnInit {
 
 		this.reservasService.enviarReserva(payload).subscribe({
 			next: (res) => {
-				// Con Stripe activo el backend devuelve la URL de pago: redirigir al Checkout
+				// El backend devuelve la URL de Stripe Checkout: se redirige al pago
 				if (res?.url && isPlatformBrowser(this.platformId)) {
 					window.location.href = res.url;
 					return;
 				}
-				this.dialog.open(ReservaConfirmadaComponent);
-				this.mostrarResumen = false;
-				this.layout.tokenCaptcha = '';
 				this.loader.ocultar();
-				this.layout.resetCaptcha();
+				alert('No se pudo iniciar el pago. Inténtalo de nuevo.');
 			},
 			error: err => {
 				this.loader.ocultar();
