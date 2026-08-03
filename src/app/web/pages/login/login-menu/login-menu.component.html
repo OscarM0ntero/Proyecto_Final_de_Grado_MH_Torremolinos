@@ -5,15 +5,15 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
-            <input matInput type="email" [(ngModel)]="email" required (keydown.enter)="login()" />
+            <input matInput type="email" [(ngModel)]="email" required (keydown.enter)="verificarCaptcha()" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
             <mat-label>{{ 'LOGIN.PASS' | translate}}</mat-label>
-            <input matInput type="password" [(ngModel)]="contrasena" required (keydown.enter)="login()" />
+            <input matInput type="password" [(ngModel)]="contrasena" required (keydown.enter)="verificarCaptcha()" />
         </mat-form-field>
 
-        <button mat-raised-button (click)="login()">{{ 'LOGIN.LOGIN' | translate}}</button>
+        <button mat-raised-button (click)="verificarCaptcha()">{{ 'LOGIN.LOGIN' | translate}}</button>
         <p class="forgot" [routerLink]="['recover']">{{ 'LOGIN.FORGOT' | translate}}</p>
     </div>
 </div>

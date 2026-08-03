@@ -58,7 +58,7 @@ export class LayoutComponent implements OnInit {
 				}
 				if (event instanceof NavigationEnd) {
 					const url = event.urlAfterRedirects;
-					const mostrar = ['/reservar', '/contacto'].some(r => url.includes(r));
+					const mostrar = ['/reservar', '/contacto', '/iniciar-sesion'].some(r => url.includes(r));
 					document.body.classList.toggle('show-recaptcha', mostrar);
 				}
 			});

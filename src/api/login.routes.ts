@@ -4,6 +4,7 @@ import { pool, secret } from '../db.js';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { hashearContrasena } from './utils/password.js';
+import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 
 const router = express.Router();
 
@@ -12,6 +13,12 @@ router.post('/', async (req, res) => {
 
     if (!email || !contrasena) {
         return res.status(400).json({ error: 'Faltan campos' });
+    }
+
+    // Frena los intentos automáticos de adivinar la contraseña del administrador
+    const captchaValido = await verificarRecaptcha(req.body.recaptcha);
+    if (!captchaValido) {
+        return res.status(400).json({ error: 'Fallo al verificar reCAPTCHA' });
     }
 
     try {
