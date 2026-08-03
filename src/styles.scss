@@ -290,11 +290,6 @@ h1 {
     }
 }
 
-//Color del fondo de los campos mat-form
-.mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    background-color: var(--color-tertiary) !important;
-}
-
 .mat-calendar-body-in-range::before {
     background-color: var(--color-tertiary) !important;
 }
@@ -457,45 +452,50 @@ h1 {
     width: 350px;
 }
 
-// Formularios con campos outline blancos (reserva, contacto, login...).
-// Requiere appearance="outline" en los mat-form-field.
-.outline-form {
-    .mat-mdc-form-field {
-        width: 100%;
-        // El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio
-        // para que coincida con el del fondo (si difieren queda una línea fina en la esquina)
-        --mdc-outlined-text-field-container-shape: 8px;
-    }
+// Aspecto de los campos de formulario (outline es la apariencia por defecto, ver app.module.ts).
+// Es global para que cualquier formulario nuevo salga ya con el estilo del sitio.
+.mat-mdc-form-field {
+    // El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio para que
+    // coincida con el del fondo (si difieren queda una linea fina en la esquina)
+    --mdc-outlined-text-field-container-shape: 8px;
+}
 
-    .mat-mdc-form-field-infix {
-        width: auto;
-    }
+.mdc-text-field--outlined {
+    background: #fff;
+    border-radius: 8px;
+}
 
-    .mdc-text-field--outlined {
-        background: #fff;
-        border-radius: 8px;
-    }
+.mdc-notched-outline__leading,
+.mdc-notched-outline__notch,
+.mdc-notched-outline__trailing {
+    border-color: #ddd8cc !important;
+}
+
+.mat-mdc-form-field.mat-focused {
 
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
     .mdc-notched-outline__trailing {
-        border-color: #ddd8cc !important;
+        border-color: var(--color-primary) !important;
+    }
+}
+
+// El notch trae un border-left transparente de Material solo para alinear el label;
+// se elimina por completo para que ninguna regla de color pueda hacerlo visible
+.mdc-notched-outline__notch {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+// Ajustes de maquetacion para los formularios publicos (reserva, contacto, login):
+// campos a todo el ancho de su celda y tipografia algo mas contenida.
+.outline-form {
+    .mat-mdc-form-field {
+        width: 100%;
     }
 
-    .mat-mdc-form-field.mat-focused {
-
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-            border-color: var(--color-primary) !important;
-        }
-    }
-
-    // El notch trae un border-left transparente de Material solo para alinear el label;
-    // se elimina por completo para que ninguna regla de color pueda hacerlo visible
-    .mdc-notched-outline__notch {
-        border-left: none !important;
-        border-right: none !important;
+    .mat-mdc-form-field-infix {
+        width: auto;
     }
 
     label {

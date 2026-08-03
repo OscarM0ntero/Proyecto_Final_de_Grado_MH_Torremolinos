@@ -19,6 +19,11 @@ export class AdminBookingManagerComponent implements OnInit {
 	textoBusqueda: string = '';
 	estados = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
+	// Vista por defecto: lo que el administrador necesita ver a diario.
+	// Oculta canceladas, rechazadas y pendientes (con Stripe, "Pendiente" ya no es
+	// "esperando aprobación" sino un pago que el cliente no llegó a terminar).
+	soloRelevantes = true;
+
 	constructor(
 		private reservasService: ReservasService,
 		private dialog: MatDialog,
@@ -36,18 +41,47 @@ export class AdminBookingManagerComponent implements OnInit {
 			: this.reservasService.getTodasReservas();
 
 		obs.subscribe(res => {
-			this.reservas = res;
+			this.reservas = this.ordenar(res);
 			this.aplicarFiltroTexto();
 		});
 	}
 
+	// Grupo por el que se ordena la lista: primero lo que está por llegar.
+	//   1 próximas confirmadas · 2 estancias pasadas · 3 pagos sin terminar · 4 canceladas/rechazadas
+	private grupo(r: Reserva): number {
+		const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+		const terminada = new Date(r.fecha_fin) < hoy;
+
+		if (r.estado_reserva === 'Cancelada' || r.estado_reserva === 'Rechazada') return 4;
+		if (r.estado_reserva === 'Pendiente') return 3;
+		if (r.estado_reserva === 'Confirmada' && !terminada) return 1;
+		return 2;
+	}
+
+	private ordenar(lista: Reserva[]): Reserva[] {
+		return [...lista].sort((a, b) => {
+			const ga = this.grupo(a), gb = this.grupo(b);
+			if (ga !== gb) return ga - gb;
+
+			const fa = new Date(a.fecha_inicio).getTime();
+			const fb = new Date(b.fecha_inicio).getTime();
+			// Las próximas, de más cercana a más lejana; el resto, lo más reciente primero
+			return ga === 1 ? fa - fb : fb - fa;
+		});
+	}
+
 	aplicarFiltroTexto(): void {
+		// Con un estado concreto seleccionado se respeta esa elección; si no, se aplica la vista por defecto
+		const base = (this.soloRelevantes && !this.estadoFiltro)
+			? this.reservas.filter(r => this.grupo(r) <= 2)
+			: this.reservas;
+
 		const q = this.textoBusqueda.trim().toLowerCase();
 		if (!q) {
-			this.reservasFiltradas = [...this.reservas];
+			this.reservasFiltradas = [...base];
 			return;
 		}
-		this.reservasFiltradas = this.reservas.filter(r => {
+		this.reservasFiltradas = base.filter(r => {
 			const nombre = this.getNombreCompleto(r).toLowerCase();
 			const email = (r.email || r.cliente_email || '').toLowerCase();
 			const id = r.id_reserva.toString();

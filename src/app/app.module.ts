@@ -7,6 +7,7 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from './translate-loader';
 import { TokenInterceptor } from './interceptors/token.interceptor';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @NgModule({
 	declarations: [
@@ -28,7 +29,10 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 		provideClientHydration(withEventReplay()),
 		provideAnimations(),
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
-		{ provide: LOCALE_ID, useValue: 'es' }
+		{ provide: LOCALE_ID, useValue: 'es' },
+		// Todos los campos usan el estilo outline (blanco con borde). Antes cada plantilla
+		// tenia que pedirlo a mano y las que no lo hacian se quedaban con el relleno verde.
+		{ provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
 	],
 	bootstrap: [AppComponent]
 })

@@ -31,6 +31,14 @@
     .filter-search {
         flex: 1 1 260px;
     }
+
+    /* Se alinea con los campos, que llevan el hueco inferior del hint */
+    .filter-relevantes {
+        display: flex;
+        align-items: center;
+        height: 56px;
+        white-space: nowrap;
+    }
 }
 
 .no-results {

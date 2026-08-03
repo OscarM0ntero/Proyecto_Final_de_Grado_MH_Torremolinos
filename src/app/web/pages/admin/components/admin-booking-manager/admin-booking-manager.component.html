@@ -14,6 +14,12 @@
         </mat-select>
     </mat-form-field>
 
+    <mat-checkbox class="filter-relevantes" [(ngModel)]="soloRelevantes" (ngModelChange)="aplicarFiltroTexto()"
+        [disabled]="!!estadoFiltro"
+        matTooltip="Oculta canceladas, rechazadas y pagos que el cliente no llegó a terminar">
+        Solo reservas relevantes
+    </mat-checkbox>
+
     <mat-form-field appearance="outline" class="filter-search">
         <mat-label>Buscar por nombre, email o ID</mat-label>
         <input matInput [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltroTexto()">
@@ -60,9 +66,6 @@
             <p class="client-detail"><mat-icon class="detail-icon">phone</mat-icon>{{ getTelefono(r) }}</p>
             <p class="client-detail" *ngIf="r.cliente_idioma || r.cliente_pais">
                 <mat-icon class="detail-icon">translate</mat-icon>{{ getIdiomaPais(r) }}
-            </p>
-            <p *ngIf="!r.id_usuario" class="deleted-account-badge">
-                <mat-icon>warning</mat-icon> Cuenta eliminada
             </p>
         </div>
 
