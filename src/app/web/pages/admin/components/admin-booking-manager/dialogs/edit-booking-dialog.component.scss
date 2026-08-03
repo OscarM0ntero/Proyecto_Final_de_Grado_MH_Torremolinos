@@ -1,0 +1,69 @@
+.edit-booking {
+    min-width: 520px;
+    max-width: 620px;
+
+    .edit-section-title {
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-primary);
+        margin: 18px 0 10px;
+    }
+
+    .edit-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 16px;
+
+        .mat-mdc-form-field {
+            width: 100%;
+        }
+    }
+
+    .edit-full {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .edit-checks {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 6px;
+    }
+
+    .edit-aviso {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: #fff8e6;
+        border-left: 4px solid #b35c00;
+        border-radius: 0 8px 8px 0;
+        padding: 12px 14px;
+        margin: 6px 0 4px;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #6b4200;
+
+        mat-icon {
+            color: #b35c00;
+            flex-shrink: 0;
+        }
+    }
+
+    .edit-nota-cliente {
+        font-size: 13px;
+        color: #666;
+        margin: 4px 0 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .edit-booking {
+        min-width: auto;
+
+        .edit-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+}

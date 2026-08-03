@@ -117,8 +117,26 @@
         <span>{{ r.nota_adicional }}</span>
     </div>
 
-    <!-- Card footer: estado change -->
+    <!-- Nota interna del administrador -->
+    <div *ngIf="r.nota_admin" class="card-note card-note--admin">
+        <mat-icon>lock</mat-icon>
+        <span>{{ r.nota_admin }}</span>
+    </div>
+
+    <!-- Card footer: acciones y cambio de estado -->
     <div class="card-footer">
+        <div class="card-actions">
+            <button mat-stroked-button (click)="editarReserva(r)" matTooltip="Editar datos, fechas y nota interna">
+                <mat-icon>edit</mat-icon> Editar
+            </button>
+            <button mat-stroked-button (click)="copiarEnlace(r)" matTooltip="Copiar el enlace privado del huésped">
+                <mat-icon>link</mat-icon> Enlace
+            </button>
+            <button mat-stroked-button (click)="reenviarConfirmacion(r)" matTooltip="Reenviar el email con los datos de la reserva">
+                <mat-icon>mail</mat-icon> Reenviar
+            </button>
+        </div>
+
         <mat-form-field appearance="outline" class="estado-select">
             <mat-label>Cambiar estado</mat-label>
             <mat-select [(value)]="r.estado_reserva" (selectionChange)="confirmarCambioEstado(r)">

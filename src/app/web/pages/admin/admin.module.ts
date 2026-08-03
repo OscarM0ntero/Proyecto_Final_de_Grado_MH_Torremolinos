@@ -11,6 +11,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MaterialModule } from '../../../material/material.module';
 import { AccountModule } from '../../shared/account.module';
 import { AdminRoutingModule } from './admin-routing.module';
+import { EditBookingDialogComponent } from './components/admin-booking-manager/dialogs/edit-booking-dialog.component';
 
 import { AdminComponent } from './admin.component';
 import { AdminPanelLayoutComponent } from './components/admin-panel-layout/admin-panel-layout.component';
@@ -43,6 +44,7 @@ import { AddUserDialogComponent } from './components/admin-users-manager/dialogs
         UploadImageComponent,
         EditUserDialogComponent,
         AddUserDialogComponent,
+        EditBookingDialogComponent,
     ],
     imports: [
         CommonModule,

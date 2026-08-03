@@ -3,6 +3,7 @@ import { Reserva, ReservasService } from '../../../../../services/reservas.servi
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmStateDialogComponent } from './dialogs/confirm-state-dialog.component';
+import { EditBookingDialogComponent } from './dialogs/edit-booking-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -140,6 +141,48 @@ export class AdminBookingManagerComponent implements OnInit {
 			'Finalizada': 'card-finalizada'
 		};
 		return map[estado] || '';
+	}
+
+	editarReserva(reserva: Reserva): void {
+		const ref = this.dialog.open(EditBookingDialogComponent, { data: reserva, maxWidth: '95vw' });
+
+		ref.afterClosed().subscribe(datos => {
+			if (!datos) return;
+			this.reservasService.actualizarReserva(reserva.id_reserva, datos).subscribe({
+				next: () => {
+					this.aviso('Reserva actualizada', true);
+					this.cargarReservas();
+				},
+				error: (err) => this.aviso(err?.error?.error || 'No se pudo actualizar la reserva', false)
+			});
+		});
+	}
+
+	reenviarConfirmacion(reserva: Reserva): void {
+		this.reservasService.reenviarConfirmacion(reserva.id_reserva).subscribe({
+			next: () => this.aviso('Email reenviado al huésped', true),
+			error: () => this.aviso('No se pudo reenviar el email', false)
+		});
+	}
+
+	// Enlace privado del huésped, para pegarlo en un WhatsApp o un email manual
+	copiarEnlace(reserva: Reserva): void {
+		if (!reserva.token_acceso) {
+			this.aviso('Esta reserva no tiene enlace de gestión', false);
+			return;
+		}
+		const url = `${window.location.origin}/reserva/${reserva.token_acceso}`;
+		navigator.clipboard.writeText(url).then(
+			() => this.aviso('Enlace copiado al portapapeles', true),
+			() => this.aviso('No se pudo copiar el enlace', false)
+		);
+	}
+
+	private aviso(texto: string, ok: boolean): void {
+		this.snackBar.open(texto, undefined, {
+			duration: 4000,
+			panelClass: [ok ? 'snackbar-success' : 'snackbar-error']
+		});
 	}
 
 	confirmarCambioEstado(reserva: Reserva): void {

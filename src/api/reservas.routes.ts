@@ -522,6 +522,114 @@ router.post('/', async (req, res) => {
     }
 });
 
+// PUT /api/reservas/:id — edición por el administrador.
+//
+// Qué se puede tocar y qué no:
+//   · Datos de contacto, huéspedes, cuna, mascota y notas → libremente.
+//   · Fechas → solo si el nuevo rango está libre; se liberan los días viejos y se bloquean
+//     los nuevos. El importe ya cobrado NO se recalcula: si hay diferencia se gestiona
+//     aparte con un reembolso en Stripe.
+//   · Precio y estado del pago → nunca desde aquí, para que la base de datos siempre
+//     refleje lo que realmente ocurrió en Stripe.
+router.put('/:id', verificarAdmin, async (req, res) => {
+    const { id } = req.params;
+    const {
+        cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
+        n_personas, bebe, mascota, nota_admin, fecha_inicio, fecha_fin
+    } = req.body;
+
+    try {
+        const [rows] = await pool.query(`SELECT * FROM reservas WHERE id_reserva = ?`, [id]) as any[];
+        if (rows.length === 0) return res.status(404).json({ error: 'Reserva no encontrada' });
+        const reserva = rows[0];
+
+        const inicioActual = formatearFechaSQL(reserva.fecha_inicio);
+        const finActual = formatearFechaSQL(reserva.fecha_fin);
+        const inicioNuevo = fecha_inicio ? formatearFechaSQL(fecha_inicio) : inicioActual;
+        const finNuevo = fecha_fin ? formatearFechaSQL(fecha_fin) : finActual;
+        const cambianFechas = inicioNuevo !== inicioActual || finNuevo !== finActual;
+
+        if (cambianFechas) {
+            const noches = Math.round((new Date(finNuevo).getTime() - new Date(inicioNuevo).getTime()) / 86400000);
+            if (noches < 1) return res.status(400).json({ error: 'El rango de fechas no es válido' });
+
+            // El rango nuevo debe estar libre, salvo los días que ya ocupa esta misma reserva
+            const [diasRows] = await pool.query(
+                `SELECT fecha, estado, id_reserva FROM disponibilidad WHERE fecha >= ? AND fecha < ?`,
+                [inicioNuevo, finNuevo]
+            ) as any[];
+
+            const ocupado = diasRows.some((d: any) =>
+                d.estado !== 'disponible' && String(d.id_reserva) !== String(id));
+            if (diasRows.length !== noches || ocupado) {
+                return res.status(409).json({ error: 'Las fechas nuevas no están disponibles' });
+            }
+
+            // Liberar los días antiguos y bloquear los nuevos
+            await pool.query(
+                `UPDATE disponibilidad SET estado = 'disponible', fuente = 'local', id_reserva = NULL
+                 WHERE id_reserva = ?`,
+                [id]
+            );
+            if (reserva.estado_reserva === 'Confirmada') {
+                await pool.query(
+                    `UPDATE disponibilidad SET estado = 'reservada', fuente = 'local', id_reserva = ?
+                     WHERE fecha >= ? AND fecha < ?`,
+                    [id, inicioNuevo, finNuevo]
+                );
+            }
+        }
+
+        await pool.query(
+            `UPDATE reservas SET
+                cliente_nombre = ?, cliente_apellidos = ?, cliente_email = ?,
+                cliente_prefijo = ?, cliente_telefono = ?,
+                n_personas = ?, bebe = ?, mascota = ?, nota_admin = ?,
+                fecha_inicio = ?, fecha_fin = ?
+             WHERE id_reserva = ?`,
+            [cliente_nombre ?? reserva.cliente_nombre, cliente_apellidos ?? reserva.cliente_apellidos,
+             cliente_email ?? reserva.cliente_email, cliente_prefijo ?? reserva.cliente_prefijo,
+             cliente_telefono ?? reserva.cliente_telefono,
+             n_personas ?? reserva.n_personas, bebe ? 1 : 0, mascota ? 1 : 0,
+             nota_admin ?? reserva.nota_admin, inicioNuevo, finNuevo, id]
+        );
+
+        return res.json({ mensaje: 'Reserva actualizada', fechasCambiadas: cambianFechas });
+    } catch (err) {
+        console.error('[PUT /api/reservas/:id]', err);
+        return res.status(500).json({ error: 'Error al actualizar la reserva' });
+    }
+});
+
+// POST /api/reservas/:id/reenviar-confirmacion — vuelve a mandar el email con el enlace de gestión
+router.post('/:id/reenviar-confirmacion', verificarAdmin, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [rows] = await pool.query(`SELECT * FROM reservas WHERE id_reserva = ?`, [id]) as any[];
+        if (rows.length === 0) return res.status(404).json({ error: 'Reserva no encontrada' });
+        const r = rows[0];
+
+        await enviarCorreo(r.cliente_email, 'Your booking — M&H Torremolinos', plantillaEmail(`
+            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${r.cliente_nombre},</h2>
+            <p style="margin:0 0 20px;color:#555;font-size:15px;">Here are the details of your booking with us.</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
+                ${filaEmail('Check-in', formatearFecha(r.fecha_inicio), true)}
+                ${filaEmail('Check-out', formatearFecha(r.fecha_fin))}
+                ${filaEmail('Guests', String(r.n_personas), true)}
+                ${filaEmail('Total', `${Number(r.precio_total).toFixed(2)}€`)}
+            </table>
+            <div style="text-align:center;margin:28px 0 8px;">
+              <a href="${BASE_URL}/reserva/${r.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">View or manage my booking</a>
+            </div>
+        `));
+
+        return res.json({ mensaje: 'Email reenviado' });
+    } catch (err) {
+        console.error('[POST /api/reservas/:id/reenviar-confirmacion]', err);
+        return res.status(500).json({ error: 'Error al reenviar el email' });
+    }
+});
+
 router.put('/:id/estado', verificarAdmin, async (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;

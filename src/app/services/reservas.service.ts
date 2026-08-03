@@ -26,6 +26,8 @@ export interface Reserva {
 	stripe_checkout_session_id?: string;
 	stripe_payment_intent_id?: string;
 	token_acceso?: string;
+	// Nota privada del administrador (nunca se muestra al huésped)
+	nota_admin?: string;
 	// Datos del usuario activo (via JOIN, si la cuenta existe)
 	nombre?: string;
 	apellidos?: string;
@@ -67,6 +69,14 @@ export class ReservasService {
 
 	actualizarEstadoReserva(id: number, estado: string): Observable<any> {
 		return this.http.put(`/api/reservas/${id}/estado`, { estado });
+	}
+
+	actualizarReserva(id: number, datos: any): Observable<any> {
+		return this.http.put(`/api/reservas/${id}`, datos);
+	}
+
+	reenviarConfirmacion(id: number): Observable<any> {
+		return this.http.post(`/api/reservas/${id}/reenviar-confirmacion`, {});
 	}
 
 

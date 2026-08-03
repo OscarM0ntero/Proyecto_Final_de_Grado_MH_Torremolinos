@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>Editar reserva #{{ reserva.id_reserva }}</h2>
+
+<mat-dialog-content class="edit-booking">
+
+    <p class="edit-section-title">Datos del huésped</p>
+    <div class="edit-grid">
+        <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="form.cliente_nombre" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Apellidos</mat-label>
+            <input matInput [(ngModel)]="form.cliente_apellidos" />
+        </mat-form-field>
+
+        <mat-form-field class="edit-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="form.cliente_email" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Prefijo</mat-label>
+            <mat-select [(ngModel)]="form.cliente_prefijo">
+                <mat-option *ngFor="let p of prefijos" [value]="p">{{ p }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Teléfono</mat-label>
+            <input matInput [(ngModel)]="form.cliente_telefono" />
+        </mat-form-field>
+    </div>
+
+    <p class="edit-section-title">Estancia</p>
+    <div class="edit-grid">
+        <mat-form-field>
+            <mat-label>Check-in</mat-label>
+            <input matInput [matDatepicker]="pIni" [(ngModel)]="fechaInicio" readonly (click)="pIni.open()" />
+            <mat-datepicker-toggle matSuffix [for]="pIni"></mat-datepicker-toggle>
+            <mat-datepicker #pIni></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Check-out</mat-label>
+            <input matInput [matDatepicker]="pFin" [(ngModel)]="fechaFin" readonly (click)="pFin.open()" />
+            <mat-datepicker-toggle matSuffix [for]="pFin"></mat-datepicker-toggle>
+            <mat-datepicker #pFin></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Huéspedes</mat-label>
+            <input matInput type="number" min="1" max="10" [(ngModel)]="form.n_personas" />
+        </mat-form-field>
+    </div>
+
+    <div class="edit-checks">
+        <mat-checkbox [(ngModel)]="form.bebe">Cuna</mat-checkbox>
+        <mat-checkbox [(ngModel)]="form.mascota">Mascota</mat-checkbox>
+    </div>
+
+    <!-- Cambiar fechas mueve los días del calendario, pero no recalcula lo ya cobrado -->
+    <div class="edit-aviso" *ngIf="fechasCambiadas">
+        <mat-icon>warning</mat-icon>
+        <span>
+            Vas a cambiar las fechas. Se liberarán los días antiguos y se bloquearán los nuevos, pero
+            <strong>el importe ya cobrado no se recalcula</strong>: si hay diferencia, gestiónala con un
+            reembolso o un cobro aparte en Stripe.
+        </span>
+    </div>
+
+    <p class="edit-section-title">Nota interna</p>
+    <mat-form-field class="edit-full">
+        <mat-label>Solo visible para administradores</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="form.nota_admin"></textarea>
+    </mat-form-field>
+
+    <p class="edit-nota-cliente" *ngIf="reserva.nota_adicional">
+        <strong>Nota del huésped:</strong> {{ reserva.nota_adicional }}
+    </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button [mat-dialog-close]="null">Cancelar</button>
+    <button mat-raised-button (click)="guardar()">Guardar cambios</button>
+</mat-dialog-actions>

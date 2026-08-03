@@ -353,3 +353,49 @@
         color: #8f0000;
     }
 }
+
+/* Pie de la tarjeta: acciones a la izquierda, cambio de estado a la derecha */
+.reserva-card .card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        button {
+            font-size: 13px;
+        }
+
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+    }
+}
+
+/* Nota interna: se distingue de la del huésped para no confundirlas */
+.card-note--admin {
+    background: #f4f1e8;
+    border-left: 3px solid var(--color-secondary);
+    color: #6b5b3a;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .reserva-card .card-footer {
+        flex-direction: column;
+        align-items: stretch;
+
+        .card-actions {
+            justify-content: center;
+        }
+    }
+}
