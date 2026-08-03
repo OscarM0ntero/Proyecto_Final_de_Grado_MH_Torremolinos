@@ -60,14 +60,17 @@ p {
     animation-delay: 4s;
 }
 
+/* El verde claro se perdía sobre el vídeo (fondo luminoso y con mucho detalle).
+   Se usa el verde oscuro de los botones principales del resto del sitio, con sombra
+   para que despegue del fondo sea cual sea el fotograma. */
 .book-button {
-    width: 200px;
-    height: 50px;
+    width: 220px;
+    height: 52px;
     border: none;
     border-radius: 8px;
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     opacity: 0;
-    color: var(--color-primary);
+    color: #fff;
     font-weight: 600;
     letter-spacing: 0.06em;
     animation: fadeInButton 5s ease forwards;
@@ -76,12 +79,14 @@ p {
     text-decoration: none;
     font-size: 16px;
     z-index: 3;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .book-button:hover {
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
+    background-color: #4d5c46;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 // Animacion del boton de reserva y precio
