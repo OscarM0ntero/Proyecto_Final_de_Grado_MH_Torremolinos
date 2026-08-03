@@ -86,8 +86,45 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
     if (rows.length === 0) return;
     const reserva = rows[0];
 
-    // Idempotencia: si la reserva ya no está pendiente, el evento ya fue procesado
-    if (reserva.estado_reserva !== 'Pendiente') return;
+    // El evento puede llegar con el pago aún sin cobrar. Solo se confirma con el dinero dentro.
+    if (session.payment_status !== 'paid') {
+        console.warn(`[stripe] sesión ${session.id} completada pero payment_status=${session.payment_status}; no se confirma la reserva #${idReserva}`);
+        return;
+    }
+
+    // La reserva ya no está pendiente. O bien el evento es un reintento de Stripe sobre algo ya
+    // procesado (no hay que hacer nada), o bien ha entrado dinero de una reserva que ya no se puede
+    // honrar: se cancelaron los días entre medias. En ese caso hay que devolverlo, nunca ignorarlo.
+    if (reserva.estado_reserva !== 'Pendiente') {
+        const yaCobrada = reserva.estado_pago === 'pagado' || reserva.estado_pago === 'reembolsado';
+        if (yaCobrada) return; // reintento de un evento ya procesado
+
+        const piId = typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id || null;
+
+        console.warn(`[stripe] pago recibido para la reserva #${idReserva}, que está ${reserva.estado_reserva}. Se reembolsa.`);
+        if (piId) {
+            try {
+                await stripe.refunds.create({ payment_intent: piId });
+                await pool.query(
+                    `UPDATE reservas SET estado_pago = 'reembolsado', stripe_payment_intent_id = ?, importe_pagado = ?
+                     WHERE id_reserva = ?`,
+                    [piId, (session.amount_total ?? 0) / 100, idReserva]
+                );
+            } catch (err) {
+                console.error(`[stripe] no se pudo reembolsar el pago huérfano de la reserva #${idReserva}:`, err);
+            }
+        }
+
+        for (const admin of adminEmails) {
+            await enviarCorreo(admin, `Pago recibido de una reserva ${reserva.estado_reserva} — #${idReserva}`, plantillaEmail(`
+                <p style="margin:0 0 12px;color:#555;font-size:15px;">Ha entrado un pago de <strong>${((session.amount_total ?? 0) / 100).toFixed(2)}€</strong> para la reserva #${idReserva}, que ya estaba en estado <strong>${reserva.estado_reserva}</strong>.</p>
+                <p style="margin:0;color:#555;font-size:15px;">Se ha reembolsado automáticamente. Conviene revisarlo en el panel de Stripe.</p>
+            `));
+        }
+        return;
+    }
 
     const paymentIntentId = typeof session.payment_intent === 'string'
         ? session.payment_intent

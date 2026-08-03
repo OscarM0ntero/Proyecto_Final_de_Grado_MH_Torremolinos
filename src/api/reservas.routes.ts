@@ -345,6 +345,10 @@ router.post('/', async (req, res) => {
         if (stripe) {
             const session = await stripe.checkout.sessions.create({
                 mode: 'payment',
+                // Solo tarjeta (Apple Pay, Google Pay y Link van incluidos): se autoriza al momento.
+                // Métodos como Klarna, Bancontact o los adeudos SEPA confirman horas o días
+                // después, y no queremos dar por buena una reserva cuyo dinero aún no ha llegado.
+                payment_method_types: ['card'],
                 customer_email: email,
                 line_items: [{
                     quantity: 1,
