@@ -58,7 +58,7 @@
         "SEND": "Send",
         "RATE-TYPE": "Tarifftype",
         "CANCELABLE": "Fleksibel",
-        "CANCELABLE-DESC": "Avbestill opptil {{days}} dager før ankomst",
+        "CANCELABLE-DESC": "Kanseller inntil {{days}} dager før; refusjon minus bankgebyret",
         "NON-CANCELABLE": "Ikke avbestillbar",
         "NON-CANCELABLE-DESC": "Lavere pris, ingen avbestilling mulig",
         "DISCOUNT": "Rabatt",
@@ -77,7 +77,12 @@
         "PAYMENT-OK-TITLE": "Betaling fullført!",
         "PAYMENT-OK-TEXT": "Bestillingen din er bekreftet. Vi har sendt deg detaljene på e-post.",
         "PAYMENT-CANCELLED": "Betaling avbrutt: bestillingen din ble ikke fullført",
-        "CLOSE": "Lukk"
+        "CLOSE": "Lukk",
+        "VAT": "MVA (fritatt)",
+        "VAT-NOTE": "MVA-fritatt transaksjon (art. 20.Uno.23 i spansk lov 37/1992)",
+        "FEE-WARN": "Ved kansellering refunderes beløpet minus {{pct}}% i bankgebyr, som banken ikke betaler tilbake. For denne bestillingen ville det utgjøre {{amount}} €.",
+        "FEE-LINE": "Bankgebyr som ikke refunderes ({{pct}}%)",
+        "REFUNDABLE": "Refunderes ved kansellering"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",
@@ -164,7 +169,9 @@
         "CANCEL-ERROR": "Bestillingen kunne ikke kanselleres. Prøv igjen eller kontakt oss.",
         "NO-CANCEL-RATE": "Denne bestillingen bruker den ikke-refunderbare prisen og kan ikke kanselleres eller refunderes.",
         "NO-CANCEL-WINDOW": "Fristen for gratis kansellering ({{days}} dager før ankomst) er allerede passert.",
-        "HELP": "Trenger du å endre noe? Skriv til oss på"
+        "HELP": "Trenger du å endre noe? Skriv til oss på",
+        "FEE-LINE": "Bankgebyr som ikke refunderes ({{pct}}%)",
+        "REFUNDABLE": "Refunderes ved kansellering"
     },
     "COOKIES": {
         "TITLE": "Informasjonskapsler",

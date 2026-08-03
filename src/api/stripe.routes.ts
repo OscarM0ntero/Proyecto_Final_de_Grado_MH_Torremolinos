@@ -134,17 +134,29 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
 
     // País del cliente: dirección de facturación y, si Stripe no la pidió, país emisor de la tarjeta.
     // Nunca debe impedir la confirmación de la reserva.
+    // De paso se guarda la comisión real de Stripe: no interviene en el reembolso (que usa el
+    // porcentaje pactado) pero permite comprobar si ese porcentaje cubre el coste real.
     let paisCliente: string | null = session.customer_details?.address?.country ?? null;
-    if (!paisCliente && paymentIntentId) {
+    let comisionReal: number | null = null;
+    if (paymentIntentId) {
         try {
-            const pi = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge'] });
-            paisCliente = (pi.latest_charge as any)?.payment_method_details?.card?.country ?? null;
+            const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+                expand: ['latest_charge.balance_transaction']
+            });
+            const charge: any = pi.latest_charge;
+            paisCliente = paisCliente ?? charge?.payment_method_details?.card?.country ?? null;
+            const bt = charge?.balance_transaction;
+            if (bt && typeof bt.fee === 'number') comisionReal = bt.fee / 100;
         } catch (err) {
-            console.warn('[stripe webhook] no se pudo obtener el país del cliente:', err);
+            console.warn('[stripe webhook] no se pudieron leer los datos del cobro:', err);
         }
     }
-    if (paisCliente) {
-        await pool.query(`UPDATE reservas SET cliente_pais = ? WHERE id_reserva = ?`, [paisCliente, idReserva]);
+    if (paisCliente || comisionReal !== null) {
+        await pool.query(
+            `UPDATE reservas SET cliente_pais = COALESCE(?, cliente_pais), comision_stripe = COALESCE(?, comision_stripe)
+             WHERE id_reserva = ?`,
+            [paisCliente, comisionReal, idReserva]
+        );
     }
 
     const nombre = reserva.cliente_nombre;

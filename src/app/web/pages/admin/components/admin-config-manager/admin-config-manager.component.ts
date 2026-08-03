@@ -15,6 +15,7 @@ export class AdminConfigManagerComponent implements OnInit {
     precioBase: number = 150;
     precioMascota: number = 10;
     minNoches: number = 1;
+    comisionCancelacion: number = 2;
     horaCheckin: string = '16:00';
     horaCheckout: string = '11:00';
     guardando = false;
@@ -46,6 +47,10 @@ export class AdminConfigManagerComponent implements OnInit {
             next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
             error: () => { this.minNoches = 1; }
         });
+        this.configuracionService.getValor('comision_cancelacion').subscribe({
+            next: (cfg) => { this.comisionCancelacion = parseFloat(cfg.valor) || 0; },
+            error: () => { this.comisionCancelacion = 0; }
+        });
         this.configuracionService.getValor('hora_checkin').subscribe({
             next: (cfg) => { this.horaCheckin = cfg.valor || '16:00'; },
             error: () => { this.horaCheckin = '16:00'; }
@@ -64,6 +69,7 @@ export class AdminConfigManagerComponent implements OnInit {
             this.configuracionService.setValor('precio_base', this.precioBase.toString()),
             this.configuracionService.setValor('precio_mascota', this.precioMascota.toString()),
             this.configuracionService.setValor('min_noches', this.minNoches.toString()),
+            this.configuracionService.setValor('comision_cancelacion', this.comisionCancelacion.toString()),
             this.configuracionService.setValor('hora_checkin', this.horaCheckin),
             this.configuracionService.setValor('hora_checkout', this.horaCheckout)
         ];

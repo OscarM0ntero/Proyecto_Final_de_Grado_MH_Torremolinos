@@ -43,6 +43,7 @@ export class DisponibilidadComponent implements OnInit {
 	diasCancelacion = 30;
 	precioMascotaNoche = 10;
 	minNoches = 1;
+	comisionPct = 0;
 	horaCheckin = '16:00';
 	horaCheckout = '11:00';
 
@@ -132,6 +133,10 @@ export class DisponibilidadComponent implements OnInit {
 		this.configuracionService.getValor('min_noches').subscribe({
 			next: (cfg) => { this.minNoches = parseInt(cfg.valor) || 1; },
 			error: () => { this.minNoches = 1; }
+		});
+		this.configuracionService.getValor('comision_cancelacion').subscribe({
+			next: (cfg) => { this.comisionPct = parseFloat(cfg.valor) || 0; },
+			error: () => { this.comisionPct = 0; }
 		});
 		this.configuracionService.getValor('hora_checkin').subscribe({
 			next: (cfg) => { this.horaCheckin = cfg.valor || '16:00'; },
@@ -285,6 +290,12 @@ export class DisponibilidadComponent implements OnInit {
 		const fechaStr = this.formatearFechaLocal(fecha);
 		const dia = this.disponibilidad.find(d => d.fecha === fechaStr);
 		return dia?.estado === 'disponible';
+	}
+
+	// Lo que se retendría si el huésped cancelara esta reserva
+	get comisionCancelacion(): number {
+		if (this.tipoTarifa !== 'cancelable' || !this.comisionPct) return 0;
+		return Math.round(this.precioTotal * this.comisionPct) / 100;
 	}
 
 	get nochesSeleccionadas(): number {

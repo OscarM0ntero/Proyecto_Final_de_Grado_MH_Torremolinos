@@ -58,7 +58,7 @@
         "SEND": "Enviar",
         "RATE-TYPE": "Tipo de tarifa",
         "CANCELABLE": "Cancelable",
-        "CANCELABLE-DESC": "Cancela hasta {{days}} días antes de tu llegada",
+        "CANCELABLE-DESC": "Cancela hasta {{days}} días antes; se devuelve todo menos la comisión bancaria",
         "NON-CANCELABLE": "No cancelable",
         "NON-CANCELABLE-DESC": "Precio reducido, sin posibilidad de cancelación",
         "DISCOUNT": "Descuento",
@@ -77,7 +77,12 @@
         "PAYMENT-OK-TITLE": "¡Pago completado!",
         "PAYMENT-OK-TEXT": "Tu reserva está confirmada. Hemos enviado los detalles a tu correo.",
         "PAYMENT-CANCELLED": "Pago cancelado: tu reserva no se ha completado",
-        "CLOSE": "Cerrar"
+        "CLOSE": "Cerrar",
+        "VAT": "IVA (exento)",
+        "VAT-NOTE": "Operación exenta de IVA (art. 20.Uno.23 de la Ley 37/1992)",
+        "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de comisión bancaria, que el banco no reintegra. En esta reserva serían {{amount}} €.",
+        "FEE-LINE": "Comisión bancaria no reembolsable ({{pct}}%)",
+        "REFUNDABLE": "Se devolvería en caso de cancelación"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",
@@ -164,7 +169,9 @@
         "CANCEL-ERROR": "No se pudo cancelar la reserva. Inténtalo de nuevo o escríbenos.",
         "NO-CANCEL-RATE": "Esta reserva usa la tarifa no cancelable, por lo que no admite cancelación ni reembolso.",
         "NO-CANCEL-WINDOW": "El plazo de cancelación gratuita ({{days}} días antes de la llegada) ya ha pasado.",
-        "HELP": "¿Necesitas cambiar algo? Escríbenos a"
+        "HELP": "¿Necesitas cambiar algo? Escríbenos a",
+        "FEE-LINE": "Comisión bancaria no reembolsable ({{pct}}%)",
+        "REFUNDABLE": "Se devolvería en caso de cancelación"
     },
     "COOKIES": {
         "TITLE": "Cookies",

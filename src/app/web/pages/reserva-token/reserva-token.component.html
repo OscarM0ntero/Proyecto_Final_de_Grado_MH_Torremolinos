@@ -72,6 +72,18 @@
                     <strong>{{ reserva.precio_total | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                 </div>
                 <div class="manage-row">
+                    <span>{{ 'BOOKING.VAT' | translate }}</span><strong>0,00 €</strong>
+                </div>
+                <!-- Desglose de lo que se devolvería: la comisión bancaria no se reintegra -->
+                <div class="manage-row descuento-row" *ngIf="reserva.comision_cancelacion > 0">
+                    <span>{{ 'MANAGE.FEE-LINE' | translate: { pct: reserva.comision_cancelacion_pct } }}</span>
+                    <strong>−{{ reserva.comision_cancelacion | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
+                <div class="manage-row" *ngIf="reserva.comision_cancelacion > 0 && reserva.puede_cancelar">
+                    <span>{{ 'MANAGE.REFUNDABLE' | translate }}</span>
+                    <strong>{{ reserva.importe_reembolsable | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
+                </div>
+                <div class="manage-row">
                     <span>{{ 'MANAGE.PAYMENT' | translate }}</span>
                     <span class="pago-badge" [ngClass]="'pago-' + reserva.estado_pago">
                         {{ 'MANAGE.PAYMENT-' + reserva.estado_pago.toUpperCase() | translate }}<ng-container

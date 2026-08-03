@@ -66,7 +66,11 @@ export class ReservaTokenComponent implements OnInit {
 
 	confirmarCancelacion(): void {
 		const ref = this.dialog.open(ConfirmarCancelacionComponent, {
-			data: { importe: this.reserva.importe_pagado || this.reserva.precio_total }
+			data: {
+				importe: this.reserva.importe_reembolsable,
+				comision: this.reserva.comision_cancelacion,
+				pct: this.reserva.comision_cancelacion_pct
+			}
 		});
 
 		ref.afterClosed().subscribe(confirmado => {

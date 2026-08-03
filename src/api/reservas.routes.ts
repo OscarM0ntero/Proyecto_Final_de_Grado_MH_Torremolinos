@@ -116,6 +116,14 @@ function limiteSuperado(ip: string): boolean {
     return registro.n > LIMITE_INTENTOS;
 }
 
+// Comisión bancaria que se retiene al cancelar. Stripe no devuelve su comisión cuando se
+// reembolsa un cobro, así que sin esto el titular la perdería íntegra en cada cancelación.
+export function calcularComision(importe: number, pct: any): number {
+    const porcentaje = Number(pct) || 0;
+    if (porcentaje <= 0) return 0;
+    return Math.round(importe * porcentaje) / 100;
+}
+
 // Solo los campos que el huésped necesita ver: nada de ids internos ni datos de Stripe
 function reservaPublica(r: any) {
     const diasParaLlegada = Math.ceil((new Date(r.fecha_inicio).getTime() - Date.now()) / 86400000);
@@ -123,6 +131,9 @@ function reservaPublica(r: any) {
         && r.estado_reserva === 'Confirmada'
         && r.estado_pago === 'pagado'
         && diasParaLlegada >= r.dias_cancelacion;
+
+    const base = Number(r.importe_pagado ?? r.precio_total);
+    const comision = calcularComision(base, r.comision_cancelacion_pct);
 
     return {
         nombre: r.cliente_nombre,
@@ -145,7 +156,11 @@ function reservaPublica(r: any) {
         estado_reserva: r.estado_reserva,
         estado_pago: r.estado_pago,
         fecha_creacion: r.fecha_creacion,
-        puede_cancelar: cancelable
+        puede_cancelar: cancelable,
+        // Desglose de lo que se devolvería si se cancela
+        comision_cancelacion_pct: Number(r.comision_cancelacion_pct) || 0,
+        comision_cancelacion: comision,
+        importe_reembolsable: Math.round((base - comision) * 100) / 100
     };
 }
 
@@ -194,8 +209,16 @@ router.post('/token/:token/cancelar', async (req, res) => {
         if (!stripe || !reserva.stripe_payment_intent_id) {
             return res.status(503).json({ error: 'No se puede procesar el reembolso automáticamente. Contacta con nosotros.' });
         }
+        // Se devuelve el importe menos la comisión bancaria, que Stripe no reintegra
+        const importePagado = Number(reserva.importe_pagado ?? reserva.precio_total);
+        const comision = calcularComision(importePagado, reserva.comision_cancelacion_pct);
+        const aDevolver = Math.round((importePagado - comision) * 100) / 100;
+
         try {
-            await stripe.refunds.create({ payment_intent: reserva.stripe_payment_intent_id });
+            await stripe.refunds.create({
+                payment_intent: reserva.stripe_payment_intent_id,
+                amount: Math.round(aDevolver * 100)
+            });
         } catch (err) {
             console.error('[POST /api/reservas/token/:token/cancelar] Stripe:', err);
             return res.status(500).json({ error: 'No se pudo procesar el reembolso. Contacta con nosotros.' });
@@ -219,7 +242,7 @@ router.post('/token/:token/cancelar', async (req, res) => {
             cursor.setDate(cursor.getDate() + 1);
         }
 
-        const importe = Number(reserva.importe_pagado || reserva.precio_total).toFixed(2);
+        const importe = aDevolver.toFixed(2);
         const fechaInicioFmt = formatearFecha(reserva.fecha_inicio);
         const fechaFinFmt = formatearFecha(reserva.fecha_fin);
 
@@ -316,9 +339,12 @@ router.post('/', async (req, res) => {
         const [[cfgDias]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'dias_cancelacion'`) as any[];
         const [[cfgMascota]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'precio_mascota'`) as any[];
         const [[cfgDescuento]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'descuento_no_cancelable'`) as any[];
+        const [[cfgComision]] = await pool.query(`SELECT valor FROM configuracion WHERE clave = 'comision_cancelacion'`) as any[];
 
         const diasCancelacion = parseInt(cfgDias?.valor || '30', 10);
         const precioMascotaNoche = parseFloat(cfgMascota?.valor || '10');
+        // Se copia el porcentaje vigente: cambiarlo mañana no debe alterar las reservas de hoy
+        const comisionPct = parseFloat(cfgComision?.valor) || 0;
 
         // 4. Precio total, calculado en el servidor a partir de los precios reales de cada día
         const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -334,11 +360,13 @@ router.post('/', async (req, res) => {
             `INSERT INTO reservas
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
                 cliente_idioma, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total,
-                tipo_tarifa, descuento_aplicado, dias_cancelacion, precio_mascota_noche, estado_pago, token_acceso)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
+                tipo_tarifa, descuento_aplicado, comision_cancelacion_pct, dias_cancelacion,
+                precio_mascota_noche, estado_pago, token_acceso)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
             [null, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
-             precio_total, tipo_tarifa, descuentoPct, diasCancelacion, precioMascotaNoche, tokenAcceso]
+             precio_total, tipo_tarifa, descuentoPct, comisionPct, diasCancelacion,
+             precioMascotaNoche, tokenAcceso]
         ) as any[];
         const idReserva = insertResult.insertId;
 
@@ -577,13 +605,19 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
 
         // 4. Reembolso en Stripe antes de cambiar el estado: si Stripe falla, no se toca la reserva
         let reembolsado = false;
+        let importeDevuelto = 0;
         if (['Rechazada', 'Cancelada'].includes(estado) && reserva.estado_pago === 'pagado' && reserva.stripe_payment_intent_id) {
             const stripe = getStripe();
             if (!stripe) {
                 return res.status(503).json({ error: 'No se puede reembolsar: Stripe no está configurado' });
             }
+            const pagado = Number(reserva.importe_pagado ?? reserva.precio_total);
+            importeDevuelto = Math.round((pagado - calcularComision(pagado, reserva.comision_cancelacion_pct)) * 100) / 100;
             try {
-                await stripe.refunds.create({ payment_intent: reserva.stripe_payment_intent_id });
+                await stripe.refunds.create({
+                    payment_intent: reserva.stripe_payment_intent_id,
+                    amount: Math.round(importeDevuelto * 100)
+                });
                 await pool.query(`UPDATE reservas SET estado_pago = 'reembolsado' WHERE id_reserva = ?`, [id]);
                 reembolsado = true;
             } catch (err) {
@@ -639,7 +673,7 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
 
             // 'Rechazada' ya no es alcanzable (ver TRANSICIONES), así que aquí solo llegan cancelaciones
             const t = textosEmail(reserva.cliente_idioma);
-            const importe = Number(reserva.importe_pagado || reserva.precio_total).toFixed(2);
+            const importe = importeDevuelto.toFixed(2);
 
             await enviarCorreo(email, t.asuntoCancelada, plantillaEmail(`
                 <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(nombre)}</h2>

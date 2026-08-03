@@ -243,10 +243,20 @@
                             <strong>-{{ descuentoEuros | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                         </div>
 
+                        <div class="aside-row aside-iva">
+                            <span>{{ 'BOOKING.VAT' | translate }}</span>
+                            <span>0,00 €</span>
+                        </div>
+
                         <div class="aside-row aside-total">
                             <strong>{{ 'BOOKING.TOTAL' | translate }}</strong>
                             <strong>{{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                         </div>
+
+                        <!-- La comisión bancaria no se reembolsa: hay que decirlo antes de pagar -->
+                        <p class="aviso-comision" *ngIf="comisionCancelacion > 0">
+                            {{ 'BOOKING.FEE-WARN' | translate: { pct: comisionPct, amount: (comisionCancelacion | number:'1.2-2') } }}
+                        </p>
                     </ng-container>
 
                     <ng-template #asideEmpty>
@@ -347,10 +357,18 @@
                         <span>{{ 'BOOKING.DISCOUNT' | translate }} ({{ descuentoNoCancelable }}%)</span>
                         <strong>-{{ descuentoEuros | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                     </div>
+                    <div class="summary-card-row">
+                        <span>{{ 'BOOKING.VAT' | translate }}</span>
+                        <strong>0,00 €</strong>
+                    </div>
                     <div class="summary-card-row total-row">
                         <strong>{{ 'BOOKING.TOTAL' | translate }}</strong>
                         <strong>{{ precioTotal | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
                     </div>
+                    <p class="nota-iva">{{ 'BOOKING.VAT-NOTE' | translate }}</p>
+                    <p class="aviso-comision" *ngIf="comisionCancelacion > 0">
+                        {{ 'BOOKING.FEE-WARN' | translate: { pct: comisionPct, amount: (comisionCancelacion | number:'1.2-2') } }}
+                    </p>
                 </div>
 
             </div>

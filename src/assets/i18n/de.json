@@ -58,7 +58,7 @@
         "SEND": "Senden",
         "RATE-TYPE": "Tarifart",
         "CANCELABLE": "Flexibel",
-        "CANCELABLE-DESC": "Bis {{days}} Tage vor Anreise kostenlos stornierbar",
+        "CANCELABLE-DESC": "Stornierung bis {{days}} Tage vorher; Erstattung abzüglich der Bankgebühr",
         "NON-CANCELABLE": "Nicht stornierbar",
         "NON-CANCELABLE-DESC": "Günstigerer Preis, keine Stornierung möglich",
         "DISCOUNT": "Rabatt",
@@ -77,7 +77,12 @@
         "PAYMENT-OK-TITLE": "Zahlung abgeschlossen!",
         "PAYMENT-OK-TEXT": "Ihre Buchung ist bestätigt. Wir haben Ihnen die Details per E-Mail geschickt.",
         "PAYMENT-CANCELLED": "Zahlung abgebrochen: Ihre Buchung wurde nicht abgeschlossen",
-        "CLOSE": "Schließen"
+        "CLOSE": "Schließen",
+        "VAT": "MwSt. (befreit)",
+        "VAT-NOTE": "Von der MwSt. befreiter Umsatz (Art. 20.Uno.23 des spanischen Gesetzes 37/1992)",
+        "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich {{pct}}% Bankgebühr erstattet, die die Bank nicht zurückzahlt. Bei dieser Buchung wären das {{amount}} €.",
+        "FEE-LINE": "Nicht erstattungsfähige Bankgebühr ({{pct}}%)",
+        "REFUNDABLE": "Würde bei Stornierung erstattet"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
@@ -164,7 +169,9 @@
         "CANCEL-ERROR": "Die Buchung konnte nicht storniert werden. Bitte erneut versuchen oder uns kontaktieren.",
         "NO-CANCEL-RATE": "Diese Buchung nutzt den nicht stornierbaren Tarif und kann nicht storniert oder erstattet werden.",
         "NO-CANCEL-WINDOW": "Die Frist für die kostenlose Stornierung ({{days}} Tage vor Anreise) ist bereits abgelaufen.",
-        "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an"
+        "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an",
+        "FEE-LINE": "Nicht erstattungsfähige Bankgebühr ({{pct}}%)",
+        "REFUNDABLE": "Würde bei Stornierung erstattet"
     },
     "COOKIES": {
         "TITLE": "Cookies",
