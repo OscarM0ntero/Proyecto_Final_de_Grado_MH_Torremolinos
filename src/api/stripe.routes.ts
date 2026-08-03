@@ -4,7 +4,8 @@ import express from 'express';
 import Stripe from 'stripe';
 import { pool } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
-import { plantillaEmail } from './utils/emailTemplate.js';
+import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
+import { textosEmail } from './utils/emailTextos.js';
 
 const router = express.Router();
 
@@ -171,11 +172,12 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
             [session.id, paymentIntentId, importePagado, idReserva]
         );
 
-        await enviarCorreo(email, 'Booking could not be completed — M&H Torremolinos', plantillaEmail(`
-            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${nombre},</h2>
-            <p style="margin:0 0 16px;color:#555;font-size:15px;">Unfortunately, the dates you selected (${fechaInicioFmt} → ${fechaFinFmt}) were booked by another guest while your payment was being processed.</p>
-            <p style="margin:0 0 16px;color:#555;font-size:15px;"><strong>Your payment of ${importePagado.toFixed(2)}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.</p>
-            <p style="margin:0;color:#555;font-size:15px;">We would love to host you on different dates — check our availability at <a href="${BASE_URL}/reservar" style="color:#3F4B3A;">mhtorremolinos.com</a>.</p>
+        const t = textosEmail(reserva.cliente_idioma);
+        await enviarCorreo(email, t.asuntoConflicto, plantillaEmail(`
+            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(nombre)}</h2>
+            <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.conflictoTexto(fechaInicioFmt, fechaFinFmt)}</p>
+            <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.conflictoReembolso(importePagado.toFixed(2))}</p>
+            <p style="margin:0;color:#555;font-size:15px;">${t.conflictoOtrasFechas} <a href="${BASE_URL}/reservar" style="color:#3F4B3A;">mhtorremolinos.com</a>.</p>
         `));
 
         for (const admin of adminEmails) {
@@ -207,40 +209,33 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
     const horaCheckout = cfgOut?.valor || '11:00';
 
     const esNoCancelable = reserva.tipo_tarifa === 'no_cancelable';
-    const politicaCancelacion = esNoCancelable
-        ? `<p style="margin:12px 0 0;font-size:13px;color:#8f0000;">⚠ Non-refundable rate: this booking cannot be cancelled or refunded.</p>`
-        : `<p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">✓ Free cancellation up to ${reserva.dias_cancelacion} days before check-in — full refund.</p>`;
+    const t = textosEmail(reserva.cliente_idioma);
 
-    await enviarCorreo(email, 'Booking confirmed — M&H Torremolinos', plantillaEmail(`
+    const politicaCancelacion = esNoCancelable
+        ? `<p style="margin:12px 0 0;font-size:13px;color:#8f0000;">${t.politicaNoCancelable}</p>`
+        : `<p style="margin:12px 0 0;font-size:13px;color:#3F4B3A;">${t.politicaCancelable(reserva.dias_cancelacion)}</p>`;
+
+    await enviarCorreo(email, t.asuntoConfirmada, plantillaEmail(`
         <div style="text-align:center;">
           <div style="font-size:48px;">✓</div>
-          <h2 style="margin:8px 0 4px;font-family:Georgia,serif;color:#3F4B3A;font-size:22px;">Your booking is confirmed!</h2>
-          <p style="margin:0 0 28px;color:#555;font-size:15px;">Hi ${nombre}, thank you for your payment — we are delighted to welcome you.</p>
+          <h2 style="margin:8px 0 4px;font-family:Georgia,serif;color:#3F4B3A;font-size:22px;">${t.confirmadaTitulo}</h2>
+          <p style="margin:0 0 28px;color:#555;font-size:15px;">${t.hola(nombre)} ${t.confirmadaIntro}</p>
         </div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr style="background:#f5f8f3;">
-            <td style="padding:12px 16px;color:#555;">Check-in</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaInicioFmt} · from ${horaCheckin}</td>
-          </tr>
-          <tr>
-            <td style="padding:12px 16px;color:#555;">Check-out</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaFinFmt} · before ${horaCheckout}</td>
-          </tr>
-          <tr style="background:#f5f8f3;">
-            <td style="padding:12px 16px;color:#555;">Guests</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;">${reserva.n_personas}</td>
-          </tr>
+          ${filaEmail(t.checkIn, `${fechaInicioFmt} · ${t.desdeHora(horaCheckin)}`, true)}
+          ${filaEmail(t.checkOut, `${fechaFinFmt} · ${t.antesHora(horaCheckout)}`)}
+          ${filaEmail(t.huespedes, String(reserva.n_personas), true)}
           <tr style="border-top:2px solid #3F4B3A;">
-            <td style="padding:12px 16px;color:#3F4B3A;font-weight:700;">Paid</td>
+            <td style="padding:12px 16px;color:#3F4B3A;font-weight:700;">${t.pagado}</td>
             <td style="padding:12px 16px;font-weight:700;text-align:right;font-size:17px;">${importePagado.toFixed(2)}€</td>
           </tr>
         </table>
         ${politicaCancelacion}
         <div style="text-align:center;margin:28px 0 8px;">
-          <a href="${BASE_URL}/reserva/${reserva.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">View or manage my booking</a>
-          <p style="margin:10px 0 0;font-size:12px;color:#999;">Keep this email: the link above is your private access to the booking.</p>
+          <a href="${BASE_URL}/reserva/${reserva.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">${t.verReserva}</a>
+          <p style="margin:10px 0 0;font-size:12px;color:#999;">${t.guardaEmail}</p>
         </div>
-        <p style="font-size:14px;color:#555;margin:24px 0 0;">If you have any questions before your arrival, contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>. <em>We look forward to seeing you soon!</em></p>
+        <p style="font-size:14px;color:#555;margin:24px 0 0;">${t.dudas} <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>. <em>${t.hastaPronto}</em></p>
     `));
 
     for (const admin of adminEmails) {

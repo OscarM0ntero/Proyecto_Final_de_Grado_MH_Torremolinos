@@ -9,6 +9,7 @@ import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 import { getStripe, BASE_URL } from './stripe.routes.js';
 import { verificarAdmin } from './middleware/verificarAdmin.js';
 import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
+import { textosEmail } from './utils/emailTextos.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
 
@@ -222,16 +223,17 @@ router.post('/token/:token/cancelar', async (req, res) => {
         const fechaInicioFmt = formatearFecha(reserva.fecha_inicio);
         const fechaFinFmt = formatearFecha(reserva.fecha_fin);
 
-        await enviarCorreo(reserva.cliente_email, 'Booking cancelled — M&H Torremolinos', plantillaEmail(`
-            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${reserva.cliente_nombre},</h2>
-            <p style="margin:0 0 20px;color:#555;font-size:15px;">Your booking has been cancelled as requested.</p>
+        const t = textosEmail(reserva.cliente_idioma);
+        await enviarCorreo(reserva.cliente_email, t.asuntoCancelada, plantillaEmail(`
+            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(reserva.cliente_nombre)}</h2>
+            <p style="margin:0 0 20px;color:#555;font-size:15px;">${t.canceladaTexto}</p>
             <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
-                ${filaEmail('Check-in', fechaInicioFmt, true)}
-                ${filaEmail('Check-out', fechaFinFmt)}
-                ${filaEmail('Refunded', `${importe}€`, true)}
+                ${filaEmail(t.checkIn, fechaInicioFmt, true)}
+                ${filaEmail(t.checkOut, fechaFinFmt)}
+                ${filaEmail(t.reembolsado, `${importe}€`, true)}
             </table>
-            <p style="margin:0 0 16px;color:#555;font-size:15px;"><strong>${importe}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.</p>
-            <p style="margin:0;color:#555;font-size:15px;">We hope to welcome you another time.</p>
+            <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>
+            <p style="margin:0;color:#555;font-size:15px;">${t.esperamosVerte}</p>
         `));
 
         for (const admin of adminEmails) {
@@ -479,17 +481,19 @@ router.post('/:id/reenviar-confirmacion', verificarAdmin, async (req, res) => {
         if (rows.length === 0) return res.status(404).json({ error: 'Reserva no encontrada' });
         const r = rows[0];
 
-        await enviarCorreo(r.cliente_email, 'Your booking — M&H Torremolinos', plantillaEmail(`
-            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${r.cliente_nombre},</h2>
-            <p style="margin:0 0 20px;color:#555;font-size:15px;">Here are the details of your booking with us.</p>
+        const t = textosEmail(r.cliente_idioma);
+        await enviarCorreo(r.cliente_email, t.asuntoDatos, plantillaEmail(`
+            <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(r.cliente_nombre)}</h2>
+            <p style="margin:0 0 20px;color:#555;font-size:15px;">${t.datosIntro}</p>
             <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
-                ${filaEmail('Check-in', formatearFecha(r.fecha_inicio), true)}
-                ${filaEmail('Check-out', formatearFecha(r.fecha_fin))}
-                ${filaEmail('Guests', String(r.n_personas), true)}
-                ${filaEmail('Total', `${Number(r.precio_total).toFixed(2)}€`)}
+                ${filaEmail(t.checkIn, formatearFecha(r.fecha_inicio), true)}
+                ${filaEmail(t.checkOut, formatearFecha(r.fecha_fin))}
+                ${filaEmail(t.huespedes, String(r.n_personas), true)}
+                ${filaEmail(t.total, `${Number(r.precio_total).toFixed(2)}€`)}
             </table>
             <div style="text-align:center;margin:28px 0 8px;">
-              <a href="${BASE_URL}/reserva/${r.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">View or manage my booking</a>
+              <a href="${BASE_URL}/reserva/${r.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">${t.verReserva}</a>
+              <p style="margin:10px 0 0;font-size:12px;color:#999;">${t.guardaEmail}</p>
             </div>
         `));
 
@@ -605,46 +609,23 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
             const fechaInicioFmt = formatearFecha(fechaInicio);
             const fechaFinFmt = formatearFecha(fechaFin);
 
-            await enviarCorreo(email, 'Booking confirmed — M&H Torremolinos', `
-            <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-                <tr><td align="center">
-                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-
-                    <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
-                      <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
-                      <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
-                    </td></tr>
-
-                    <tr><td style="padding:36px 40px;text-align:center;">
-                      <div style="font-size:48px;">✓</div>
-                      <h2 style="margin:8px 0 4px;font-family:Georgia,serif;color:#3F4B3A;font-size:22px;">Your booking is confirmed!</h2>
-                      <p style="margin:0 0 28px;color:#555;font-size:15px;">Hi ${nombre}, we are delighted to welcome you.</p>
-
-                      <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
-                        <tr style="background:#f5f8f3;">
-                          <td style="padding:12px 16px;color:#555;">Check-in</td>
-                          <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaInicioFmt}</td>
-                        </tr>
-                        <tr>
-                          <td style="padding:12px 16px;color:#555;">Check-out</td>
-                          <td style="padding:12px 16px;font-weight:700;text-align:right;">${fechaFinFmt}</td>
-                        </tr>
-                      </table>
-
-                      <p style="font-size:14px;color:#555;margin:24px 0 8px;">If you have any questions before your arrival, feel free to contact us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
-                      <p style="font-size:15px;color:#3F4B3A;margin:0;"><em>We look forward to seeing you soon!</em></p>
-                    </td></tr>
-
-                    <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
-                      <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
-                    </td></tr>
-
-                  </table>
-                </td></tr>
-              </table>
-            </body>
-            `);
+            const tc = textosEmail(reserva.cliente_idioma);
+            await enviarCorreo(email, tc.asuntoConfirmada, plantillaEmail(`
+                <div style="text-align:center;">
+                  <div style="font-size:48px;">✓</div>
+                  <h2 style="margin:8px 0 4px;font-family:Georgia,serif;color:#3F4B3A;font-size:22px;">${tc.confirmadaTitulo}</h2>
+                  <p style="margin:0 0 28px;color:#555;font-size:15px;">${tc.hola(nombre)} ${tc.confirmadaIntro}</p>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    ${filaEmail(tc.checkIn, fechaInicioFmt, true)}
+                    ${filaEmail(tc.checkOut, fechaFinFmt)}
+                </table>
+                <div style="text-align:center;margin:28px 0 8px;">
+                  <a href="${BASE_URL}/reserva/${reserva.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">${tc.verReserva}</a>
+                  <p style="margin:10px 0 0;font-size:12px;color:#999;">${tc.guardaEmail}</p>
+                </div>
+                <p style="font-size:14px;color:#555;margin:24px 0 0;">${tc.dudas} <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>. <em>${tc.hastaPronto}</em></p>
+            `));
         }
 
         if (['Rechazada', 'Cancelada'].includes(estado)) {
@@ -656,61 +637,22 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
                 `, [fecha, id]);
             }
 
-            const asunto = estado === 'Rechazada'
-                ? 'Booking request update — M&H Torremolinos'
-                : 'Booking cancellation — M&H Torremolinos';
+            // 'Rechazada' ya no es alcanzable (ver TRANSICIONES), así que aquí solo llegan cancelaciones
+            const t = textosEmail(reserva.cliente_idioma);
+            const importe = Number(reserva.importe_pagado || reserva.precio_total).toFixed(2);
 
-            const mensajePrincipal = estado === 'Rechazada'
-                ? `We are sorry to inform you that we were unable to confirm your booking request for the selected dates.`
-                : `As requested, your booking has been cancelled.`;
-
-            let mensajeSecundario = estado === 'Rechazada'
-                ? `We apologise for the inconvenience. Please feel free to contact us to check alternative dates.`
-                : `If you have any questions regarding your cancellation, please don't hesitate to get in touch.`;
-
-            if (reembolsado) {
-                mensajeSecundario = `Your payment of ${Number(reserva.importe_pagado || reserva.precio_total).toFixed(2)}€ has been refunded in full to your original payment method. Depending on your bank, it may take a few days to appear. ` + mensajeSecundario;
-            }
-
-            await enviarCorreo(email, asunto, `
-            <body style="margin:0;padding:0;background:#f4f4f0;font-family:Arial,sans-serif;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f0;padding:32px 0;">
-                <tr><td align="center">
-                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;max-width:600px;width:100%;">
-
-                    <tr><td style="background:#3F4B3A;padding:28px 40px;text-align:center;">
-                      <h1 style="margin:0;font-family:Georgia,serif;color:#ffffff;font-size:22px;letter-spacing:1px;">M&amp;H Torremolinos</h1>
-                      <p style="margin:6px 0 0;color:#b8c4b3;font-size:13px;">Calle Loma de los Riscos 117 · Torremolinos, Málaga</p>
-                    </td></tr>
-
-                    <tr><td style="padding:36px 40px;">
-                      <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Hi ${nombre},</h2>
-                      <p style="margin:0 0 20px;color:#555;font-size:15px;">${mensajePrincipal}</p>
-
-                      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
-                        <tr style="background:#f5f8f3;">
-                          <td style="padding:10px 14px;color:#555;">Check-in</td>
-                          <td style="padding:10px 14px;font-weight:700;text-align:right;">${formatearFecha(fechaInicio)}</td>
-                        </tr>
-                        <tr>
-                          <td style="padding:10px 14px;color:#555;">Check-out</td>
-                          <td style="padding:10px 14px;font-weight:700;text-align:right;">${formatearFecha(fechaFin)}</td>
-                        </tr>
-                      </table>
-
-                      <p style="font-size:14px;color:#555;margin:0 0 8px;">${mensajeSecundario}</p>
-                      <p style="font-size:14px;color:#555;margin:0;">You can reach us at <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
-                    </td></tr>
-
-                    <tr><td style="background:#f5f8f3;padding:20px 40px;text-align:center;border-top:1px solid #e0e0d8;">
-                      <p style="margin:0;font-size:13px;color:#888;">M&amp;H Torremolinos · <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;text-decoration:none;">info@mhtorremolinos.com</a></p>
-                    </td></tr>
-
-                  </table>
-                </td></tr>
-              </table>
-            </body>
-            `);
+            await enviarCorreo(email, t.asuntoCancelada, plantillaEmail(`
+                <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(nombre)}</h2>
+                <p style="margin:0 0 20px;color:#555;font-size:15px;">${t.canceladaTexto}</p>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
+                    ${filaEmail(t.checkIn, formatearFecha(fechaInicio), true)}
+                    ${filaEmail(t.checkOut, formatearFecha(fechaFin))}
+                    ${reembolsado ? filaEmail(t.reembolsado, `${importe}€`, true) : ''}
+                </table>
+                ${reembolsado ? `<p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>` : ''}
+                <p style="margin:0 0 8px;color:#555;font-size:15px;">${t.esperamosVerte}</p>
+                <p style="font-size:14px;color:#555;margin:0;">${t.dudas} <a href="mailto:info@mhtorremolinos.com" style="color:#3F4B3A;">info@mhtorremolinos.com</a>.</p>
+            `));
         }
 
         return res.json({ mensaje: 'Estado actualizado correctamente' });
