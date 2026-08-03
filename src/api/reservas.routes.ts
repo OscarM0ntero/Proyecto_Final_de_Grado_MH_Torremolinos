@@ -368,6 +368,10 @@ router.post('/', async (req, res) => {
                     }
                 }
             }],
+            // Stripe genera una factura en PDF, numerada y descargable por el huésped, que además
+            // queda archivada en el panel de Stripe. No sustituye a una factura fiscal española
+            // (sin NIF ni desglose de IVA), pero sirve como justificante del pago.
+            invoice_creation: { enabled: true },
             metadata: { id_reserva: String(idReserva) },
             expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
             success_url: `${BASE_URL}/reservar?pago=ok`,

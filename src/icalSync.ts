@@ -2,6 +2,14 @@ import fetch from 'node-fetch';
 import ical from 'node-ical';
 import { pool } from './db.js';
 import { environment } from './environments/environment.js';
+import { enviarCorreo } from './api/utils/mailer.js';
+import { plantillaEmail } from './api/utils/emailTemplate.js';
+
+const adminEmails = ['info@mhtorremolinos.com', 'mhtorremolinos@gmail.com'];
+
+// Colisiones ya avisadas, para no repetir el email en cada sync (cada 15 min).
+// Se vacía al reiniciar el servidor, así que como mucho se avisa una vez por arranque.
+const colisionesAvisadas = new Set<string>();
 
 const THROTTLE_MS = 2 * 60 * 1000; // 2 minutos entre syncs bajo demanda
 let ultimaSync: number = 0;
@@ -84,13 +92,36 @@ async function sincronizarIcal() {
                     ) as any[];
                     const precioBase = parseFloat(cfgPrecio?.valor) || 150;
 
-                    const placeholders = fechasOcupadas.map(() => '(?, ?, ?, ?, NULL)').join(', ');
-                    const values = fechasOcupadas.flatMap(f => [f, precioBase, source, source]);
-                    await connection.query(`
-                        INSERT INTO disponibilidad (fecha, precio, estado, fuente, id_reserva)
-                        VALUES ${placeholders}
-                        ON DUPLICATE KEY UPDATE estado = VALUES(estado), fuente = VALUES(fuente), actualizado = CURRENT_TIMESTAMP
-                    `, values);
+                    // Un bloqueo externo NUNCA debe pisar un día ya vendido por nosotros: eso ocurre
+                    // cuando alguien reserva en Booking y en la web casi a la vez (entre syncs), y
+                    // antes se sobrescribía en silencio, dejando dos reservas para las mismas fechas.
+                    const marcadores = fechasOcupadas.map(() => '?').join(',');
+                    const [vendidas] = await connection.query(
+                        `SELECT DATE_FORMAT(d.fecha, '%Y-%m-%d') AS fecha, d.id_reserva,
+                                r.cliente_nombre, r.cliente_apellidos, r.cliente_email
+                         FROM disponibilidad d
+                         JOIN reservas r ON r.id_reserva = d.id_reserva
+                         WHERE d.fecha IN (${marcadores}) AND d.estado = 'reservada'
+                           AND r.estado_reserva = 'Confirmada'`,
+                        fechasOcupadas
+                    ) as any[];
+
+                    const enConflicto = new Set(vendidas.map((v: any) => v.fecha));
+                    const importables = fechasOcupadas.filter(f => !enConflicto.has(f));
+
+                    if (importables.length > 0) {
+                        const placeholders = importables.map(() => '(?, ?, ?, ?, NULL)').join(', ');
+                        const values = importables.flatMap(f => [f, precioBase, source, source]);
+                        await connection.query(`
+                            INSERT INTO disponibilidad (fecha, precio, estado, fuente, id_reserva)
+                            VALUES ${placeholders}
+                            ON DUPLICATE KEY UPDATE estado = VALUES(estado), fuente = VALUES(fuente), actualizado = CURRENT_TIMESTAMP
+                        `, values);
+                    }
+
+                    if (vendidas.length > 0) {
+                        await avisarColision(source, vendidas);
+                    }
                 }
             }
 
@@ -108,3 +139,46 @@ async function sincronizarIcal() {
 }
 
 export { sincronizarIcal };
+
+
+// Avisa a los administradores de que un canal externo bloquea días que ya tenemos vendidos.
+// El día se mantiene como nuestro: es el administrador quien decide qué reserva cancelar.
+async function avisarColision(source: string, vendidas: any[]): Promise<void> {
+    const porReserva = new Map<number, { nombre: string; email: string; fechas: string[] }>();
+    for (const v of vendidas) {
+        if (!porReserva.has(v.id_reserva)) {
+            porReserva.set(v.id_reserva, {
+                nombre: `${v.cliente_nombre || ''} ${v.cliente_apellidos || ''}`.trim(),
+                email: v.cliente_email,
+                fechas: []
+            });
+        }
+        porReserva.get(v.id_reserva)!.fechas.push(v.fecha);
+    }
+
+    for (const [idReserva, datos] of porReserva) {
+        const clave = `${source}:${idReserva}:${datos.fechas.sort().join(',')}`;
+        if (colisionesAvisadas.has(clave)) continue;
+        colisionesAvisadas.add(clave);
+
+        console.warn(`[iCal] CONFLICTO: ${source} bloquea días ya vendidos de la reserva #${idReserva}: ${datos.fechas.join(', ')}`);
+
+        const filas = datos.fechas.map(f => `<li>${f}</li>`).join('');
+        for (const admin of adminEmails) {
+            await enviarCorreo(admin, `Conflicto de fechas con ${source} — reserva #${idReserva}`, plantillaEmail(`
+                <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">Posible doble reserva</h2>
+                <p style="margin:0 0 14px;color:#555;font-size:15px;">
+                    <strong>${source}</strong> ha bloqueado fechas que ya tenemos vendidas en la web con la
+                    reserva <strong>#${idReserva}</strong> (${datos.nombre}, ${datos.email}).
+                </p>
+                <ul style="margin:0 0 14px;color:#555;font-size:15px;">${filas}</ul>
+                <p style="margin:0 0 14px;color:#555;font-size:15px;">
+                    Los días se han mantenido asignados a nuestra reserva; el bloqueo externo NO se ha importado.
+                    Hay que decidir qué reserva se conserva: si se cancela la nuestra desde el panel, se reembolsa
+                    automáticamente al huésped.
+                </p>
+                <p style="margin:0;font-size:13px;color:#999;">Este aviso solo se envía una vez por conflicto.</p>
+            `));
+        }
+    }
+}
