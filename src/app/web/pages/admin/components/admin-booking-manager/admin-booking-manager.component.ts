@@ -121,6 +121,24 @@ export class AdminBookingManagerComponent implements OnInit {
 		return Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 	}
 
+	// Gastos retenidos al cancelar. Mismo cálculo que calcularComision() en el servidor:
+	// el porcentaje va congelado en la reserva, así que no depende de la configuración actual.
+	gastosRetenidos(r: any): number {
+		const pct = Number(r?.comision_cancelacion_pct) || 0;
+		const base = Number(r?.importe_pagado ?? r?.precio_total) || 0;
+		if (pct <= 0 || base <= 0) return 0;
+		return Math.round(base * pct) / 100;
+	}
+
+	// Junto al estado del pago se muestra lo devuelto cuando está reembolsada, no lo cobrado:
+	// si no, se leía "Reembolsado · 940,00 €" habiendo devuelto 921,20 €.
+	importeDelPago(r: any): number {
+		const pagado = Number(r?.importe_pagado) || 0;
+		return r?.estado_pago === 'reembolsado'
+			? Math.round((pagado - this.gastosRetenidos(r)) * 100) / 100
+			: pagado;
+	}
+
 	// Último día en que el huésped puede cancelar, incluido. Mismo cálculo que el servidor
 	// en fechaLimiteCancelacion(): fecha de entrada menos los días de margen de la reserva.
 	fechaLimiteCancelacion(r: any): Date | null {

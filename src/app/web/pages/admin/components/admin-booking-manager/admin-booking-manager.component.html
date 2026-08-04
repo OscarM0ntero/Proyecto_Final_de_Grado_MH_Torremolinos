@@ -107,11 +107,23 @@
             <div class="detail-row discount-row" *ngIf="r.descuento_aplicado">
                 <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
             </div>
+            <!-- Reembolsada: junto al estado va lo devuelto, y aparte lo retenido, que es
+                 lo que hay que cuadrar con lo que Stripe se quedó -->
+            <div class="detail-row" *ngIf="r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0">
+                <span>Cobrado</span><span>{{ r.importe_pagado | number:'1.2-2' }} €</span>
+            </div>
+            <div class="detail-row discount-row" *ngIf="r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0">
+                <span>Gastos de cancelación ({{ r.comision_cancelacion_pct }}%)</span>
+                <span>+{{ gastosRetenidos(r) | number:'1.2-2' }} €</span>
+            </div>
             <div class="detail-row">
                 <span>Pago</span>
                 <span class="pago-badge" [ngClass]="'pago-' + (r.estado_pago || 'pendiente')">
-                    {{ r.estado_pago === 'pagado' ? 'Pagado' : r.estado_pago === 'reembolsado' ? 'Reembolsado' : 'Pendiente' }}<ng-container *ngIf="r.importe_pagado"> · {{ r.importe_pagado | number:'1.2-2' }} €</ng-container>
+                    {{ r.estado_pago === 'pagado' ? 'Pagado' : r.estado_pago === 'reembolsado' ? 'Reembolsado' : 'Pendiente' }}<ng-container *ngIf="r.importe_pagado"> · {{ importeDelPago(r) | number:'1.2-2' }} €</ng-container>
                 </span>
+            </div>
+            <div class="detail-row" *ngIf="r.comision_stripe">
+                <span>Comisión real de Stripe</span><span>{{ r.comision_stripe | number:'1.2-2' }} €</span>
             </div>
         </div>
     </div>
