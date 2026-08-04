@@ -129,7 +129,8 @@
 </div>
 
 <!-- Aviso de cookies: visible hasta que el visitante acepta o rechaza -->
-<app-cookie-banner></app-cookie-banner>
+<!-- ngSkipHydration: su contenido depende de localStorage, que el servidor no ve -->
+<app-cookie-banner ngSkipHydration></app-cookie-banner>
 
 <re-captcha #captchaRef [siteKey]="siteKey" [size]="'invisible'" (resolved)="onCaptchaResuelto($event)">
 </re-captcha>
