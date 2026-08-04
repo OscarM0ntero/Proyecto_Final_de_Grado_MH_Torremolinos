@@ -240,6 +240,7 @@ migration_horarios.sql        check-in / check-out times
 migration_nota_admin.sql      private administrator note on each booking
 migration_comision.sql        cancellation fee retained on refundable bookings
 migration_legal.sql           text of the /legal section (6 parts x 4 languages)
+migration_condiciones.sql     timestamp of the guest's acceptance of the booking terms
 ```
 
 > `mhtorremolinos.sql` predates the rewrite of the legal section and still contains the old text,
