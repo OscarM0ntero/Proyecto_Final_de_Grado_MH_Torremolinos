@@ -80,9 +80,10 @@
         "CLOSE": "Schließen",
         "VAT": "MwSt. (befreit)",
         "VAT-NOTE": "Von der MwSt. befreiter Umsatz (Art. 20.Uno.23 des spanischen Gesetzes 37/1992)",
-        "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich einer Stornogebühr von {{pct}}% erstattet. Bei dieser Buchung wären das {{amount}} €.",
+        "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich einer Stornogebühr von {{pct}}% erstattet. Bei dieser Buchung wären das {{amount}} €.",
         "FEE-LINE": "Stornogebühr ({{pct}}%)",
-        "REFUNDABLE": "Würde bei Stornierung erstattet"
+        "REFUNDABLE": "Würde bei Stornierung erstattet",
+        "CANCEL-UNTIL": "Stornierbar bis einschließlich {{date}}"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
@@ -162,16 +163,18 @@
         "PAYMENT-REEMBOLSADO": "Erstattet",
         "CANCEL-BUTTON": "Buchung stornieren",
         "CANCEL-CONFIRM-TITLE": "Buchung stornieren?",
-        "CANCEL-CONFIRM-TEXT": "{{amount}} € werden auf Ihr ursprüngliches Zahlungsmittel erstattet. Dies kann nicht rückgängig gemacht werden.",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € werden auf Ihr ursprüngliches Zahlungsmittel erstattet. Dies kann nicht rückgängig gemacht werden.",
         "CANCEL-NO": "Nein, zurück",
         "CANCEL-YES": "Ja, stornieren",
         "CANCEL-OK": "Buchung storniert. Die Erstattung ist unterwegs.",
         "CANCEL-ERROR": "Die Buchung konnte nicht storniert werden. Bitte erneut versuchen oder uns kontaktieren.",
         "NO-CANCEL-RATE": "Diese Buchung nutzt den nicht stornierbaren Tarif und kann nicht storniert oder erstattet werden.",
-        "NO-CANCEL-WINDOW": "Die Frist für die kostenlose Stornierung ({{days}} Tage vor Anreise) ist bereits abgelaufen.",
+        "NO-CANCEL-WINDOW": "Die Stornierungsfrist endete am {{date}}.",
         "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an",
         "FEE-LINE": "Stornogebühr ({{pct}}%)",
-        "REFUNDABLE": "Würde bei Stornierung erstattet"
+        "REFUNDABLE": "Würde bei Stornierung erstattet",
+        "CANCEL-UNTIL": "Stornierbar bis",
+        "INCLUSIVE": "einschließlich"
     },
     "COOKIES": {
         "TITLE": "Cookies",

@@ -292,6 +292,15 @@ export class DisponibilidadComponent implements OnInit {
 		return dia?.estado === 'disponible';
 	}
 
+	// Último día en que se admitiría la cancelación, incluido. Mismo cálculo que aplica el
+	// servidor en fechaLimiteCancelacion(): entrada menos los días de margen.
+	get fechaLimiteCancelacion(): Date | null {
+		if (this.tipoTarifa !== 'cancelable' || !this.fechaInicio) return null;
+		const limite = new Date(this.fechaInicio.getFullYear(), this.fechaInicio.getMonth(), this.fechaInicio.getDate());
+		limite.setDate(limite.getDate() - (Number(this.diasCancelacion) || 0));
+		return limite;
+	}
+
 	// Lo que se retendría si el huésped cancelara esta reserva
 	get comisionCancelacion(): number {
 		if (this.tipoTarifa !== 'cancelable' || !this.comisionPct) return 0;

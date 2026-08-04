@@ -80,9 +80,10 @@
         "CLOSE": "Close",
         "VAT": "VAT (exempt)",
         "VAT-NOTE": "VAT-exempt transaction (art. 20.Uno.23 of Spanish Act 37/1992)",
-        "FEE-WARN": "If you cancel, you will be refunded the amount minus a {{pct}}% cancellation fee. For this booking that would be {{amount}} €.",
+        "FEE-WARN": "If you cancel, you will be refunded the amount minus a {{pct}}% cancellation fee. For this booking that would be {{amount}} €.",
         "FEE-LINE": "Cancellation fee ({{pct}}%)",
-        "REFUNDABLE": "Would be refunded if cancelled"
+        "REFUNDABLE": "Would be refunded if cancelled",
+        "CANCEL-UNTIL": "Cancellable until {{date}} inclusive"
     },
     "CONTACT": {
         "TITLE": "Contact Form",
@@ -162,16 +163,18 @@
         "PAYMENT-REEMBOLSADO": "Refunded",
         "CANCEL-BUTTON": "Cancel my booking",
         "CANCEL-CONFIRM-TITLE": "Cancel this booking?",
-        "CANCEL-CONFIRM-TEXT": "{{amount}} € will be refunded to your original payment method. This cannot be undone.",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € will be refunded to your original payment method. This cannot be undone.",
         "CANCEL-NO": "No, go back",
         "CANCEL-YES": "Yes, cancel",
         "CANCEL-OK": "Booking cancelled. Your refund is on its way.",
         "CANCEL-ERROR": "The booking could not be cancelled. Please try again or contact us.",
         "NO-CANCEL-RATE": "This booking uses the non-refundable rate, so it cannot be cancelled or refunded.",
-        "NO-CANCEL-WINDOW": "The free cancellation window ({{days}} days before arrival) has already passed.",
+        "NO-CANCEL-WINDOW": "The cancellation window closed on {{date}}.",
         "HELP": "Need to change something? Write to us at",
         "FEE-LINE": "Cancellation fee ({{pct}}%)",
-        "REFUNDABLE": "Would be refunded if cancelled"
+        "REFUNDABLE": "Would be refunded if cancelled",
+        "CANCEL-UNTIL": "Cancellable until",
+        "INCLUSIVE": "inclusive"
     },
     "COOKIES": {
         "TITLE": "Cookies",

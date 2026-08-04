@@ -80,9 +80,10 @@
         "CLOSE": "Lukk",
         "VAT": "MVA (fritatt)",
         "VAT-NOTE": "MVA-fritatt transaksjon (art. 20.Uno.23 i spansk lov 37/1992)",
-        "FEE-WARN": "Ved kansellering refunderes beløpet minus et avbestillingsgebyr på {{pct}}%. For denne bestillingen ville det utgjøre {{amount}} €.",
+        "FEE-WARN": "Ved kansellering refunderes beløpet minus et avbestillingsgebyr på {{pct}}%. For denne bestillingen ville det utgjøre {{amount}} €.",
         "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
-        "REFUNDABLE": "Refunderes ved kansellering"
+        "REFUNDABLE": "Refunderes ved kansellering",
+        "CANCEL-UNTIL": "Kan kanselleres til og med {{date}}"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",
@@ -162,16 +163,18 @@
         "PAYMENT-REEMBOLSADO": "Refundert",
         "CANCEL-BUTTON": "Kanseller bestillingen",
         "CANCEL-CONFIRM-TITLE": "Kansellere bestillingen?",
-        "CANCEL-CONFIRM-TEXT": "{{amount}} € refunderes til betalingsmåten din. Dette kan ikke angres.",
+        "CANCEL-CONFIRM-TEXT": "{{amount}} € refunderes til betalingsmåten din. Dette kan ikke angres.",
         "CANCEL-NO": "Nei, tilbake",
         "CANCEL-YES": "Ja, kanseller",
         "CANCEL-OK": "Bestillingen er kansellert. Refusjonen er på vei.",
         "CANCEL-ERROR": "Bestillingen kunne ikke kanselleres. Prøv igjen eller kontakt oss.",
         "NO-CANCEL-RATE": "Denne bestillingen bruker den ikke-refunderbare prisen og kan ikke kanselleres eller refunderes.",
-        "NO-CANCEL-WINDOW": "Fristen for gratis kansellering ({{days}} dager før ankomst) er allerede passert.",
+        "NO-CANCEL-WINDOW": "Fristen for kansellering utløp {{date}}.",
         "HELP": "Trenger du å endre noe? Skriv til oss på",
         "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
-        "REFUNDABLE": "Refunderes ved kansellering"
+        "REFUNDABLE": "Refunderes ved kansellering",
+        "CANCEL-UNTIL": "Kan kanselleres til",
+        "INCLUSIVE": "til og med"
     },
     "COOKIES": {
         "TITLE": "Informasjonskapsler",

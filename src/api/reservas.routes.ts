@@ -124,13 +124,29 @@ export function calcularComision(importe: number, pct: any): number {
     return Math.round(importe * porcentaje) / 100;
 }
 
+// Último día, incluido, en que se puede cancelar: la fecha de entrada menos los días de margen.
+// Se compara por fecha natural y no por horas fraccionadas porque ahora esta fecha se le muestra
+// al huésped: el límite que ve tiene que ser exactamente el que se aplica, y con horas el corte
+// se desplazaba según la diferencia horaria al interpretar la fecha de entrada.
+export function fechaLimiteCancelacion(fechaInicio: string | Date, diasCancelacion: any): Date {
+    const d = typeof fechaInicio === 'string' ? new Date(fechaInicio) : fechaInicio;
+    const limite = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    limite.setDate(limite.getDate() - (Number(diasCancelacion) || 0));
+    return limite;
+}
+
+function hoySinHora(): Date {
+    const ahora = new Date();
+    return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+}
+
 // Solo los campos que el huésped necesita ver: nada de ids internos ni datos de Stripe
 function reservaPublica(r: any) {
-    const diasParaLlegada = Math.ceil((new Date(r.fecha_inicio).getTime() - Date.now()) / 86400000);
+    const limiteCancelacion = fechaLimiteCancelacion(r.fecha_inicio, r.dias_cancelacion);
     const cancelable = r.tipo_tarifa === 'cancelable'
         && r.estado_reserva === 'Confirmada'
         && r.estado_pago === 'pagado'
-        && diasParaLlegada >= r.dias_cancelacion;
+        && hoySinHora() <= limiteCancelacion;
 
     const base = Number(r.importe_pagado ?? r.precio_total);
     const comision = calcularComision(base, r.comision_cancelacion_pct);
@@ -152,6 +168,8 @@ function reservaPublica(r: any) {
         tipo_tarifa: r.tipo_tarifa,
         descuento_aplicado: r.descuento_aplicado,
         dias_cancelacion: r.dias_cancelacion,
+        // Último día en que se admite la cancelación, incluido. Null en las no cancelables.
+        fecha_limite_cancelacion: r.tipo_tarifa === 'cancelable' ? formatearFechaSQL(limiteCancelacion) : null,
         precio_mascota_noche: r.precio_mascota_noche,
         estado_reserva: r.estado_reserva,
         estado_pago: r.estado_pago,

@@ -324,9 +324,10 @@
                             ('BOOKING.NON-CANCELABLE' | translate) }}
                         </span>
                     </div>
+                    <!-- En el resumen se da la fecha exacta, no "30 días antes": es el momento de decidir -->
                     <div class="summary-card-row tarifa-desc-row">
-                        <span *ngIf="tipoTarifa === 'cancelable'">{{ 'BOOKING.CANCELABLE-DESC' | translate: { days:
-                            diasCancelacion } }}</span>
+                        <span *ngIf="tipoTarifa === 'cancelable'">{{ 'BOOKING.CANCEL-UNTIL' | translate: { date:
+                            (fechaLimiteCancelacion | date:'dd/MM/yyyy') } }}</span>
                         <span *ngIf="tipoTarifa === 'no_cancelable'">{{ 'BOOKING.NON-CANCELABLE-DESC' | translate
                             }}</span>
                     </div>
