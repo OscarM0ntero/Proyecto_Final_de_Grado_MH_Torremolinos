@@ -85,7 +85,9 @@
         "REFUNDABLE": "Se devolvería en caso de cancelación",
         "CANCEL-UNTIL": "Cancelable hasta el {{date}} incluido",
         "RATE-WINDOW-CLOSED": "La tarifa cancelable no está disponible: quedan menos de {{days}} días para la entrada.",
-        "VIEW-BOOKING": "Ver mi reserva"
+        "VIEW-BOOKING": "Ver mi reserva",
+        "ACCEPT-TERMS": "He leído y acepto las",
+        "TERMS-LINK": "condiciones de reserva"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",

@@ -85,7 +85,9 @@
         "REFUNDABLE": "Würde bei Stornierung erstattet",
         "CANCEL-UNTIL": "Stornierbar bis einschließlich {{date}}",
         "RATE-WINDOW-CLOSED": "Der flexible Tarif ist nicht verfügbar: bis zur Anreise sind es weniger als {{days}} Tage.",
-        "VIEW-BOOKING": "Meine Buchung ansehen"
+        "VIEW-BOOKING": "Meine Buchung ansehen",
+        "ACCEPT-TERMS": "Ich habe die Buchungsbedingungen gelesen und akzeptiere sie:",
+        "TERMS-LINK": "Buchungsbedingungen"
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
