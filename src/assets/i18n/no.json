@@ -164,7 +164,7 @@
         "PAYMENT-REEMBOLSADO": "Refundert",
         "CANCEL-BUTTON": "Kanseller bestillingen",
         "CANCEL-CONFIRM-TITLE": "Kansellere bestillingen?",
-        "CANCEL-CONFIRM-TEXT": "Refusjonen går tilbake til betalingsmåten du brukte. Dette kan ikke angres.",
+        "CANCEL-CONFIRM-TEXT": "Refusjonen går tilbake til betalingsmåten du brukte.",
         "CANCEL-NO": "Nei, tilbake",
         "CANCEL-YES": "Ja, kanseller",
         "CANCEL-OK": "Bestillingen er kansellert. Refusjonen er på vei.",
@@ -177,7 +177,8 @@
         "CANCEL-UNTIL": "Kan kanselleres til",
         "INCLUSIVE": "til og med",
         "AMOUNT-PAID": "Betalt beløp",
-        "WILL-REFUND": "Du får refundert"
+        "WILL-REFUND": "Du får refundert",
+        "CANCEL-UNDO-WARNING": "Dette kan ikke angres."
     },
     "COOKIES": {
         "TITLE": "Informasjonskapsler",
