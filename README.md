@@ -18,7 +18,7 @@ M&H Torremolinos is a comprehensive solution for managing short-term apartment r
 - **Instant online booking paid by card through Stripe**, with automatic confirmation and no manual approval step
 - **Guest self-service without accounts**: every booking is reachable through a private link sent by email, where the guest can review it and cancel it if the rate allows
 - Two rate types per booking: refundable and non-refundable (discounted). Cancelling a refundable
-  booking refunds the amount minus a small bank fee, disclosed before payment
+  booking refunds the amount minus a small cancellation fee, disclosed before payment
 - Cookie notice that actually gates the tracking: analytics only load once the visitor accepts
 - Real-time calendar synchronization with Booking and Airbnb, plus iCal feeds published for them to consume
 - Custom CMS to manage text and image content
@@ -162,21 +162,27 @@ Example emails:
    calendar. Unfinished payments are cleaned up automatically when the Stripe session expires, so
    they never need to be cancelled by hand.
 
-### Cancellations and the bank fee
+### Cancellations and the cancellation fee
 
-Stripe does not return its processing fee when a payment is refunded, so refunding in full would
-leave the owner out of pocket on every cancellation. A configurable percentage is therefore retained
-(`comision_cancelacion`, currently 2%).
+Cancelling a refundable booking retains a configurable percentage of the price
+(`comision_cancelacion`, currently 2%). It is presented to the guest as what it legally is — a
+**cancellation fee** — and never as a pass-through of the card-processing cost, which would invite
+being read as a payment surcharge (prohibited for EEA consumer cards by PSD2 art. 62(4), transposed
+in Spain by art. 64.3 of RDL 19/2018). The commercial reason it exists is that Stripe keeps its fee
+when a payment is refunded, but that is the reason for the figure, not what the guest is charged
+for.
 
 - The percentage in force is **copied onto each booking** (`comision_cancelacion_pct`), so changing
   the setting later never alters bookings already made.
 - The exact euro amount is shown **on the final summary, immediately above the pay button**, before
   the contract is concluded — never as small print afterwards.
-- The refundable rate is described as *"everything is refunded except the bank fee"*; it is
+- The refundable rate is described as *"refunded in full minus the cancellation fee"*; it is
   deliberately never advertised as a free cancellation.
+- A genuinely cheaper non-refundable rate remains available, so the guest has a real choice between
+  paying less and keeping the right to cancel.
 - The fee Stripe actually charged is stored too (`comision_stripe`, read from the charge's balance
   transaction). It takes no part in the refund calculation — it is there so the retained percentage
-  can be checked against the real cost.
+  can be checked against the real cost and adjusted if it drifts above it.
 
 Prices are VAT-exempt (art. 20.Uno.23 of Spanish Act 37/1992: a holiday dwelling let without hotel
 services), shown as an explicit `IVA (exento) 0,00 €` line rather than silently omitted.
@@ -203,7 +209,7 @@ The Stripe webhook must be registered at `<BASE_URL>/api/stripe/webhook`, subscr
 ### Settings editable from the back office
 
 Stored in the `configuracion` table and editable at `/admin/configuracion`: base nightly price,
-minimum stay, pet surcharge, non-refundable discount, cancellation window, the retained bank-fee
+minimum stay, pet surcharge, non-refundable discount, cancellation window, the cancellation-fee
 percentage, and the check-in and check-out times. Only the keys the public site needs are readable without authentication; the rest
 require an administrator token.
 
@@ -232,7 +238,7 @@ migration_stripe.sql          payment columns and the private access token
 migration_pais_idioma.sql     guest language and country
 migration_horarios.sql        check-in / check-out times
 migration_nota_admin.sql      private administrator note on each booking
-migration_comision.sql        non-refundable bank fee retained on cancellation
+migration_comision.sql        cancellation fee retained on refundable bookings
 ```
 
 ---

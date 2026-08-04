@@ -58,7 +58,7 @@
         "SEND": "Senden",
         "RATE-TYPE": "Tarifart",
         "CANCELABLE": "Flexibel",
-        "CANCELABLE-DESC": "Stornierung bis {{days}} Tage vorher; Erstattung abzüglich der Bankgebühr",
+        "CANCELABLE-DESC": "Stornierung bis {{days}} Tage vorher; Erstattung abzüglich der Stornogebühr",
         "NON-CANCELABLE": "Nicht stornierbar",
         "NON-CANCELABLE-DESC": "Günstigerer Preis, keine Stornierung möglich",
         "DISCOUNT": "Rabatt",
@@ -80,8 +80,8 @@
         "CLOSE": "Schließen",
         "VAT": "MwSt. (befreit)",
         "VAT-NOTE": "Von der MwSt. befreiter Umsatz (Art. 20.Uno.23 des spanischen Gesetzes 37/1992)",
-        "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich {{pct}}% Bankgebühr erstattet, die die Bank nicht zurückzahlt. Bei dieser Buchung wären das {{amount}} €.",
-        "FEE-LINE": "Nicht erstattungsfähige Bankgebühr ({{pct}}%)",
+        "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich einer Stornogebühr von {{pct}}% erstattet. Bei dieser Buchung wären das {{amount}} €.",
+        "FEE-LINE": "Stornogebühr ({{pct}}%)",
         "REFUNDABLE": "Würde bei Stornierung erstattet"
     },
     "CONTACT": {
@@ -170,7 +170,7 @@
         "NO-CANCEL-RATE": "Diese Buchung nutzt den nicht stornierbaren Tarif und kann nicht storniert oder erstattet werden.",
         "NO-CANCEL-WINDOW": "Die Frist für die kostenlose Stornierung ({{days}} Tage vor Anreise) ist bereits abgelaufen.",
         "HELP": "Möchten Sie etwas ändern? Schreiben Sie uns an",
-        "FEE-LINE": "Nicht erstattungsfähige Bankgebühr ({{pct}}%)",
+        "FEE-LINE": "Stornogebühr ({{pct}}%)",
         "REFUNDABLE": "Würde bei Stornierung erstattet"
     },
     "COOKIES": {

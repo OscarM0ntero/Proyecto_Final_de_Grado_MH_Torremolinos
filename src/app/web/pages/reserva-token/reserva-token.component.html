@@ -74,7 +74,7 @@
                 <div class="manage-row">
                     <span>{{ 'BOOKING.VAT' | translate }}</span><strong>0,00 €</strong>
                 </div>
-                <!-- Desglose de lo que se devolvería: la comisión bancaria no se reintegra -->
+                <!-- Desglose de lo que se devolvería: los gastos de cancelación no se reintegran -->
                 <div class="manage-row descuento-row" *ngIf="reserva.comision_cancelacion > 0">
                     <span>{{ 'MANAGE.FEE-LINE' | translate: { pct: reserva.comision_cancelacion_pct } }}</span>
                     <strong>−{{ reserva.comision_cancelacion | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>

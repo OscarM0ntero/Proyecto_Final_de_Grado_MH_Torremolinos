@@ -116,7 +116,7 @@ function limiteSuperado(ip: string): boolean {
     return registro.n > LIMITE_INTENTOS;
 }
 
-// Comisión bancaria que se retiene al cancelar. Stripe no devuelve su comisión cuando se
+// Gastos de cancelación que se retienen al cancelar. Stripe no devuelve su comisión cuando se
 // reembolsa un cobro, así que sin esto el titular la perdería íntegra en cada cancelación.
 export function calcularComision(importe: number, pct: any): number {
     const porcentaje = Number(pct) || 0;
@@ -209,7 +209,7 @@ router.post('/token/:token/cancelar', async (req, res) => {
         if (!stripe || !reserva.stripe_payment_intent_id) {
             return res.status(503).json({ error: 'No se puede procesar el reembolso automáticamente. Contacta con nosotros.' });
         }
-        // Se devuelve el importe menos la comisión bancaria, que Stripe no reintegra
+        // Se devuelve el importe menos los gastos de cancelación
         const importePagado = Number(reserva.importe_pagado ?? reserva.precio_total);
         const comision = calcularComision(importePagado, reserva.comision_cancelacion_pct);
         const aDevolver = Math.round((importePagado - comision) * 100) / 100;

@@ -1,4 +1,4 @@
--- Migración: comisión bancaria no reembolsable en las cancelaciones.
+-- Migración: gastos de cancelación no reembolsables.
 --
 -- Al cancelar una reserva Stripe NO devuelve su comisión, así que el titular la perdería
 -- íntegra. Se retiene un porcentaje del importe, que se informa antes de pagar.
@@ -10,7 +10,7 @@
 --                                          no interviene en el cálculo del reembolso)
 
 INSERT INTO configuracion (clave, valor, descripcion)
-VALUES ('comision_cancelacion', '2.00', 'Porcentaje del importe que se retiene al cancelar (comisión bancaria no reembolsable)')
+VALUES ('comision_cancelacion', '2.00', 'Porcentaje del importe que se retiene al cancelar (gastos de cancelación)')
 ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 
 ALTER TABLE `reservas`

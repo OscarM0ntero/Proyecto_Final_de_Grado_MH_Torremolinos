@@ -58,7 +58,7 @@
         "SEND": "Send",
         "RATE-TYPE": "Tarifftype",
         "CANCELABLE": "Fleksibel",
-        "CANCELABLE-DESC": "Kanseller inntil {{days}} dager før; refusjon minus bankgebyret",
+        "CANCELABLE-DESC": "Kanseller inntil {{days}} dager før; refusjon minus avbestillingsgebyret",
         "NON-CANCELABLE": "Ikke avbestillbar",
         "NON-CANCELABLE-DESC": "Lavere pris, ingen avbestilling mulig",
         "DISCOUNT": "Rabatt",
@@ -80,8 +80,8 @@
         "CLOSE": "Lukk",
         "VAT": "MVA (fritatt)",
         "VAT-NOTE": "MVA-fritatt transaksjon (art. 20.Uno.23 i spansk lov 37/1992)",
-        "FEE-WARN": "Ved kansellering refunderes beløpet minus {{pct}}% i bankgebyr, som banken ikke betaler tilbake. For denne bestillingen ville det utgjøre {{amount}} €.",
-        "FEE-LINE": "Bankgebyr som ikke refunderes ({{pct}}%)",
+        "FEE-WARN": "Ved kansellering refunderes beløpet minus et avbestillingsgebyr på {{pct}}%. For denne bestillingen ville det utgjøre {{amount}} €.",
+        "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
         "REFUNDABLE": "Refunderes ved kansellering"
     },
     "CONTACT": {
@@ -170,7 +170,7 @@
         "NO-CANCEL-RATE": "Denne bestillingen bruker den ikke-refunderbare prisen og kan ikke kanselleres eller refunderes.",
         "NO-CANCEL-WINDOW": "Fristen for gratis kansellering ({{days}} dager før ankomst) er allerede passert.",
         "HELP": "Trenger du å endre noe? Skriv til oss på",
-        "FEE-LINE": "Bankgebyr som ikke refunderes ({{pct}}%)",
+        "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
         "REFUNDABLE": "Refunderes ved kansellering"
     },
     "COOKIES": {

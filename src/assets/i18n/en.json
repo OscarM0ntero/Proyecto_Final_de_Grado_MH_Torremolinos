@@ -58,7 +58,7 @@
         "SEND": "Send",
         "RATE-TYPE": "Rate type",
         "CANCELABLE": "Flexible",
-        "CANCELABLE-DESC": "Cancel up to {{days}} days before; refunded in full minus the bank fee",
+        "CANCELABLE-DESC": "Cancel up to {{days}} days before; refunded in full minus the cancellation fee",
         "NON-CANCELABLE": "Non-refundable",
         "NON-CANCELABLE-DESC": "Reduced price, no cancellation allowed",
         "DISCOUNT": "Discount",
@@ -80,8 +80,8 @@
         "CLOSE": "Close",
         "VAT": "VAT (exempt)",
         "VAT-NOTE": "VAT-exempt transaction (art. 20.Uno.23 of Spanish Act 37/1992)",
-        "FEE-WARN": "If you cancel, you will be refunded the amount minus {{pct}}% for the bank fee, which the bank does not return. For this booking that would be {{amount}} €.",
-        "FEE-LINE": "Non-refundable bank fee ({{pct}}%)",
+        "FEE-WARN": "If you cancel, you will be refunded the amount minus a {{pct}}% cancellation fee. For this booking that would be {{amount}} €.",
+        "FEE-LINE": "Cancellation fee ({{pct}}%)",
         "REFUNDABLE": "Would be refunded if cancelled"
     },
     "CONTACT": {
@@ -170,7 +170,7 @@
         "NO-CANCEL-RATE": "This booking uses the non-refundable rate, so it cannot be cancelled or refunded.",
         "NO-CANCEL-WINDOW": "The free cancellation window ({{days}} days before arrival) has already passed.",
         "HELP": "Need to change something? Write to us at",
-        "FEE-LINE": "Non-refundable bank fee ({{pct}}%)",
+        "FEE-LINE": "Cancellation fee ({{pct}}%)",
         "REFUNDABLE": "Would be refunded if cancelled"
     },
     "COOKIES": {

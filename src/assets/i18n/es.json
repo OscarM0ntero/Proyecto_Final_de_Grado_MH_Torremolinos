@@ -58,7 +58,7 @@
         "SEND": "Enviar",
         "RATE-TYPE": "Tipo de tarifa",
         "CANCELABLE": "Cancelable",
-        "CANCELABLE-DESC": "Cancela hasta {{days}} días antes; se devuelve todo menos la comisión bancaria",
+        "CANCELABLE-DESC": "Cancela hasta {{days}} días antes; se devuelve todo menos los gastos de cancelación",
         "NON-CANCELABLE": "No cancelable",
         "NON-CANCELABLE-DESC": "Precio reducido, sin posibilidad de cancelación",
         "DISCOUNT": "Descuento",
@@ -80,8 +80,8 @@
         "CLOSE": "Cerrar",
         "VAT": "IVA (exento)",
         "VAT-NOTE": "Operación exenta de IVA (art. 20.Uno.23 de la Ley 37/1992)",
-        "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de comisión bancaria, que el banco no reintegra. En esta reserva serían {{amount}} €.",
-        "FEE-LINE": "Comisión bancaria no reembolsable ({{pct}}%)",
+        "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de gastos de cancelación. En esta reserva serían {{amount}} €.",
+        "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
         "REFUNDABLE": "Se devolvería en caso de cancelación"
     },
     "CONTACT": {
@@ -170,7 +170,7 @@
         "NO-CANCEL-RATE": "Esta reserva usa la tarifa no cancelable, por lo que no admite cancelación ni reembolso.",
         "NO-CANCEL-WINDOW": "El plazo de cancelación gratuita ({{days}} días antes de la llegada) ya ha pasado.",
         "HELP": "¿Necesitas cambiar algo? Escríbenos a",
-        "FEE-LINE": "Comisión bancaria no reembolsable ({{pct}}%)",
+        "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
         "REFUNDABLE": "Se devolvería en caso de cancelación"
     },
     "COOKIES": {
