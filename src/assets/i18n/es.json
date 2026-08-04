@@ -84,7 +84,8 @@
         "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
         "REFUNDABLE": "Se devolvería en caso de cancelación",
         "CANCEL-UNTIL": "Cancelable hasta el {{date}} incluido",
-        "RATE-WINDOW-CLOSED": "La tarifa cancelable no está disponible: quedan menos de {{days}} días para la entrada."
+        "RATE-WINDOW-CLOSED": "La tarifa cancelable no está disponible: quedan menos de {{days}} días para la entrada.",
+        "VIEW-BOOKING": "Ver mi reserva"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",

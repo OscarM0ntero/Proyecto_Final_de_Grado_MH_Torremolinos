@@ -84,7 +84,8 @@
         "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
         "REFUNDABLE": "Refunderes ved kansellering",
         "CANCEL-UNTIL": "Kan kanselleres til og med {{date}}",
-        "RATE-WINDOW-CLOSED": "Fleksibel pris er ikke tilgjengelig: det er mindre enn {{days}} dager til ankomst."
+        "RATE-WINDOW-CLOSED": "Fleksibel pris er ikke tilgjengelig: det er mindre enn {{days}} dager til ankomst.",
+        "VIEW-BOOKING": "Se bestillingen min"
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",
