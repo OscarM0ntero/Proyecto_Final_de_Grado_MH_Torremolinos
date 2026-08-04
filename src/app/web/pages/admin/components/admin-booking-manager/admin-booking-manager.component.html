@@ -93,6 +93,13 @@
             <div class="detail-row">
                 <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
             </div>
+            <!-- Prueba de que se aceptaron las condiciones. Vacío en las reservas anteriores
+                 a que existiera la casilla: no consta, y no se debe suponer. -->
+            <div class="detail-row">
+                <span>Condiciones aceptadas</span>
+                <span *ngIf="r.condiciones_aceptadas">{{ r.condiciones_aceptadas | date:'dd/MM/yyyy HH:mm' }}</span>
+                <span class="sin-constancia" *ngIf="!r.condiciones_aceptadas">sin constancia</span>
+            </div>
             <div class="detail-row" *ngIf="r.actualizado && r.actualizado !== r.fecha_creacion">
                 <span>Actualizada</span><span>{{ r.actualizado | date:'dd/MM/yyyy' }}</span>
             </div>

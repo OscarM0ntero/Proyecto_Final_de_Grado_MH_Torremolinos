@@ -392,8 +392,8 @@ router.post('/', async (req, res) => {
                (id_usuario, cliente_nombre, cliente_apellidos, cliente_email, cliente_prefijo, cliente_telefono,
                 cliente_idioma, fecha_inicio, fecha_fin, n_personas, bebe, mascota, nota_adicional, precio_total,
                 tipo_tarifa, descuento_aplicado, comision_cancelacion_pct, dias_cancelacion,
-                precio_mascota_noche, estado_pago, token_acceso)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
+                precio_mascota_noche, estado_pago, token_acceso, condiciones_aceptadas)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, NOW())`,
             [null, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
              precio_total, tarifaFinal, descuentoPct, comisionPct, diasCancelacion,
