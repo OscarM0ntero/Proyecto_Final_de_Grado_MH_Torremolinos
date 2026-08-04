@@ -83,7 +83,8 @@
         "FEE-WARN": "Bei einer Stornierung wird der Betrag abzüglich einer Stornogebühr von {{pct}}% erstattet. Bei dieser Buchung wären das {{amount}} €.",
         "FEE-LINE": "Stornogebühr ({{pct}}%)",
         "REFUNDABLE": "Würde bei Stornierung erstattet",
-        "CANCEL-UNTIL": "Stornierbar bis einschließlich {{date}}"
+        "CANCEL-UNTIL": "Stornierbar bis einschließlich {{date}}",
+        "RATE-WINDOW-CLOSED": "Der flexible Tarif ist nicht verfügbar: bis zur Anreise sind es weniger als {{days}} Tage."
     },
     "CONTACT": {
         "TITLE": "Kontaktformular",
