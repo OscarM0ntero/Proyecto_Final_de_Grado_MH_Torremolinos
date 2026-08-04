@@ -84,7 +84,8 @@
         "FEE-LINE": "Cancellation fee ({{pct}}%)",
         "REFUNDABLE": "Would be refunded if cancelled",
         "CANCEL-UNTIL": "Cancellable until {{date}} inclusive",
-        "RATE-WINDOW-CLOSED": "The flexible rate is not available: fewer than {{days}} days remain before arrival."
+        "RATE-WINDOW-CLOSED": "The flexible rate is not available: fewer than {{days}} days remain before arrival.",
+        "VIEW-BOOKING": "View my booking"
     },
     "CONTACT": {
         "TITLE": "Contact Form",

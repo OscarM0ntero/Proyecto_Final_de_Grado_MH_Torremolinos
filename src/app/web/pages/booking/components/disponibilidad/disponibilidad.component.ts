@@ -180,7 +180,9 @@ export class DisponibilidadComponent implements OnInit {
 			if (!pago || !isPlatformBrowser(this.platformId)) return;
 
 			if (pago === 'ok') {
-				this.dialog.open(PagoCompletadoComponent);
+				const token = sessionStorage.getItem('reservaToken');
+				sessionStorage.removeItem('reservaToken');
+				this.dialog.open(PagoCompletadoComponent, { data: { token } });
 			} else if (pago === 'cancelado') {
 				this.snackBar.open(
 					this.translate.instant('BOOKING.PAYMENT-CANCELLED'),
@@ -287,6 +289,9 @@ export class DisponibilidadComponent implements OnInit {
 			next: (res) => {
 				// El backend devuelve la URL de Stripe Checkout: se redirige al pago
 				if (res?.url && isPlatformBrowser(this.platformId)) {
+					// sessionStorage sobrevive al viaje a Stripe y vuelve con la misma pestaña,
+					// así que el enlace a la reserva no necesita pasar por la URL
+					if (res.token) sessionStorage.setItem('reservaToken', res.token);
 					window.location.href = res.url;
 					return;
 				}
