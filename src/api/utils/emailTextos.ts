@@ -40,6 +40,8 @@ interface TextosEmail {
     asuntoCancelada: string;
     canceladaTexto: string;
     reembolsado: string;
+    importePagado: string;
+    gastosCancelacion: (pct: string) => string;
     reembolsoTexto: (importe: string) => string;
     esperamosVerte: string;
 
@@ -64,7 +66,7 @@ const es: TextosEmail = {
     confirmadaIntro: 'gracias por tu pago. Estaremos encantados de recibirte.',
     pagado: 'Pagado',
     politicaNoCancelable: '⚠ Tarifa no cancelable: esta reserva no admite cancelación ni reembolso.',
-    politicaCancelable: d => `✓ Cancelación gratuita hasta ${d} días antes de la entrada, con reembolso íntegro.`,
+    politicaCancelable: d => `✓ Cancelable hasta ${d} días antes de la entrada: se devuelve el importe menos los gastos de cancelación.`,
     hastaPronto: '¡Te esperamos!',
     asuntoConflicto: 'No hemos podido completar tu reserva — M&H Torremolinos',
     conflictoTexto: (i, f) => `Lamentablemente, las fechas que elegiste (${i} → ${f}) fueron reservadas por otro huésped mientras se procesaba tu pago.`,
@@ -73,7 +75,9 @@ const es: TextosEmail = {
     asuntoCancelada: 'Reserva cancelada — M&H Torremolinos',
     canceladaTexto: 'Tu reserva ha sido cancelada.',
     reembolsado: 'Reembolsado',
-    reembolsoTexto: imp => `<strong>Se te han devuelto ${imp}€ íntegros</strong> al mismo método de pago. Según tu banco, pueden tardar unos días en aparecer.`,
+    importePagado: 'Importe pagado',
+    gastosCancelacion: pct => `Gastos de cancelación (${pct}%)`,
+    reembolsoTexto: imp => `<strong>Se te han devuelto ${imp}€</strong> al mismo método de pago. Según tu banco, pueden tardar unos días en aparecer.`,
     esperamosVerte: 'Esperamos poder recibirte en otra ocasión.',
     asuntoDatos: 'Tu reserva — M&H Torremolinos',
     datosIntro: 'estos son los datos de tu reserva con nosotros.',
@@ -95,7 +99,7 @@ const en: TextosEmail = {
     confirmadaIntro: 'thank you for your payment — we are delighted to welcome you.',
     pagado: 'Paid',
     politicaNoCancelable: '⚠ Non-refundable rate: this booking cannot be cancelled or refunded.',
-    politicaCancelable: d => `✓ Free cancellation up to ${d} days before check-in — full refund.`,
+    politicaCancelable: d => `✓ Cancellable up to ${d} days before check-in: refunded minus the cancellation fee.`,
     hastaPronto: 'We look forward to seeing you soon!',
     asuntoConflicto: 'Booking could not be completed — M&H Torremolinos',
     conflictoTexto: (i, f) => `Unfortunately, the dates you selected (${i} → ${f}) were booked by another guest while your payment was being processed.`,
@@ -104,7 +108,9 @@ const en: TextosEmail = {
     asuntoCancelada: 'Booking cancelled — M&H Torremolinos',
     canceladaTexto: 'Your booking has been cancelled.',
     reembolsado: 'Refunded',
-    reembolsoTexto: imp => `<strong>${imp}€ has been refunded in full</strong> to your original payment method. Depending on your bank, it may take a few days to appear.`,
+    importePagado: 'Amount paid',
+    gastosCancelacion: pct => `Cancellation fee (${pct}%)`,
+    reembolsoTexto: imp => `<strong>${imp}€ has been refunded</strong> to your original payment method. Depending on your bank, it may take a few days to appear.`,
     esperamosVerte: 'We hope to welcome you another time.',
     asuntoDatos: 'Your booking — M&H Torremolinos',
     datosIntro: 'here are the details of your booking with us.',
@@ -126,7 +132,7 @@ const de: TextosEmail = {
     confirmadaIntro: 'vielen Dank für Ihre Zahlung. Wir freuen uns auf Sie.',
     pagado: 'Bezahlt',
     politicaNoCancelable: '⚠ Nicht stornierbarer Tarif: Diese Buchung kann weder storniert noch erstattet werden.',
-    politicaCancelable: d => `✓ Kostenlose Stornierung bis ${d} Tage vor der Anreise, mit vollständiger Erstattung.`,
+    politicaCancelable: d => `✓ Stornierbar bis ${d} Tage vor der Anreise: Erstattung abzüglich der Stornogebühr.`,
     hastaPronto: 'Wir freuen uns auf Ihren Besuch!',
     asuntoConflicto: 'Ihre Buchung konnte nicht abgeschlossen werden — M&H Torremolinos',
     conflictoTexto: (i, f) => `Leider wurden die von Ihnen gewählten Daten (${i} → ${f}) von einem anderen Gast gebucht, während Ihre Zahlung verarbeitet wurde.`,
@@ -135,7 +141,9 @@ const de: TextosEmail = {
     asuntoCancelada: 'Buchung storniert — M&H Torremolinos',
     canceladaTexto: 'Ihre Buchung wurde storniert.',
     reembolsado: 'Erstattet',
-    reembolsoTexto: imp => `<strong>${imp}€ wurden vollständig erstattet</strong> auf Ihr ursprüngliches Zahlungsmittel. Je nach Bank kann es einige Tage dauern.`,
+    importePagado: 'Gezahlter Betrag',
+    gastosCancelacion: pct => `Stornogebühr (${pct}%)`,
+    reembolsoTexto: imp => `<strong>${imp}€ wurden erstattet</strong> auf Ihr ursprüngliches Zahlungsmittel. Je nach Bank kann es einige Tage dauern.`,
     esperamosVerte: 'Wir hoffen, Sie ein anderes Mal begrüßen zu dürfen.',
     asuntoDatos: 'Ihre Buchung — M&H Torremolinos',
     datosIntro: 'hier sind die Daten Ihrer Buchung bei uns.',
@@ -157,7 +165,7 @@ const no: TextosEmail = {
     confirmadaIntro: 'takk for betalingen. Vi gleder oss til å ta imot deg.',
     pagado: 'Betalt',
     politicaNoCancelable: '⚠ Ikke-refunderbar pris: denne bestillingen kan ikke kanselleres eller refunderes.',
-    politicaCancelable: d => `✓ Gratis kansellering inntil ${d} dager før ankomst, med full refusjon.`,
+    politicaCancelable: d => `✓ Kan kanselleres inntil ${d} dager før ankomst: refusjon minus avbestillingsgebyret.`,
     hastaPronto: 'Vi gleder oss til å se deg!',
     asuntoConflicto: 'Vi kunne ikke fullføre bestillingen din — M&H Torremolinos',
     conflictoTexto: (i, f) => `Dessverre ble datoene du valgte (${i} → ${f}) bestilt av en annen gjest mens betalingen din ble behandlet.`,
@@ -166,7 +174,9 @@ const no: TextosEmail = {
     asuntoCancelada: 'Bestilling kansellert — M&H Torremolinos',
     canceladaTexto: 'Bestillingen din er kansellert.',
     reembolsado: 'Refundert',
-    reembolsoTexto: imp => `<strong>${imp}€ er refundert i sin helhet</strong> til samme betalingsmåte. Avhengig av banken kan det ta noen dager.`,
+    importePagado: 'Betalt beløp',
+    gastosCancelacion: pct => `Avbestillingsgebyr (${pct}%)`,
+    reembolsoTexto: imp => `<strong>${imp}€ er refundert</strong> til samme betalingsmåte. Avhengig av banken kan det ta noen dager.`,
     esperamosVerte: 'Vi håper å kunne ta imot deg en annen gang.',
     asuntoDatos: 'Bestillingen din — M&H Torremolinos',
     datosIntro: 'her er detaljene for bestillingen din hos oss.',

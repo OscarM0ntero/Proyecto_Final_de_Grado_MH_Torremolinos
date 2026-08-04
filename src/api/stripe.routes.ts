@@ -109,7 +109,8 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
             try {
                 await stripe.refunds.create({ payment_intent: piId });
                 await pool.query(
-                    `UPDATE reservas SET estado_pago = 'reembolsado', stripe_payment_intent_id = ?, importe_pagado = ?
+                    `UPDATE reservas SET estado_pago = 'reembolsado', stripe_payment_intent_id = ?, importe_pagado = ?,
+                        comision_cancelacion_pct = 0
                      WHERE id_reserva = ?`,
                     [piId, (session.amount_total ?? 0) / 100, idReserva]
                 );
@@ -179,6 +180,7 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
         }
         await pool.query(
             `UPDATE reservas SET estado_reserva = 'Cancelada', estado_pago = 'reembolsado',
+                comision_cancelacion_pct = 0,
                 stripe_checkout_session_id = ?, stripe_payment_intent_id = ?, importe_pagado = ?
              WHERE id_reserva = ?`,
             [session.id, paymentIntentId, importePagado, idReserva]
