@@ -321,7 +321,6 @@ router.post('/', async (req, res) => {
     const fechaInicioFmt = formatearFecha(fechaInicio);
     const fechaFinFmt = formatearFecha(fechaFin);
     const esNoCancelable = tipo_tarifa === 'no_cancelable';
-    const labelTarifa = esNoCancelable ? 'No cancelable' : 'Cancelable';
 
     try {
         // 1. Estancia mínima
@@ -364,9 +363,15 @@ router.post('/', async (req, res) => {
         // Se copia el porcentaje vigente: cambiarlo mañana no debe alterar las reservas de hoy
         const comisionPct = parseFloat(cfgComision?.valor) || 0;
 
+        // Si se reserva con menos margen que la ventana de cancelación, esa ventana nace ya
+        // cerrada. Cobrar la tarifa flexible ahí sería cobrar de más por un derecho que no llega
+        // a existir, así que la reserva pasa a no cancelable y se le aplica su descuento.
+        const ventanaCancelacionAbierta = fechaLimiteCancelacion(fechaInicio, diasCancelacion) >= hoySinHora();
+        const tarifaFinal = (esNoCancelable || !ventanaCancelacionAbierta) ? 'no_cancelable' : 'cancelable';
+
         // 4. Precio total, calculado en el servidor a partir de los precios reales de cada día
         const round2 = (n: number) => Math.round(n * 100) / 100;
-        const descuentoPct = (esNoCancelable && todosCancelables) ? (parseFloat(cfgDescuento?.valor) || 0) : 0;
+        const descuentoPct = (tarifaFinal === 'no_cancelable' && todosCancelables) ? (parseFloat(cfgDescuento?.valor) || 0) : 0;
         const precioHabitacion = diasRows.reduce((t: number, d: any) => t + Number(d.precio), 0);
         const descuentoEuros = round2(precioHabitacion * descuentoPct / 100);
         const precioMascotaTotal = conMascota ? noches * precioMascotaNoche : 0;
@@ -383,7 +388,7 @@ router.post('/', async (req, res) => {
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?)`,
             [null, nombre, apellidos, email, prefijo, telefono, clienteIdioma,
              fechaInicio, fechaFin, huespedes, conBebe ? 1 : 0, conMascota ? 1 : 0, nota || null,
-             precio_total, tipo_tarifa, descuentoPct, comisionPct, diasCancelacion,
+             precio_total, tarifaFinal, descuentoPct, comisionPct, diasCancelacion,
              precioMascotaNoche, tokenAcceso]
         ) as any[];
         const idReserva = insertResult.insertId;
@@ -412,7 +417,7 @@ router.post('/', async (req, res) => {
                     unit_amount: Math.round(precio_total * 100),
                     product_data: {
                         name: `M&H Torremolinos · ${fechaInicioFmt} → ${fechaFinFmt}`,
-                        description: `${noches} noches · ${huespedes} huéspedes · Tarifa ${labelTarifa}`
+                        description: `${noches} noches · ${huespedes} huéspedes · Tarifa ${tarifaFinal === 'no_cancelable' ? 'No cancelable' : 'Cancelable'}`
                     }
                 }
             }],

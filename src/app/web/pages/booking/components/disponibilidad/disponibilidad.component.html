@@ -69,7 +69,7 @@
                     <h3 class="booking-section-title">{{ 'BOOKING.RATE-TYPE' | translate }}</h3>
 
                     <!-- Ambas opciones cuando todos los días son cancelables -->
-                    <div class="tarifa-cards" *ngIf="todosLosDiasCancelables">
+                    <div class="tarifa-cards" *ngIf="ofreceTarifaCancelable">
                         <div class="tarifa-card" [class.selected]="tipoTarifa === 'no_cancelable'"
                             (click)="tipoTarifa = 'no_cancelable'; onTarifaChange()">
                             <div class="tarifa-card-icon">%</div>
@@ -97,8 +97,9 @@
                         </div>
                     </div>
 
-                    <!-- Solo tarifa no cancelable cuando algún día no lo es -->
-                    <div class="tarifa-cards" *ngIf="!todosLosDiasCancelables">
+                    <!-- Solo tarifa no cancelable cuando algún día no lo es, o cuando el plazo de
+                         cancelación ya habría vencido al reservar con tan poco margen -->
+                    <div class="tarifa-cards" *ngIf="!ofreceTarifaCancelable">
                         <div class="tarifa-card selected">
                             <div class="tarifa-card-icon">%</div>
                             <div class="tarifa-card-body">
