@@ -70,6 +70,17 @@ app.use('/api/resenas', resenasRouter);
 
 
 
+// Los ficheros de idioma NO llevan hash en el nombre, al contrario que los bundles, así que
+// con el año de caché del resto de estáticos un visitante que ya hubiera entrado se quedaba
+// con la versión antigua y no veía ninguna traducción nueva. Peor aún: como defaultLanguage
+// es 'es', las claves que faltaban caían en silencio al español en vez de fallar a la vista.
+// Con no-cache el navegador revalida y el ETag hace que casi siempre sea un 304 vacío.
+app.use('/assets/i18n', express.static(path.join(browserDistFolder, 'assets/i18n'), {
+	setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache'),
+	index: false,
+	redirect: false,
+}));
+
 // Archivos estáticos del navegador
 app.use(express.static(browserDistFolder, {
 	maxAge: '1y',
