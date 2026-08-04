@@ -271,7 +271,9 @@ router.post('/token/:token/cancelar', async (req, res) => {
             <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
                 ${filaEmail(t.checkIn, fechaInicioFmt, true)}
                 ${filaEmail(t.checkOut, fechaFinFmt)}
-                ${filaEmail(t.reembolsado, `${importe}€`, true)}
+                ${comision > 0 ? filaEmail(t.importePagado, `${importePagado.toFixed(2)}€`, true) : ''}
+                ${comision > 0 ? filaEmail(t.gastosCancelacion(String(reserva.comision_cancelacion_pct)), `−${comision.toFixed(2)}€`) : ''}
+                ${filaEmail(t.reembolsado, `${importe}€`, comision <= 0)}
             </table>
             <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>
             <p style="margin:0;color:#555;font-size:15px;">${t.esperamosVerte}</p>
@@ -697,6 +699,8 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
             // 'Rechazada' ya no es alcanzable (ver TRANSICIONES), así que aquí solo llegan cancelaciones
             const t = textosEmail(reserva.cliente_idioma);
             const importe = importeDevuelto.toFixed(2);
+            const pagadoAdmin = Number(reserva.importe_pagado ?? reserva.precio_total) || 0;
+            const comisionAdmin = reembolsado ? calcularComision(pagadoAdmin, reserva.comision_cancelacion_pct) : 0;
 
             await enviarCorreo(email, t.asuntoCancelada, plantillaEmail(`
                 <h2 style="margin:0 0 8px;font-family:Georgia,serif;color:#3F4B3A;font-size:20px;">${t.hola(nombre)}</h2>
@@ -704,7 +708,9 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
                 <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
                     ${filaEmail(t.checkIn, formatearFecha(fechaInicio), true)}
                     ${filaEmail(t.checkOut, formatearFecha(fechaFin))}
-                    ${reembolsado ? filaEmail(t.reembolsado, `${importe}€`, true) : ''}
+                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.importePagado, `${pagadoAdmin.toFixed(2)}€`, true) : ''}
+                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.gastosCancelacion(String(reserva.comision_cancelacion_pct)), `−${comisionAdmin.toFixed(2)}€`) : ''}
+                    ${reembolsado ? filaEmail(t.reembolsado, `${importe}€`, comisionAdmin <= 0) : ''}
                 </table>
                 ${reembolsado ? `<p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>` : ''}
                 <p style="margin:0 0 8px;color:#555;font-size:15px;">${t.esperamosVerte}</p>

@@ -23,6 +23,10 @@ export interface Reserva {
 	// Pago con Stripe
 	estado_pago?: 'pendiente' | 'pagado' | 'reembolsado';
 	importe_pagado?: number;
+	// Gastos de cancelación: el porcentaje queda congelado al reservar, y comision_stripe
+	// guarda lo que Stripe cobró de verdad (solo informativo, no entra en el cálculo)
+	comision_cancelacion_pct?: number;
+	comision_stripe?: number;
 	stripe_checkout_session_id?: string;
 	stripe_payment_intent_id?: string;
 	token_acceso?: string;
