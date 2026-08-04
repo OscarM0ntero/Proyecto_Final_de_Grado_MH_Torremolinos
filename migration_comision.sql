@@ -16,3 +16,9 @@ ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 ALTER TABLE `reservas`
   ADD COLUMN `comision_cancelacion_pct` decimal(5,2) NOT NULL DEFAULT '0.00' AFTER `descuento_aplicado`,
   ADD COLUMN `comision_stripe` decimal(10,2) DEFAULT NULL AFTER `importe_pagado`;
+
+-- La descripción de dias_cancelacion seguía diciendo "sin coste", que dejó de ser cierto
+-- al introducirse los gastos de cancelación. Solo la ve el administrador.
+UPDATE configuracion
+SET descripcion = 'Días antes de la llegada hasta los que se admite la cancelación (se retienen los gastos de cancelación)'
+WHERE clave = 'dias_cancelacion';
