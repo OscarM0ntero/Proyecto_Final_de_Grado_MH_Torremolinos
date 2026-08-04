@@ -310,6 +310,12 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Fallo al verificar reCAPTCHA' });
     }
 
+    // Las condiciones se aceptan en el paso 2. Se comprueba también aquí: si solo lo mirara
+    // el navegador, bastaría con lanzar la petición a mano para saltarse la casilla.
+    if (req.body.aceptaCondiciones !== true) {
+        return res.status(400).json({ error: 'Debes aceptar las condiciones de reserva' });
+    }
+
     const {
         nombre, apellidos, email, telefono, prefijo,
         huespedes, conBebe, conMascota, nota,

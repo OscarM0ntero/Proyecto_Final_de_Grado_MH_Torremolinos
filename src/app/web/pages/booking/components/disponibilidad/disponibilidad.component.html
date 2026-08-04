@@ -385,11 +385,22 @@
 
             </div>
 
+            <!-- Aceptación de las condiciones. Desmarcada de inicio: una casilla ya marcada no
+                 es aceptación válida. El enlace abre en otra pestaña porque salir de aquí
+                 perdería el formulario, que vive en memoria. -->
+            <div class="acepta-condiciones">
+                <mat-checkbox [(ngModel)]="aceptaCondiciones" name="aceptaCondiciones">
+                    {{ 'BOOKING.ACCEPT-TERMS' | translate }}
+                </mat-checkbox>
+                <a href="/legal#booking" target="_blank" rel="noopener">{{ 'BOOKING.TERMS-LINK' | translate }}</a>
+            </div>
+
             <div class="summary-actions">
                 <button mat-stroked-button type="button" (click)="mostrarResumen = false" class="submitButton">
                     {{ 'BOOKING.RETURN' | translate }}
                 </button>
-                <button mat-raised-button type="button" class="submitButton" (click)="verificarCaptcha()">
+                <button mat-raised-button type="button" class="submitButton" [disabled]="!aceptaCondiciones"
+                    (click)="verificarCaptcha()">
                     {{ 'BOOKING.PAY' | translate }}
                 </button>
             </div>

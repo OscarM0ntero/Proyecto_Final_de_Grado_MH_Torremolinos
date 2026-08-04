@@ -44,6 +44,8 @@ export class DisponibilidadComponent implements OnInit {
 	precioMascotaNoche = 10;
 	minNoches = 1;
 	comisionPct = 0;
+	// Aceptación de las condiciones de reserva: sin marcar no se puede pagar
+	aceptaCondiciones = false;
 	horaCheckin = '16:00';
 	horaCheckout = '11:00';
 
@@ -280,7 +282,8 @@ export class DisponibilidadComponent implements OnInit {
 			precio_total: this.precioTotal,
 			tipo_tarifa: this.tipoTarifa,
 			descuento_aplicado: (this.tipoTarifa === 'no_cancelable' && this.todosLosDiasCancelables) ? this.descuentoNoCancelable : 0,
-			recaptcha: this.layout.tokenCaptcha
+			recaptcha: this.layout.tokenCaptcha,
+			aceptaCondiciones: this.aceptaCondiciones
 		};
 
 		this.loader.mostrar();
