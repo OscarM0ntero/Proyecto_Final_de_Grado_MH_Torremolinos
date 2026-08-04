@@ -438,8 +438,10 @@ router.post('/', async (req, res) => {
             [session.id, idReserva]
         );
 
-        // Los emails de confirmación se envían desde el webhook, cuando el pago se completa
-        return res.status(200).json({ url: session.url });
+        // Los emails de confirmación se envían desde el webhook, cuando el pago se completa.
+        // El token viaja en la respuesta, no en success_url: es la credencial de la reserva y en
+        // la URL acabaría en el historial y en Analytics en cuanto el visitante acepte cookies.
+        return res.status(200).json({ url: session.url, token: tokenAcceso });
 
     } catch (err) {
         console.error('[POST /api/reservas]', err);
