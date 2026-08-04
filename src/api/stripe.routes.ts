@@ -4,7 +4,7 @@ import express from 'express';
 import Stripe from 'stripe';
 import { pool } from '../db.js';
 import { enviarCorreo } from './utils/mailer.js';
-import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
+import { plantillaEmail, filaEmail, importeEmail } from './utils/emailTemplate.js';
 import { textosEmail } from './utils/emailTextos.js';
 
 const router = express.Router();
@@ -121,7 +121,7 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
 
         for (const admin of adminEmails) {
             await enviarCorreo(admin, `Pago recibido de una reserva ${reserva.estado_reserva} — #${idReserva}`, plantillaEmail(`
-                <p style="margin:0 0 12px;color:#555;font-size:15px;">Ha entrado un pago de <strong>${((session.amount_total ?? 0) / 100).toFixed(2)}€</strong> para la reserva #${idReserva}, que ya estaba en estado <strong>${reserva.estado_reserva}</strong>.</p>
+                <p style="margin:0 0 12px;color:#555;font-size:15px;">Ha entrado un pago de <strong>${importeEmail((session.amount_total ?? 0) / 100, 'es')}</strong> para la reserva #${idReserva}, que ya estaba en estado <strong>${reserva.estado_reserva}</strong>.</p>
                 <p style="margin:0;color:#555;font-size:15px;">Se ha reembolsado automáticamente. Conviene revisarlo en el panel de Stripe.</p>
             `));
         }
@@ -196,7 +196,7 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
 
         for (const admin of adminEmails) {
             await enviarCorreo(admin, `Conflicto de reserva reembolsado — #${idReserva}`, plantillaEmail(`
-                <p style="margin:0;color:#555;font-size:15px;">La reserva #${idReserva} (${nombre}, ${fechaInicioFmt} → ${fechaFinFmt}) se pagó pero las fechas ya no estaban disponibles. Se ha reembolsado automáticamente ${importePagado.toFixed(2)}€.</p>
+                <p style="margin:0;color:#555;font-size:15px;">La reserva #${idReserva} (${nombre}, ${fechaInicioFmt} → ${fechaFinFmt}) se pagó pero las fechas ya no estaban disponibles. Se ha reembolsado automáticamente ${importeEmail(importePagado, 'es')}.</p>
             `));
         }
         return;
@@ -241,7 +241,7 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
           ${filaEmail(t.huespedes, String(reserva.n_personas), true)}
           <tr style="border-top:2px solid #3F4B3A;">
             <td style="padding:12px 16px;color:#3F4B3A;font-weight:700;">${t.pagado}</td>
-            <td style="padding:12px 16px;font-weight:700;text-align:right;font-size:17px;">${importePagado.toFixed(2)}€</td>
+            <td style="padding:12px 16px;font-weight:700;text-align:right;font-size:17px;">${importeEmail(importePagado, reserva.cliente_idioma)}</td>
           </tr>
         </table>
         ${politicaCancelacion}
@@ -263,7 +263,7 @@ async function procesarPagoCompletado(stripe: Stripe, session: Stripe.Checkout.S
               <tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;">Check-out</td><td style="padding:10px 14px;font-weight:700;">${fechaFinFmt}</td></tr>
               <tr><td style="padding:10px 14px;color:#555;">Huéspedes</td><td style="padding:10px 14px;">${reserva.n_personas}${reserva.bebe ? ' · cuna' : ''}${reserva.mascota ? ' · mascota' : ''}</td></tr>
               <tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;">Tarifa</td><td style="padding:10px 14px;">${esNoCancelable ? 'No cancelable' : 'Cancelable'}</td></tr>
-              <tr><td style="padding:10px 14px;color:#555;">Pagado</td><td style="padding:10px 14px;font-weight:700;font-size:16px;color:#2d6a00;">${importePagado.toFixed(2)}€</td></tr>
+              <tr><td style="padding:10px 14px;color:#555;">Pagado</td><td style="padding:10px 14px;font-weight:700;font-size:16px;color:#2d6a00;">${importeEmail(importePagado, 'es')}</td></tr>
               ${reserva.nota_adicional ? `<tr style="background:#f5f8f3;"><td style="padding:10px 14px;color:#555;vertical-align:top;">Nota</td><td style="padding:10px 14px;">${reserva.nota_adicional}</td></tr>` : ''}
             </table>
             <p style="text-align:center;margin:20px 0 0;"><a href="${BASE_URL}/admin" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;">Abrir panel de administración</a></p>
