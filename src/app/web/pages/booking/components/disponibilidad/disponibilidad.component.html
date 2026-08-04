@@ -117,12 +117,14 @@
                                     }}%</span>
                             </div>
                         </div>
-                        <!-- Si la tarifa flexible no se ofrece por el plazo, se dice: si no, el huésped
-                             solo ve desaparecer una opción que quizá vio antes -->
-                        <p class="nota-tarifa" *ngIf="todosLosDiasCancelables && !ventanaCancelacionAbierta">
-                            {{ 'BOOKING.RATE-WINDOW-CLOSED' | translate: { days: diasCancelacion } }}
-                        </p>
                     </div>
+
+                    <!-- Si la tarifa flexible no se ofrece por el plazo, se dice: si no, el huésped
+                         solo ve desaparecer una opción que quizá vio antes. Fuera de .tarifa-cards,
+                         que es flex y la colocaría al lado de la tarjeta en vez de debajo. -->
+                    <p class="nota-tarifa" *ngIf="todosLosDiasCancelables && !ventanaCancelacionAbierta">
+                        {{ 'BOOKING.RATE-WINDOW-CLOSED' | translate: { days: diasCancelacion } }}
+                    </p>
                 </div>
 
                 <!-- Resumen de precio (solo móvil; en escritorio se muestra en el lateral) -->
