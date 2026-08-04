@@ -83,7 +83,8 @@
         "FEE-WARN": "If you cancel, you will be refunded the amount minus a {{pct}}% cancellation fee. For this booking that would be {{amount}} €.",
         "FEE-LINE": "Cancellation fee ({{pct}}%)",
         "REFUNDABLE": "Would be refunded if cancelled",
-        "CANCEL-UNTIL": "Cancellable until {{date}} inclusive"
+        "CANCEL-UNTIL": "Cancellable until {{date}} inclusive",
+        "RATE-WINDOW-CLOSED": "The flexible rate is not available: fewer than {{days}} days remain before arrival."
     },
     "CONTACT": {
         "TITLE": "Contact Form",

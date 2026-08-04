@@ -80,6 +80,14 @@ export class DisponibilidadComponent implements OnInit {
 		return this.todosLosDiasCancelables && this.ventanaCancelacionAbierta;
 	}
 
+	// El descuento de la tarifa no cancelable solo tiene sentido si el rango podría haberse
+	// reservado como cancelable: si algún día no lo admite, no se renuncia a nada y no se
+	// descuenta. Lo consultan tanto el cálculo del precio como las tarjetas, para que la
+	// tarjeta no pueda enseñar un precio distinto del que se cobra.
+	get hayDescuentoNoCancelable(): boolean {
+		return this.tipoTarifa === 'no_cancelable' && this.todosLosDiasCancelables && this.precioHabitacion > 0;
+	}
+
 	reserva: any = {
 		nombre: '',
 		apellidos: '',
@@ -238,7 +246,7 @@ export class DisponibilidadComponent implements OnInit {
 	}
 
 	aplicarDescuento(): void {
-		if (this.tipoTarifa === 'no_cancelable' && this.todosLosDiasCancelables && this.precioHabitacion > 0) {
+		if (this.hayDescuentoNoCancelable) {
 			this.descuentoEuros = Math.round(this.precioHabitacion * (this.descuentoNoCancelable / 100) * 100) / 100;
 			this.precioTotal = Math.round((this.precioHabitacion - this.descuentoEuros + this.precioMascota) * 100) / 100;
 		} else {

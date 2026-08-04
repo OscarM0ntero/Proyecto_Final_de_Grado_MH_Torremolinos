@@ -83,7 +83,8 @@
         "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de gastos de cancelación. En esta reserva serían {{amount}} €.",
         "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
         "REFUNDABLE": "Se devolvería en caso de cancelación",
-        "CANCEL-UNTIL": "Cancelable hasta el {{date}} incluido"
+        "CANCEL-UNTIL": "Cancelable hasta el {{date}} incluido",
+        "RATE-WINDOW-CLOSED": "La tarifa cancelable no está disponible: quedan menos de {{days}} días para la entrada."
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",
