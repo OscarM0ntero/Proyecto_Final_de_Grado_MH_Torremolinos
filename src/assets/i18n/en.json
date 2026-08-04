@@ -164,7 +164,7 @@
         "PAYMENT-REEMBOLSADO": "Refunded",
         "CANCEL-BUTTON": "Cancel my booking",
         "CANCEL-CONFIRM-TITLE": "Cancel this booking?",
-        "CANCEL-CONFIRM-TEXT": "{{amount}} € will be refunded to your original payment method. This cannot be undone.",
+        "CANCEL-CONFIRM-TEXT": "The refund goes back to the payment method you used. This cannot be undone.",
         "CANCEL-NO": "No, go back",
         "CANCEL-YES": "Yes, cancel",
         "CANCEL-OK": "Booking cancelled. Your refund is on its way.",
@@ -175,7 +175,9 @@
         "FEE-LINE": "Cancellation fee ({{pct}}%)",
         "REFUNDABLE": "Would be refunded if cancelled",
         "CANCEL-UNTIL": "Cancellable until",
-        "INCLUSIVE": "inclusive"
+        "INCLUSIVE": "inclusive",
+        "AMOUNT-PAID": "Amount paid",
+        "WILL-REFUND": "You will be refunded"
     },
     "COOKIES": {
         "TITLE": "Cookies",
