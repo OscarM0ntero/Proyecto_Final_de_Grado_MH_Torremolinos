@@ -164,7 +164,7 @@
         "PAYMENT-REEMBOLSADO": "Erstattet",
         "CANCEL-BUTTON": "Buchung stornieren",
         "CANCEL-CONFIRM-TITLE": "Buchung stornieren?",
-        "CANCEL-CONFIRM-TEXT": "Die Erstattung erfolgt auf das von Ihnen verwendete Zahlungsmittel. Dies kann nicht rückgängig gemacht werden.",
+        "CANCEL-CONFIRM-TEXT": "Die Erstattung erfolgt auf das von Ihnen verwendete Zahlungsmittel.",
         "CANCEL-NO": "Nein, zurück",
         "CANCEL-YES": "Ja, stornieren",
         "CANCEL-OK": "Buchung storniert. Die Erstattung ist unterwegs.",
@@ -177,7 +177,8 @@
         "CANCEL-UNTIL": "Stornierbar bis",
         "INCLUSIVE": "einschließlich",
         "AMOUNT-PAID": "Gezahlter Betrag",
-        "WILL-REFUND": "Sie erhalten zurück"
+        "WILL-REFUND": "Sie erhalten zurück",
+        "CANCEL-UNDO-WARNING": "Dies kann nicht rückgängig gemacht werden."
     },
     "COOKIES": {
         "TITLE": "Cookies",

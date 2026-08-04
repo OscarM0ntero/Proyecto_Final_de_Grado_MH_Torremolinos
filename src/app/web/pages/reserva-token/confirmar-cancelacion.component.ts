@@ -29,7 +29,10 @@ import { CommonModule } from '@angular/common';
           </div>
         </div>
 
-        <p class="cc-nota">{{ 'MANAGE.CANCEL-CONFIRM-TEXT' | translate }}</p>
+        <p class="cc-nota">
+          {{ 'MANAGE.CANCEL-CONFIRM-TEXT' | translate }}
+          <strong class="cc-nota-aviso">{{ 'MANAGE.CANCEL-UNDO-WARNING' | translate }}</strong>
+        </p>
 
         <mat-dialog-actions class="cc-acciones">
           <button mat-stroked-button [mat-dialog-close]="false">{{ 'MANAGE.CANCEL-NO' | translate }}</button>
@@ -95,6 +98,12 @@ import { CommonModule } from '@angular/common';
       line-height: 1.5;
       color: #888;
       text-align: center;
+    }
+
+    /* Algo más oscuro que el resto de la nota: en negrita sobre gris claro apenas destacaba */
+    .cc-nota-aviso {
+      color: #555;
+      font-weight: 700;
     }
 
     /* Separados: son acciones opuestas y una de ellas no se deshace */

@@ -164,7 +164,7 @@
         "PAYMENT-REEMBOLSADO": "Reembolsado",
         "CANCEL-BUTTON": "Cancelar mi reserva",
         "CANCEL-CONFIRM-TITLE": "¿Cancelar la reserva?",
-        "CANCEL-CONFIRM-TEXT": "El abono se hará en el mismo método de pago que usaste. Esta acción no se puede deshacer.",
+        "CANCEL-CONFIRM-TEXT": "El abono se hará en el mismo método de pago que usaste.",
         "CANCEL-NO": "No, volver",
         "CANCEL-YES": "Sí, cancelar",
         "CANCEL-OK": "Reserva cancelada. El reembolso está en camino.",
@@ -177,7 +177,8 @@
         "CANCEL-UNTIL": "Cancelable hasta",
         "INCLUSIVE": "incluido",
         "AMOUNT-PAID": "Importe pagado",
-        "WILL-REFUND": "Se te devolverá"
+        "WILL-REFUND": "Se te devolverá",
+        "CANCEL-UNDO-WARNING": "Esta acción no se puede deshacer."
     },
     "COOKIES": {
         "TITLE": "Cookies",

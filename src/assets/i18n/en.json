@@ -164,7 +164,7 @@
         "PAYMENT-REEMBOLSADO": "Refunded",
         "CANCEL-BUTTON": "Cancel my booking",
         "CANCEL-CONFIRM-TITLE": "Cancel this booking?",
-        "CANCEL-CONFIRM-TEXT": "The refund goes back to the payment method you used. This cannot be undone.",
+        "CANCEL-CONFIRM-TEXT": "The refund goes back to the payment method you used.",
         "CANCEL-NO": "No, go back",
         "CANCEL-YES": "Yes, cancel",
         "CANCEL-OK": "Booking cancelled. Your refund is on its way.",
@@ -177,7 +177,8 @@
         "CANCEL-UNTIL": "Cancellable until",
         "INCLUSIVE": "inclusive",
         "AMOUNT-PAID": "Amount paid",
-        "WILL-REFUND": "You will be refunded"
+        "WILL-REFUND": "You will be refunded",
+        "CANCEL-UNDO-WARNING": "This cannot be undone."
     },
     "COOKIES": {
         "TITLE": "Cookies",
