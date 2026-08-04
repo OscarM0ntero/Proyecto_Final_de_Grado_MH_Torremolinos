@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import { verificarRecaptcha } from './utils/verificarRecaptcha.js';
 import { getStripe, BASE_URL } from './stripe.routes.js';
 import { verificarAdmin } from './middleware/verificarAdmin.js';
-import { plantillaEmail, filaEmail } from './utils/emailTemplate.js';
+import { plantillaEmail, filaEmail, importeEmail, porcentajeEmail } from './utils/emailTemplate.js';
 import { textosEmail } from './utils/emailTextos.js';
 
 const ESTADOS_RESERVA = ['Pendiente', 'Confirmada', 'Rechazada', 'Cancelada', 'Finalizada'];
@@ -271,11 +271,11 @@ router.post('/token/:token/cancelar', async (req, res) => {
             <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
                 ${filaEmail(t.checkIn, fechaInicioFmt, true)}
                 ${filaEmail(t.checkOut, fechaFinFmt)}
-                ${comision > 0 ? filaEmail(t.importePagado, `${importePagado.toFixed(2)}€`, true) : ''}
-                ${comision > 0 ? filaEmail(t.gastosCancelacion(String(reserva.comision_cancelacion_pct)), `−${comision.toFixed(2)}€`) : ''}
-                ${filaEmail(t.reembolsado, `${importe}€`, comision <= 0)}
+                ${comision > 0 ? filaEmail(t.importePagado, importeEmail(importePagado, reserva.cliente_idioma), true) : ''}
+                ${comision > 0 ? filaEmail(t.gastosCancelacion(porcentajeEmail(reserva.comision_cancelacion_pct)), `−${importeEmail(comision, reserva.cliente_idioma)}`) : ''}
+                ${filaEmail(t.reembolsado, importeEmail(importe, reserva.cliente_idioma), comision <= 0)}
             </table>
-            <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>
+            <p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importeEmail(importe, reserva.cliente_idioma))}</p>
             <p style="margin:0;color:#555;font-size:15px;">${t.esperamosVerte}</p>
         `));
 
@@ -542,7 +542,7 @@ router.post('/:id/reenviar-confirmacion', verificarAdmin, async (req, res) => {
                 ${filaEmail(t.checkIn, formatearFecha(r.fecha_inicio), true)}
                 ${filaEmail(t.checkOut, formatearFecha(r.fecha_fin))}
                 ${filaEmail(t.huespedes, String(r.n_personas), true)}
-                ${filaEmail(t.total, `${Number(r.precio_total).toFixed(2)}€`)}
+                ${filaEmail(t.total, importeEmail(r.precio_total, r.cliente_idioma))}
             </table>
             <div style="text-align:center;margin:28px 0 8px;">
               <a href="${BASE_URL}/reserva/${r.token_acceso}" style="display:inline-block;background:#3F4B3A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;">${t.verReserva}</a>
@@ -708,9 +708,9 @@ router.put('/:id/estado', verificarAdmin, async (req, res) => {
                 <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
                     ${filaEmail(t.checkIn, formatearFecha(fechaInicio), true)}
                     ${filaEmail(t.checkOut, formatearFecha(fechaFin))}
-                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.importePagado, `${pagadoAdmin.toFixed(2)}€`, true) : ''}
-                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.gastosCancelacion(String(reserva.comision_cancelacion_pct)), `−${comisionAdmin.toFixed(2)}€`) : ''}
-                    ${reembolsado ? filaEmail(t.reembolsado, `${importe}€`, comisionAdmin <= 0) : ''}
+                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.importePagado, importeEmail(pagadoAdmin, reserva.cliente_idioma), true) : ''}
+                    ${reembolsado && comisionAdmin > 0 ? filaEmail(t.gastosCancelacion(porcentajeEmail(reserva.comision_cancelacion_pct)), `−${importeEmail(comisionAdmin, reserva.cliente_idioma)}`) : ''}
+                    ${reembolsado ? filaEmail(t.reembolsado, importeEmail(importe, reserva.cliente_idioma), comisionAdmin <= 0) : ''}
                 </table>
                 ${reembolsado ? `<p style="margin:0 0 16px;color:#555;font-size:15px;">${t.reembolsoTexto(importe)}</p>` : ''}
                 <p style="margin:0 0 8px;color:#555;font-size:15px;">${t.esperamosVerte}</p>
