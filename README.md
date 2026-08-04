@@ -239,7 +239,12 @@ migration_pais_idioma.sql     guest language and country
 migration_horarios.sql        check-in / check-out times
 migration_nota_admin.sql      private administrator note on each booking
 migration_comision.sql        cancellation fee retained on refundable bookings
+migration_legal.sql           text of the /legal section (6 parts x 4 languages)
 ```
+
+> `mhtorremolinos.sql` predates the rewrite of the legal section and still contains the old text,
+> which described a 30% deposit that no longer exists. Apply `migration_legal.sql` after it — that
+> file is the current version.
 
 ---
 
