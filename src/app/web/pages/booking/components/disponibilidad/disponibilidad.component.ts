@@ -66,6 +66,20 @@ export class DisponibilidadComponent implements OnInit {
 		return diasRango.every(d => d.cancelable !== 0);
 	}
 
+	// Reservar con menos margen que la ventana de cancelación deja esa ventana cerrada desde el
+	// primer momento. En ese caso la tarifa flexible no se ofrece: sería cobrar más por un derecho
+	// que no llega a existir. El servidor aplica esta misma regla al crear la reserva.
+	get ventanaCancelacionAbierta(): boolean {
+		const limite = this.fechaLimiteCancelacionDe(this.fechaInicio);
+		if (!limite) return true;
+		const ahora = new Date();
+		return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()) <= limite;
+	}
+
+	get ofreceTarifaCancelable(): boolean {
+		return this.todosLosDiasCancelables && this.ventanaCancelacionAbierta;
+	}
+
 	reserva: any = {
 		nombre: '',
 		apellidos: '',
@@ -211,7 +225,7 @@ export class DisponibilidadComponent implements OnInit {
 		this.calcPrecioMascotas();
 		this.precioBase = this.precioHabitacion + this.precioMascota;
 
-		if (!this.todosLosDiasCancelables) {
+		if (!this.ofreceTarifaCancelable) {
 			this.tipoTarifa = 'no_cancelable';
 		}
 
@@ -290,6 +304,20 @@ export class DisponibilidadComponent implements OnInit {
 		const fechaStr = this.formatearFechaLocal(fecha);
 		const dia = this.disponibilidad.find(d => d.fecha === fechaStr);
 		return dia?.estado === 'disponible';
+	}
+
+	// Último día en que se admitiría la cancelación, incluido. Mismo cálculo que aplica el
+	// servidor en fechaLimiteCancelacion(): entrada menos los días de margen.
+	get fechaLimiteCancelacion(): Date | null {
+		if (this.tipoTarifa !== 'cancelable') return null;
+		return this.fechaLimiteCancelacionDe(this.fechaInicio);
+	}
+
+	private fechaLimiteCancelacionDe(fechaInicio: Date | null): Date | null {
+		if (!fechaInicio) return null;
+		const limite = new Date(fechaInicio.getFullYear(), fechaInicio.getMonth(), fechaInicio.getDate());
+		limite.setDate(limite.getDate() - (Number(this.diasCancelacion) || 0));
+		return limite;
 	}
 
 	// Lo que se retendría si el huésped cancelara esta reserva

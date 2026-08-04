@@ -80,9 +80,10 @@
         "CLOSE": "Cerrar",
         "VAT": "IVA (exento)",
         "VAT-NOTE": "Operación exenta de IVA (art. 20.Uno.23 de la Ley 37/1992)",
-        "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de gastos de cancelación. En esta reserva serían {{amount}} €.",
+        "FEE-WARN": "Si cancelas, se te devolverá el importe menos un {{pct}}% en concepto de gastos de cancelación. En esta reserva serían {{amount}} €.",
         "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
-        "REFUNDABLE": "Se devolvería en caso de cancelación"
+        "REFUNDABLE": "Se devolvería en caso de cancelación",
+        "CANCEL-UNTIL": "Cancelable hasta el {{date}} incluido"
     },
     "CONTACT": {
         "TITLE": "Formulario de contacto",
@@ -162,16 +163,18 @@
         "PAYMENT-REEMBOLSADO": "Reembolsado",
         "CANCEL-BUTTON": "Cancelar mi reserva",
         "CANCEL-CONFIRM-TITLE": "¿Cancelar la reserva?",
-        "CANCEL-CONFIRM-TEXT": "Se te devolverán {{amount}} € en el mismo método de pago. Esta acción no se puede deshacer.",
+        "CANCEL-CONFIRM-TEXT": "Se te devolverán {{amount}} € en el mismo método de pago. Esta acción no se puede deshacer.",
         "CANCEL-NO": "No, volver",
         "CANCEL-YES": "Sí, cancelar",
         "CANCEL-OK": "Reserva cancelada. El reembolso está en camino.",
         "CANCEL-ERROR": "No se pudo cancelar la reserva. Inténtalo de nuevo o escríbenos.",
         "NO-CANCEL-RATE": "Esta reserva usa la tarifa no cancelable, por lo que no admite cancelación ni reembolso.",
-        "NO-CANCEL-WINDOW": "El plazo de cancelación gratuita ({{days}} días antes de la llegada) ya ha pasado.",
+        "NO-CANCEL-WINDOW": "El plazo de cancelación terminó el {{date}}.",
         "HELP": "¿Necesitas cambiar algo? Escríbenos a",
         "FEE-LINE": "Gastos de cancelación ({{pct}}%)",
-        "REFUNDABLE": "Se devolvería en caso de cancelación"
+        "REFUNDABLE": "Se devolvería en caso de cancelación",
+        "CANCEL-UNTIL": "Cancelable hasta",
+        "INCLUSIVE": "incluido"
     },
     "COOKIES": {
         "TITLE": "Cookies",

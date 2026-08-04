@@ -49,6 +49,11 @@
                         {{ (reserva.tipo_tarifa === 'cancelable' ? 'BOOKING.CANCELABLE' : 'BOOKING.NON-CANCELABLE') | translate }}
                     </span>
                 </div>
+                <!-- Fecha exacta del límite, para no obligar a contar días desde la llegada -->
+                <div class="manage-row" *ngIf="reserva.fecha_limite_cancelacion">
+                    <span>{{ 'MANAGE.CANCEL-UNTIL' | translate }}</span>
+                    <strong>{{ reserva.fecha_limite_cancelacion | date:'dd/MM/yyyy' }} ({{ 'MANAGE.INCLUSIVE' | translate }})</strong>
+                </div>
                 <div class="manage-row manage-note" *ngIf="reserva.nota_adicional">
                     <span>{{ 'BOOKING.NOTE' | translate }}</span><em>{{ reserva.nota_adicional }}</em>
                 </div>
@@ -97,7 +102,7 @@
         <!-- Cancelación por el propio huésped -->
         <div class="manage-actions">
             <ng-container *ngIf="reserva.puede_cancelar">
-                <p class="manage-policy">{{ 'BOOKING.CANCELABLE-DESC' | translate: { days: reserva.dias_cancelacion } }}</p>
+                <p class="manage-policy">{{ 'BOOKING.CANCEL-UNTIL' | translate: { date: (reserva.fecha_limite_cancelacion | date:'dd/MM/yyyy') } }}</p>
                 <button mat-stroked-button class="btn-peligro" [disabled]="cancelando"
                     (click)="confirmarCancelacion()">
                     {{ 'MANAGE.CANCEL-BUTTON' | translate }}
@@ -105,7 +110,7 @@
             </ng-container>
 
             <p class="manage-policy" *ngIf="!reserva.puede_cancelar && reserva.estado_reserva === 'Confirmada'">
-                {{ (reserva.tipo_tarifa === 'no_cancelable' ? 'MANAGE.NO-CANCEL-RATE' : 'MANAGE.NO-CANCEL-WINDOW') | translate: { days: reserva.dias_cancelacion } }}
+                {{ (reserva.tipo_tarifa === 'no_cancelable' ? 'MANAGE.NO-CANCEL-RATE' : 'MANAGE.NO-CANCEL-WINDOW') | translate: { date: (reserva.fecha_limite_cancelacion | date:'dd/MM/yyyy') } }}
             </p>
 
             <p class="manage-help">

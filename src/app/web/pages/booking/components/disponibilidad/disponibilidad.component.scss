@@ -149,6 +149,8 @@
 
 .tarifa-card {
     flex: 1;
+    /* Sin esto, el texto de la tarjeta no deja que el flex item baje de su ancho de contenido */
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -425,7 +427,10 @@
         align-items: center;
     }
 
+    /* Frase larga y sola en la fila: en flex heredaba el flex-shrink: 0 de span:first-child
+       y se salía por la derecha en vez de partir. Como bloque fluye y parte sin más. */
     .tarifa-desc-row {
+        display: block;
         font-size: 12px;
         color: #888;
         padding-top: 2px;

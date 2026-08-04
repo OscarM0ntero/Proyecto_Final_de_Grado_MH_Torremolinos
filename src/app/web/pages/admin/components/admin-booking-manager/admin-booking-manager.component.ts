@@ -121,6 +121,23 @@ export class AdminBookingManagerComponent implements OnInit {
 		return Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 	}
 
+	// Último día en que el huésped puede cancelar, incluido. Mismo cálculo que el servidor
+	// en fechaLimiteCancelacion(): fecha de entrada menos los días de margen de la reserva.
+	fechaLimiteCancelacion(r: any): Date | null {
+		if (!r?.fecha_inicio) return null;
+		const d = new Date(r.fecha_inicio);
+		const limite = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+		limite.setDate(limite.getDate() - (Number(r.dias_cancelacion) || 0));
+		return limite;
+	}
+
+	plazoCancelacionPasado(r: any): boolean {
+		const limite = this.fechaLimiteCancelacion(r);
+		if (!limite) return false;
+		const ahora = new Date();
+		return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()) > limite;
+	}
+
 	getBadgeClass(estado: string): string {
 		const map: Record<string, string> = {
 			'Pendiente': 'badge-pendiente',

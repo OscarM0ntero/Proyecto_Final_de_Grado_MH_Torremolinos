@@ -82,8 +82,13 @@
                 <span>Mascota</span>
                 <span>{{ r.mascota ? 'Sí (+' + r.precio_mascota_noche + '€/noche)' : 'No' }}</span>
             </div>
+            <!-- La fecha concreta, no "N días antes": es lo que hay que mirar para atender una queja -->
             <div class="detail-row" *ngIf="r.tipo_tarifa === 'cancelable'">
-                <span>Cancelable hasta</span><span>{{ r.dias_cancelacion }} días antes</span>
+                <span>Cancelable hasta</span>
+                <span>
+                    {{ fechaLimiteCancelacion(r) | date:'dd/MM/yyyy' }} (incluido)
+                    <span class="plazo-pasado" *ngIf="plazoCancelacionPasado(r)">· plazo pasado</span>
+                </span>
             </div>
             <div class="detail-row">
                 <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
