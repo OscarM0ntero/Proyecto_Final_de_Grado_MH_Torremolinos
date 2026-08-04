@@ -552,3 +552,19 @@
     line-height: 1.45;
     color: #6b4200;
 }
+
+/* Aceptación de las condiciones, justo encima del botón de pago */
+.acepta-condiciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 16px;
+    font-size: 14px;
+
+    a {
+        color: var(--color-primary);
+        text-decoration: underline;
+    }
+}
