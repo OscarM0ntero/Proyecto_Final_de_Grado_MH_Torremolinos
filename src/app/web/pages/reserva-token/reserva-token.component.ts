@@ -53,6 +53,16 @@ export class ReservaTokenComponent implements OnInit {
 		});
 	}
 
+	// Importe que se muestra junto al estado del pago. Si la reserva está reembolsada, lo que
+	// interesa es lo que se devolvió, no lo que se cobró: poniendo el importe pagado se leía
+	// "Reembolsado · 940,00 €" cuando en realidad se devolvieron 921,20 €.
+	get importeDelPago(): number {
+		if (!this.reserva) return 0;
+		return this.reserva.estado_pago === 'reembolsado'
+			? this.reserva.importe_reembolsable
+			: this.reserva.importe_pagado;
+	}
+
 	get noches(): number {
 		if (!this.reserva) return 0;
 		const ini = new Date(this.reserva.fecha_inicio).getTime();

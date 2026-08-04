@@ -90,9 +90,10 @@
                 </div>
                 <div class="manage-row">
                     <span>{{ 'MANAGE.PAYMENT' | translate }}</span>
+                    <!-- Reembolsada: el importe que acompaña al estado es el devuelto, no el cobrado -->
                     <span class="pago-badge" [ngClass]="'pago-' + reserva.estado_pago">
                         {{ 'MANAGE.PAYMENT-' + reserva.estado_pago.toUpperCase() | translate }}<ng-container
-                            *ngIf="reserva.importe_pagado"> · {{ reserva.importe_pagado | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</ng-container>
+                            *ngIf="reserva.importe_pagado"> · {{ importeDelPago | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</ng-container>
                     </span>
                 </div>
             </div>
