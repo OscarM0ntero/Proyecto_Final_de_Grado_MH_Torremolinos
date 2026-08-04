@@ -182,7 +182,7 @@ export class DisponibilidadComponent implements OnInit {
 			if (pago === 'ok') {
 				const token = sessionStorage.getItem('reservaToken');
 				sessionStorage.removeItem('reservaToken');
-				this.dialog.open(PagoCompletadoComponent, { data: { token } });
+				this.dialog.open(PagoCompletadoComponent, { data: { token }, width: '400px' });
 			} else if (pago === 'cancelado') {
 				this.snackBar.open(
 					this.translate.instant('BOOKING.PAYMENT-CANCELLED'),
