@@ -105,8 +105,10 @@ import { CommonModule } from '@angular/common';
       padding: 20px 0 0;
     }
 
+    /* Material da márgenes distintos al raised y al stroked, y apilados no cuadraban */
     .cc-acciones button {
       min-width: 132px;
+      margin: 0;
     }
 
     @media (max-width: 480px) {
