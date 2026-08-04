@@ -25,13 +25,16 @@ import { TranslateModule } from '@ngx-translate/core';
       </div>
   `,
 	styles: [`
-    /* Ancho fijo: con el ancho natural los dos botones sumaban más que el contenedor y
-       caían a dos líneas, y en alemán el texto del enlace es aún más largo */
+    /* El ancho lo fija dialog.open({ width }): desde aquí no se puede, porque el host del
+       componente no tiene ancho propio. Con el ancho natural los dos botones sumaban más
+       que el contenedor y caían a dos líneas, y en alemán el texto es aún más largo. */
+    :host {
+      display: block;
+    }
+
     .pc-dialogo {
       padding: 30px 26px 14px;
       text-align: center;
-      width: 380px;
-      max-width: calc(100vw - 48px);
       box-sizing: border-box;
     }
 
