@@ -83,7 +83,8 @@
         "FEE-WARN": "Ved kansellering refunderes beløpet minus et avbestillingsgebyr på {{pct}}%. For denne bestillingen ville det utgjøre {{amount}} €.",
         "FEE-LINE": "Avbestillingsgebyr ({{pct}}%)",
         "REFUNDABLE": "Refunderes ved kansellering",
-        "CANCEL-UNTIL": "Kan kanselleres til og med {{date}}"
+        "CANCEL-UNTIL": "Kan kanselleres til og med {{date}}",
+        "RATE-WINDOW-CLOSED": "Fleksibel pris er ikke tilgjengelig: det er mindre enn {{days}} dager til ankomst."
     },
     "CONTACT": {
         "TITLE": "Kontaktskjema",
