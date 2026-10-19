@@ -25,7 +25,28 @@ import resenasRouter from './api/resenas.routes.js';
 import stripeRouter, { reconciliarReservasPendientes } from './api/stripe.routes.js';
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+
+// Desde Angular 20, @angular/ssr valida la cabecera Host contra una lista blanca para
+// cerrar un agujero de SSRF. Esa lista empieza VACÍA: sin configurarla, *ninguna* petición
+// pasa la comprobación y el motor cae a renderizado en cliente dejando un log de
+// "Header host ... is not allowed" — el SSR se apaga en silencio y, según avisa el propio
+// mensaje, en un major futuro pasará a devolver un 400.
+//
+// Se añaden también los nombres locales para que `npm start` y las pruebas en local sigan
+// renderizando en servidor. NG_ALLOWED_HOSTS permite ampliar la lista desde el .env sin
+// tocar el código (por ejemplo para un dominio de pruebas).
+const HOSTS_PERMITIDOS = [
+	'www.mhtorremolinos.com',
+	'mhtorremolinos.com',
+	'localhost',
+	'127.0.0.1',
+	...(process.env['NG_ALLOWED_HOSTS'] ?? '').split(',').map(h => h.trim()).filter(Boolean),
+];
+
+// Apache hace de proxy inverso delante de este proceso. El valor por defecto de
+// trustProxyHeaders ya acepta x-forwarded-host y x-forwarded-proto, y ese host reenviado
+// se valida contra la misma lista de arriba, así que no hace falta tocarlo.
+const angularApp = new AngularNodeAppEngine({ allowedHosts: HOSTS_PERMITIDOS });
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const rootFolder = path.resolve(serverDistFolder, '..');
