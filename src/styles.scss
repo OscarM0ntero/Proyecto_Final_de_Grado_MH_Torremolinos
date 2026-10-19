@@ -55,11 +55,6 @@
     --phone-margin: 0;
 }
 
-// Esconde el body hasta que se pillen las traducciones
-.hide-until-translate-loaded {
-    visibility: hidden;
-}
-
 html,
 body {
     width: 100%;
@@ -120,9 +115,10 @@ h1 {
     > div {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 24px;
         background-color: var(--color-tertiary);
-        border-radius: 0;
+        border-radius: 16px;
         padding: 28px 40px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         max-width: 480px;
@@ -139,7 +135,12 @@ h1 {
         text-decoration: none !important;
     }
 
-    h1 {
+    /* El h1 es el contenido antiguo, con el 9,8 incrustado dentro de la frase: el
+       numero a 72px partia la linea y se leia a trompicones. El h2 es el nuevo, que
+       deja el numero fuera como hermano para que el badge quede a dos columnas. Se
+       estilan los dos para que produccion no se rompa antes de pasar la migracion. */
+    h1,
+    h2 {
         font-size: 20px !important;
         margin: 0 !important;
         text-align: left !important;
@@ -157,7 +158,7 @@ h1 {
     }
 
     p {
-        text-align: justify;
+        text-align: left;
     }
 
     div {
@@ -209,7 +210,7 @@ h1 {
 
 .legal-container {
     margin: 0 var(--desktop-margin);
-    text-align: justify;
+    text-align: left;
 
     h3[id] {
         scroll-margin-top: calc(var(--navbar-height) + 20px);
@@ -554,6 +555,13 @@ h1 {
 // Ajustes reactive para movil
 @media (max-width: 768px) {
 
+    /* La cabecera se comia 124px de alto antes de que empezara el hero, casi todo
+       logo (el logo se encoge en layout.component.scss). El hero mide
+       calc(100vh - var(--navbar-height)), asi que gana ese alto automaticamente. */
+    :root {
+        --navbar-height: 84px;
+    }
+
     html,
     body {
         font-size: 20px !important;
@@ -592,7 +600,8 @@ h1 {
     }
 
     .points {
-        margin: 0 var(--phone-margin);
+        /* Con las esquinas redondeadas pegadas al borde de la pantalla quedaba raro. */
+        margin: 0 var(--tiny-margin);
 
         > div {
             padding: 20px 24px;
@@ -604,14 +613,15 @@ h1 {
             letter-spacing: -1px !important;
         }
 
-        h1 {
+        h1,
+        h2 {
             font-size: 16px !important;
         }
     }
 
     .legal-container {
         margin: 0 var(--tiny-margin);
-        text-align: justify;
+        text-align: left;
 
         h1,
         h3 {
@@ -631,7 +641,7 @@ h1 {
         }
 
         p {
-            text-align: justify;
+            text-align: left;
         }
 
         div {

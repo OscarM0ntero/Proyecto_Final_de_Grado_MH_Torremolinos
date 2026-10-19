@@ -266,7 +266,14 @@ a:hover {
 	cursor: pointer;
 }
 
-@media (max-width: 768px) {}
+@media (max-width: 768px) {
+
+	/* En movil la cabecera se comia 124px de alto antes de que empezara el hero, casi
+	   todo logo. Se encoge el logo y con el la barra (ver --navbar-height en styles). */
+	.logo {
+		max-height: 62px;
+	}
+}
 
 @media (min-width: 769px) and (max-width: 1024px) {}
 
