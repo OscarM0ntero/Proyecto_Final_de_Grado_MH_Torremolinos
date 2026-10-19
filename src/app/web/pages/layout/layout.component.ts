@@ -63,7 +63,11 @@ export class LayoutComponent implements OnInit {
 				}
 			});
 		} else {
-			this.cargando = true;
+			// En el servidor no hay navegacion ni loader que esperar. Dejandolo en true, la
+			// plantilla pintaba el spinner y NUNCA el <router-outlet>, asi que el HTML del SSR
+			// salia sin una sola linea del contenido de la pagina: Google solo veia navbar,
+			// spinner y footer en todas las rutas. En false, el servidor renderiza la pagina.
+			this.cargando = false;
 		}
 	}
 
