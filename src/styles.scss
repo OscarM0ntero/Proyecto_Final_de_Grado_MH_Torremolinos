@@ -457,7 +457,7 @@ h1 {
 .mat-mdc-form-field {
     // El borde outline se dibuja en 3 segmentos; esta variable ajusta su radio para que
     // coincida con el del fondo (si difieren queda una linea fina en la esquina)
-    --mdc-outlined-text-field-container-shape: 8px;
+    --mat-form-field-outlined-container-shape: 8px;
 }
 
 .mdc-text-field--outlined {
