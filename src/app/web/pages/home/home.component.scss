@@ -24,20 +24,34 @@ p {
     left: 0;
     width: 100%;
     height: calc(100vh - var(--navbar-height));
-    background-color: rgba(0, 0, 0, 0);
-    animation: fadeBg 3s forwards;
-    animation-delay: 3s;
     z-index: 2;
+}
+
+/* El velo oscuro vive en un pseudo-elemento y se anima por opacidad, no por
+   background-color: la opacidad la compone la GPU, asi que el degradado sale suave
+   aunque debajo haya un video repintandose fotograma a fotograma.
+   Antes se animaba background-color con 3s de espera y la curva ease por defecto:
+   durante 3s no pasaba nada y despues el 80% del oscurecido entraba en 1,5s, que es
+   lo que se percibia como un cambio brusco. Ahora la curva es lineal y reparte el
+   oscurecido de forma constante a lo largo de 6s. */
+.vid-opacity::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #000;
+    opacity: 0;
+    animation: fadeBg 6s linear 0.5s forwards;
+    pointer-events: none;
 }
 
 // Animacion fade del video del home
 @keyframes fadeBg {
     from {
-        background-color: rgba(0, 0, 0, 0);
+        opacity: 0;
     }
 
     to {
-        background-color: rgba(0, 0, 0, 0.4);
+        opacity: 0.4;
     }
 }
 
