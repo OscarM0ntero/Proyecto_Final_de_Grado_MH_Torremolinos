@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, PLATFORM_ID } from '@angular/core';
+import { LOCALE_ID, NgModule, PLATFORM_ID, TransferState } from '@angular/core';
 import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +20,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 			loader: {
 				provide: TranslateLoader,
 				useFactory: createTranslateLoader,
-				deps: [HttpClient, PLATFORM_ID]
+				deps: [HttpClient, PLATFORM_ID, TransferState]
 			}
 		}),
 	],

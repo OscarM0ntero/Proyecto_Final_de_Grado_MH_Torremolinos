@@ -1,4 +1,4 @@
-import { NgModule, PLATFORM_ID } from '@angular/core';
+import { NgModule, PLATFORM_ID, TransferState } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -72,7 +72,7 @@ registerLocaleData(localeEs);
             loader: {
                 provide: TranslateLoader,
                 useFactory: createTranslateLoader,
-                deps: [HttpClient, PLATFORM_ID]
+                deps: [HttpClient, PLATFORM_ID, TransferState]
             }
         }),
         // CalendarModule eliminado del bundle principal → está en AdminModule (lazy)
