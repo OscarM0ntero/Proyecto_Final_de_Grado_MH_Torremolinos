@@ -6,7 +6,10 @@
 <div class="vid-opacity">
     <div class="hero-cta">
         <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
-        <span class="precio-desde" *ngIf="precioMinimo">{{ 'HOME.FROM_PRICE' | translate:{ precio: precioMinimo } }}</span>
+        <!-- El precio llega crudo de la BD y se pintaba como "90.00" (punto decimal ingles y
+             dos decimales que casi nunca hacen falta). El pipe number lo formatea con el
+             LOCALE_ID 'es' de la app: 90 -> "90", 90.5 -> "90,5". -->
+        <span class="precio-desde" *ngIf="precioMinimo">{{ 'HOME.FROM_PRICE' | translate:{ precio: (precioMinimo | number:'1.0-2') } }}</span>
     </div>
 </div>
 
