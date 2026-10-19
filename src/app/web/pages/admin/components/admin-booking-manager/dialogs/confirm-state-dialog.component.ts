@@ -2,7 +2,7 @@
 // El mensaje explica la consecuencia real (reembolso, días liberados...), porque desde
 // aquí se mueve dinero de verdad y antes solo se decía el nombre del estado.
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from '../../../../../../material/material.module';
 
@@ -20,12 +20,14 @@ export interface ConfirmStateData {
     <div style="padding: 28px 28px 8px 28px; max-width: 460px;">
       <h2 style="margin-top: 0;">{{ data.titulo }}</h2>
       <p style="margin: 0 0 12px; color: #555; line-height: 1.5;">{{ data.mensaje }}</p>
-
-      <div *ngIf="data.aviso" class="confirm-aviso">
-        <mat-icon>warning</mat-icon>
-        <span>{{ data.aviso }}</span>
-      </div>
-
+    
+      @if (data.aviso) {
+        <div class="confirm-aviso">
+          <mat-icon>warning</mat-icon>
+          <span>{{ data.aviso }}</span>
+        </div>
+      }
+    
       <mat-dialog-actions align="end" style="margin-top: 16px;">
         <button mat-stroked-button [mat-dialog-close]="false">Cancelar</button>
         <button mat-raised-button [class.btn-peligro]="data.peligro" [mat-dialog-close]="true">
@@ -33,7 +35,7 @@ export interface ConfirmStateData {
         </button>
       </mat-dialog-actions>
     </div>
-  `,
+    `,
   styles: [`
     .confirm-aviso {
       display: flex;
@@ -49,7 +51,7 @@ export interface ConfirmStateData {
     }
     .confirm-aviso mat-icon { color: var(--color-warn); flex-shrink: 0; }
   `],
-  imports: [MaterialModule, CommonModule]
+  imports: [MaterialModule]
 })
 export class ConfirmStateDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmStateData) { }

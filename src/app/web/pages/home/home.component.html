@@ -1,104 +1,121 @@
 <!-- Componente de la pagina de inicio, el primero que carga en el layout al entrar a la web -->
 <video muted onloadedmetadata="this.muted = true" playsinline autoplay loop preload="auto" class="vid">
-    <source src="assets/VIDEO_01_silent.mp4" type="video/mp4" />
+  <source src="assets/VIDEO_01_silent.mp4" type="video/mp4" />
 </video>
 
 <div class="vid-opacity">
-    <div class="hero-cta">
-        <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
-        <!-- El precio llega crudo de la BD y se pintaba como "90.00" (punto decimal ingles y
-             dos decimales que casi nunca hacen falta). El pipe number lo formatea con el
-             LOCALE_ID 'es' de la app: 90 -> "90", 90.5 -> "90,5". -->
-        <span class="precio-desde" *ngIf="precioMinimo">{{ 'HOME.FROM_PRICE' | translate:{ precio: (precioMinimo | number:'1.0-2') } }}</span>
-    </div>
+  <div class="hero-cta">
+    <button class="book-button" [routerLink]="['reservar']">{{ 'HOME.BOOK' | translate }}</button>
+    <!-- El precio llega crudo de la BD y se pintaba como "90.00" (punto decimal ingles y
+    dos decimales que casi nunca hacen falta). El pipe number lo formatea con el
+    LOCALE_ID 'es' de la app: 90 -> "90", 90.5 -> "90,5". -->
+    @if (precioMinimo) {
+      <span class="precio-desde">{{ 'HOME.FROM_PRICE' | translate:{ precio: (precioMinimo | number:'1.0-2') } }}</span>
+    }
+  </div>
 </div>
 
 <div class="spacer"></div>
 
 <section class="welcome-section">
-    <h1>{{ 'HOME.WELCOME' | translate }} <a>M&H</a> Torremolinos</h1>
-    <div class="spacer-small"></div>
-    <p>{{ itemLema }}</p>
+  <h1>{{ 'HOME.WELCOME' | translate }} <a>M&H</a> Torremolinos</h1>
+  <div class="spacer-small"></div>
+  <p>{{ itemLema }}</p>
 </section>
 
 <div class="spacer"></div>
 
-<section class="capacity-section" *ngIf="images.length >= 3">
+@if (images.length >= 3) {
+  <section class="capacity-section">
     <div class="info side">
-        <img [src]="images[0].url" alt="Cama doble">
-        {{ itemCamaDoble }}
+      <img [src]="images[0].url" alt="Cama doble">
+      {{ itemCamaDoble }}
     </div>
     <div class="info center">
-        <img [src]="images[1].url" alt="Cama individual">
-        {{ itemCamasInd }}
+      <img [src]="images[1].url" alt="Cama individual">
+      {{ itemCamasInd }}
     </div>
     <div class="info side">
-        <img [src]="images[2].url" alt="Cuna">
-        {{ itemCuna }}
+      <img [src]="images[2].url" alt="Cuna">
+      {{ itemCuna }}
     </div>
-</section>
+  </section>
+}
 
 <div class="spacer-big tablet-hide"></div>
 <div class="spacer-big"></div>
 
-<section class="intro-section" *ngIf="images.length >= 5">
+@if (images.length >= 5) {
+  <section class="intro-section">
     <div class="intro-imgs">
-        <img [src]="images[3].url" alt="Foto Intro 1" class="main">
-        <img [src]="images[4].url_thumbnail" alt="Foto Intro 2" class="secondary">
+      <img [src]="images[3].url" alt="Foto Intro 1" class="main">
+      <img [src]="images[4].url_thumbnail" alt="Foto Intro 2" class="secondary">
     </div>
-    <div class="intro-content" *ngIf="itemApartado1">
+    @if (itemApartado1) {
+      <div class="intro-content">
         <div class="spacer-big tablet-hide"></div>
         <h2>{{ itemApartado1.titulo }}</h2>
         <div class="spacer"></div>
         <div [innerHTML]="itemApartado1.texto"></div>
-
-    </div>
-</section>
+      </div>
+    }
+  </section>
+}
 
 <div class="spacer-big"></div>
 <div class="spacer-big tablet-hide"></div>
 
 <div class="points">
-    <div [innerHTML]="this.itemPuntuacion"></div>
+  <div [innerHTML]="this.itemPuntuacion"></div>
 </div>
 
 <div class="spacer-big"></div>
 
-<section class="resenas-section" *ngIf="resenas.length > 0">
+@if (resenas.length > 0) {
+  <section class="resenas-section">
     <p-carousel [value]="resenas" [numVisible]="3" [numScroll]="1" [circular]="true" [autoplayInterval]="5000" [responsiveOptions]="resenaResponsiveOptions">
-        <ng-template pTemplate="item" let-r>
-            <a class="resena-card" [href]="bookingReviewsUrl" target="_blank" rel="noopener" tabindex="-1">
-                <div class="resena-header">
-                    <div class="resena-meta">
-                        <span class="resena-nombre">{{ r.nombre }}</span>
-                        <span class="resena-pais">
-                            <img [src]="'https://flagcdn.com/w20/' + r.iso + '.png'" [alt]="r.pais" class="resena-flag">
-                            {{ r.pais }}
-                        </span>
-                    </div>
-                    <div class="resena-score">{{ r.puntuacion }}</div>
-                </div>
-                <p class="resena-titulo" *ngIf="r.titulo"><strong>{{ r.titulo }}</strong></p>
-                <p class="resena-positivo" *ngIf="r.texto_positivo">"{{ r.texto_positivo }}"</p>
-                <p class="resena-negativo" *ngIf="r.texto_negativo">"{{ r.texto_negativo }}"</p>
-            </a>
-        </ng-template>
+      <ng-template pTemplate="item" let-r>
+        <a class="resena-card" [href]="bookingReviewsUrl" target="_blank" rel="noopener" tabindex="-1">
+          <div class="resena-header">
+            <div class="resena-meta">
+              <span class="resena-nombre">{{ r.nombre }}</span>
+              <span class="resena-pais">
+                <img [src]="'https://flagcdn.com/w20/' + r.iso + '.png'" [alt]="r.pais" class="resena-flag">
+                {{ r.pais }}
+              </span>
+            </div>
+            <div class="resena-score">{{ r.puntuacion }}</div>
+          </div>
+          @if (r.titulo) {
+            <p class="resena-titulo"><strong>{{ r.titulo }}</strong></p>
+          }
+          @if (r.texto_positivo) {
+            <p class="resena-positivo">"{{ r.texto_positivo }}"</p>
+          }
+          @if (r.texto_negativo) {
+            <p class="resena-negativo">"{{ r.texto_negativo }}"</p>
+          }
+        </a>
+      </ng-template>
     </p-carousel>
-</section>
+  </section>
+}
 
 <div class="spacer-big"></div>
 <div class="spacer-big tablet-hide"></div>
 
-<app-grid-overlay [contenido]="itemApartado2" [imagen]="images[5].url" *ngIf="images.length >= 6"></app-grid-overlay>
+@if (images.length >= 6) {
+  <app-grid-overlay [contenido]="itemApartado2" [imagen]="images[5].url"></app-grid-overlay>
+}
 
 <div class="spacer-big tablet-show"></div>
 
 <div class="spacer-big"></div>
 
 <div class="more-container">
-    <button [routerLink]="['apartamento']" class="more">
-        <h3>{{ 'HOME.MORE' | translate }}</h3>
-    </button>
+  <button [routerLink]="['apartamento']" class="more">
+    <h3>{{ 'HOME.MORE' | translate }}</h3>
+  </button>
 </div>
 
 <div class="spacer-big tablet-hide"></div>

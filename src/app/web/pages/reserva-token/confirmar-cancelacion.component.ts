@@ -12,34 +12,38 @@ import { CommonModule } from '@angular/common';
 	template: `
       <div class="cc-dialogo">
         <h2 class="cc-titulo">{{ 'MANAGE.CANCEL-CONFIRM-TITLE' | translate }}</h2>
-
+      
         <div class="cc-desglose">
           <!-- Sin gastos que retener, las tres filas sobran: basta con la devolución -->
-          <div class="cc-fila" *ngIf="data.comision > 0">
-            <span>{{ 'MANAGE.AMOUNT-PAID' | translate }}</span>
-            <span>{{ data.pagado | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
-          </div>
-          <div class="cc-fila cc-fila--gastos" *ngIf="data.comision > 0">
-            <span>{{ 'MANAGE.FEE-LINE' | translate: { pct: data.pct } }}</span>
-            <span>−{{ data.comision | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
-          </div>
+          @if (data.comision > 0) {
+            <div class="cc-fila">
+              <span>{{ 'MANAGE.AMOUNT-PAID' | translate }}</span>
+              <span>{{ data.pagado | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
+            </div>
+          }
+          @if (data.comision > 0) {
+            <div class="cc-fila cc-fila--gastos">
+              <span>{{ 'MANAGE.FEE-LINE' | translate: { pct: data.pct } }}</span>
+              <span>−{{ data.comision | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</span>
+            </div>
+          }
           <div class="cc-fila cc-fila--total">
             <span>{{ 'MANAGE.WILL-REFUND' | translate }}</span>
             <strong>{{ data.importe | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</strong>
           </div>
         </div>
-
+      
         <p class="cc-nota">
           {{ 'MANAGE.CANCEL-CONFIRM-TEXT' | translate }}
           <strong class="cc-nota-aviso">{{ 'MANAGE.CANCEL-UNDO-WARNING' | translate }}</strong>
         </p>
-
+      
         <mat-dialog-actions class="cc-acciones">
           <button mat-stroked-button [mat-dialog-close]="false">{{ 'MANAGE.CANCEL-NO' | translate }}</button>
           <button mat-raised-button class="btn-peligro" [mat-dialog-close]="true">{{ 'MANAGE.CANCEL-YES' | translate }}</button>
         </mat-dialog-actions>
       </div>
-  `,
+      `,
 	styles: [`
     .cc-dialogo {
       padding: 26px 26px 14px;

@@ -19,33 +19,37 @@
 </p-galleria>
 
 <div class="spacer-big"></div>
-<section class="apartament-container" *ngIf="itemApartamento">
+@if (itemApartamento) {
+    <section class="apartament-container">
 
-    <h3>{{ itemApartamento.titulo }}</h3>
-    <div [innerHTML]="itemApartamento.texto"></div>
+        <h3>{{ itemApartamento.titulo }}</h3>
+        <div [innerHTML]="itemApartamento.texto"></div>
 
-    <h3>{{ itemDistribucion.titulo }}</h3>
-    <div [innerHTML]="itemDistribucion.texto"></div>
+        <h3>{{ itemDistribucion.titulo }}</h3>
+        <div [innerHTML]="itemDistribucion.texto"></div>
 
-    <h3>{{ itemComodidades.titulo }}</h3>
-    <div [innerHTML]="itemComodidades.texto"></div>
+        <h3>{{ itemComodidades.titulo }}</h3>
+        <div [innerHTML]="itemComodidades.texto"></div>
 
-    <h3>{{ itemMascotas.titulo }}</h3>
-    <div [innerHTML]="itemMascotas.texto"></div>
+        <h3>{{ itemMascotas.titulo }}</h3>
+        <div [innerHTML]="itemMascotas.texto"></div>
 
-</section>
+    </section>
+}
 
 <div class="spacer-big"></div>
 
-<section class="apartament-container" *ngIf="itemPiscina">
+@if (itemPiscina) {
+    <section class="apartament-container">
 
-    <h3>{{ itemPiscina.titulo }}</h3>
-    <div [innerHTML]="itemPiscina.texto"></div>
+        <h3>{{ itemPiscina.titulo }}</h3>
+        <div [innerHTML]="itemPiscina.texto"></div>
 
-    <h3>{{ itemEstacionamiento.titulo }}</h3>
-    <div [innerHTML]="itemEstacionamiento.texto"></div>
+        <h3>{{ itemEstacionamiento.titulo }}</h3>
+        <div [innerHTML]="itemEstacionamiento.texto"></div>
 
-</section>
+    </section>
+}
 
 <p-galleria [value]="images2" numVisible="1" [circular]="true" [showIndicators]="false"
     [showItemNavigatorsOnHover]="true" [shouldStopAutoplayByClick]="false" [showItemNavigators]="true" [autoPlay]="true"

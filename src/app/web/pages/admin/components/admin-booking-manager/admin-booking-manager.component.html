@@ -1,176 +1,202 @@
 <!-- Header -->
 <div class="booking-manager-header">
-    <h2>Gestión de reservas</h2>
-    <span class="booking-count">{{ reservasFiltradas.length }} reserva(s)</span>
+  <h2>Gestión de reservas</h2>
+  <span class="booking-count">{{ reservasFiltradas.length }} reserva(s)</span>
 </div>
 
 <!-- Filters -->
 <div class="booking-filters">
-    <mat-form-field appearance="outline" class="filter-estado">
-        <mat-label>Estado</mat-label>
-        <mat-select [(value)]="estadoFiltro" (selectionChange)="cargarReservas()">
-            <mat-option value="">Todas</mat-option>
-            <mat-option *ngFor="let e of estados" [value]="e">{{ e }}</mat-option>
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field appearance="outline" class="filter-estado">
+    <mat-label>Estado</mat-label>
+    <mat-select [(value)]="estadoFiltro" (selectionChange)="cargarReservas()">
+      <mat-option value="">Todas</mat-option>
+      @for (e of estados; track e) {
+        <mat-option [value]="e">{{ e }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 
-    <mat-checkbox class="filter-relevantes" [(ngModel)]="soloRelevantes" (ngModelChange)="aplicarFiltroTexto()"
-        [disabled]="!!estadoFiltro"
-        matTooltip="Oculta canceladas, rechazadas y pagos que el cliente no llegó a terminar">
-        Solo reservas relevantes
-    </mat-checkbox>
+  <mat-checkbox class="filter-relevantes" [(ngModel)]="soloRelevantes" (ngModelChange)="aplicarFiltroTexto()"
+    [disabled]="!!estadoFiltro"
+    matTooltip="Oculta canceladas, rechazadas y pagos que el cliente no llegó a terminar">
+    Solo reservas relevantes
+  </mat-checkbox>
 
-    <mat-form-field appearance="outline" class="filter-search">
-        <mat-label>Buscar por nombre, email o ID</mat-label>
-        <input matInput [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltroTexto()">
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <mat-form-field appearance="outline" class="filter-search">
+    <mat-label>Buscar por nombre, email o ID</mat-label>
+    <input matInput [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltroTexto()">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
 </div>
 
 <!-- No results -->
-<div *ngIf="reservasFiltradas.length === 0" class="no-results">
+@if (reservasFiltradas.length === 0) {
+  <div class="no-results">
     <mat-icon>inbox</mat-icon>
     <p>No hay reservas que mostrar</p>
-</div>
+  </div>
+}
 
 <!-- Booking cards -->
-<div *ngFor="let r of reservasFiltradas" class="reserva-card" [ngClass]="getCardClass(r.estado_reserva)">
-
+@for (r of reservasFiltradas; track r) {
+  <div class="reserva-card" [ngClass]="getCardClass(r.estado_reserva)">
     <!-- Card header -->
     <div class="card-header">
-        <div class="card-header-left">
-            <span class="booking-id">#{{ r.id_reserva }}</span>
-            <span class="booking-dates">
-                {{ r.fecha_inicio | date:'dd MMM yyyy' }} → {{ r.fecha_fin | date:'dd MMM yyyy' }}
-                <span class="nights-badge">{{ calcularNoches(r.fecha_inicio, r.fecha_fin) }} noches</span>
-            </span>
-        </div>
-        <div class="card-header-right">
-            <span class="tarifa-badge"
-                [class.tarifa-cancelable]="r.tipo_tarifa === 'cancelable'"
-                [class.tarifa-no-cancelable]="r.tipo_tarifa === 'no_cancelable'">
-                {{ r.tipo_tarifa === 'cancelable' ? 'Flexible' : 'No cancelable' }}
-            </span>
-            <span class="estado-badge" [ngClass]="getBadgeClass(r.estado_reserva)">{{ r.estado_reserva }}</span>
-        </div>
+      <div class="card-header-left">
+        <span class="booking-id">#{{ r.id_reserva }}</span>
+        <span class="booking-dates">
+          {{ r.fecha_inicio | date:'dd MMM yyyy' }} → {{ r.fecha_fin | date:'dd MMM yyyy' }}
+          <span class="nights-badge">{{ calcularNoches(r.fecha_inicio, r.fecha_fin) }} noches</span>
+        </span>
+      </div>
+      <div class="card-header-right">
+        <span class="tarifa-badge"
+          [class.tarifa-cancelable]="r.tipo_tarifa === 'cancelable'"
+          [class.tarifa-no-cancelable]="r.tipo_tarifa === 'no_cancelable'">
+          {{ r.tipo_tarifa === 'cancelable' ? 'Flexible' : 'No cancelable' }}
+        </span>
+        <span class="estado-badge" [ngClass]="getBadgeClass(r.estado_reserva)">{{ r.estado_reserva }}</span>
+      </div>
     </div>
-
     <!-- Card body -->
     <div class="card-body">
-
-        <!-- Client section -->
-        <div class="card-section">
-            <p class="section-title"><mat-icon>person</mat-icon> Cliente</p>
-            <p class="client-name">{{ getNombreCompleto(r) }}</p>
-            <p class="client-detail"><mat-icon class="detail-icon">email</mat-icon>{{ getEmail(r) }}</p>
-            <p class="client-detail"><mat-icon class="detail-icon">phone</mat-icon>{{ getTelefono(r) }}</p>
-            <p class="client-detail" *ngIf="r.cliente_idioma || r.cliente_pais">
-                <mat-icon class="detail-icon">translate</mat-icon>{{ getIdiomaPais(r) }}
-            </p>
+      <!-- Client section -->
+      <div class="card-section">
+        <p class="section-title"><mat-icon>person</mat-icon> Cliente</p>
+        <p class="client-name">{{ getNombreCompleto(r) }}</p>
+        <p class="client-detail"><mat-icon class="detail-icon">email</mat-icon>{{ getEmail(r) }}</p>
+        <p class="client-detail"><mat-icon class="detail-icon">phone</mat-icon>{{ getTelefono(r) }}</p>
+        @if (r.cliente_idioma || r.cliente_pais) {
+          <p class="client-detail">
+            <mat-icon class="detail-icon">translate</mat-icon>{{ getIdiomaPais(r) }}
+          </p>
+        }
+      </div>
+      <!-- Booking details section -->
+      <div class="card-section">
+        <p class="section-title"><mat-icon>event_note</mat-icon> Detalles</p>
+        <div class="detail-row">
+          <span>Personas</span><span><strong>{{ r.n_personas }}</strong></span>
         </div>
-
-        <!-- Booking details section -->
-        <div class="card-section">
-            <p class="section-title"><mat-icon>event_note</mat-icon> Detalles</p>
-            <div class="detail-row">
-                <span>Personas</span><span><strong>{{ r.n_personas }}</strong></span>
-            </div>
-            <div class="detail-row">
-                <span>Cuna</span><span>{{ r.bebe ? 'Sí' : 'No' }}</span>
-            </div>
-            <div class="detail-row">
-                <span>Mascota</span>
-                <span>{{ r.mascota ? 'Sí (+' + r.precio_mascota_noche + '€/noche)' : 'No' }}</span>
-            </div>
-            <!-- La fecha concreta, no "N días antes": es lo que hay que mirar para atender una queja -->
-            <div class="detail-row" *ngIf="r.tipo_tarifa === 'cancelable'">
-                <span>Cancelable hasta</span>
-                <span>
-                    {{ fechaLimiteCancelacion(r) | date:'dd/MM/yyyy' }} (incluido)
-                    <span class="plazo-pasado" *ngIf="plazoCancelacionPasado(r)">· plazo pasado</span>
-                </span>
-            </div>
-            <div class="detail-row">
-                <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
-            </div>
-            <!-- Prueba de que se aceptaron las condiciones. Vacío en las reservas anteriores
-                 a que existiera la casilla: no consta, y no se debe suponer. -->
-            <div class="detail-row">
-                <span>Condiciones aceptadas</span>
-                <span *ngIf="r.condiciones_aceptadas">{{ r.condiciones_aceptadas | date:'dd/MM/yyyy HH:mm' }}</span>
-                <span class="sin-constancia" *ngIf="!r.condiciones_aceptadas">sin constancia</span>
-            </div>
-            <div class="detail-row" *ngIf="r.actualizado && r.actualizado !== r.fecha_creacion">
-                <span>Actualizada</span><span>{{ r.actualizado | date:'dd/MM/yyyy' }}</span>
-            </div>
+        <div class="detail-row">
+          <span>Cuna</span><span>{{ r.bebe ? 'Sí' : 'No' }}</span>
         </div>
-
-        <!-- Price section -->
-        <div class="card-section">
-            <p class="section-title"><mat-icon>payments</mat-icon> Precio</p>
-            <div class="detail-row price-total">
-                <span>Total</span><span>{{ r.precio_total | number:'1.2-2' }} €</span>
-            </div>
-            <div class="detail-row discount-row" *ngIf="r.descuento_aplicado">
-                <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
-            </div>
-            <!-- Reembolsada: junto al estado va lo devuelto, y aparte lo retenido, que es
-                 lo que hay que cuadrar con lo que Stripe se quedó -->
-            <div class="detail-row" *ngIf="r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0">
-                <span>Cobrado</span><span>{{ r.importe_pagado | number:'1.2-2' }} €</span>
-            </div>
-            <div class="detail-row discount-row" *ngIf="r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0">
-                <span>Gastos de cancelación ({{ r.comision_cancelacion_pct }}%)</span>
-                <span>+{{ gastosRetenidos(r) | number:'1.2-2' }} €</span>
-            </div>
-            <div class="detail-row">
-                <span>Pago</span>
-                <span class="pago-badge" [ngClass]="'pago-' + (r.estado_pago || 'pendiente')">
-                    {{ r.estado_pago === 'pagado' ? 'Pagado' : r.estado_pago === 'reembolsado' ? 'Reembolsado' : 'Pendiente' }}<ng-container *ngIf="r.importe_pagado"> · {{ importeDelPago(r) | number:'1.2-2' }} €</ng-container>
-                </span>
-            </div>
-            <div class="detail-row" *ngIf="r.comision_stripe">
-                <span>Comisión real de Stripe</span><span>{{ r.comision_stripe | number:'1.2-2' }} €</span>
-            </div>
+        <div class="detail-row">
+          <span>Mascota</span>
+          <span>{{ r.mascota ? 'Sí (+' + r.precio_mascota_noche + '€/noche)' : 'No' }}</span>
         </div>
-    </div>
-
-    <!-- Note -->
-    <div *ngIf="r.nota_adicional" class="card-note">
-        <mat-icon>sticky_note_2</mat-icon>
-        <span>{{ r.nota_adicional }}</span>
-    </div>
-
-    <!-- Nota interna del administrador -->
-    <div *ngIf="r.nota_admin" class="card-note card-note--admin">
-        <mat-icon>lock</mat-icon>
-        <span>{{ r.nota_admin }}</span>
-    </div>
-
-    <!-- Card footer: acciones y cambio de estado -->
-    <div class="card-footer">
-        <div class="card-actions">
-            <button mat-stroked-button (click)="editarReserva(r)" matTooltip="Editar datos, fechas y nota interna">
-                <mat-icon>edit</mat-icon> Editar
-            </button>
-            <button mat-stroked-button (click)="copiarEnlace(r)" matTooltip="Copiar el enlace privado del huésped">
-                <mat-icon>link</mat-icon> Enlace
-            </button>
-            <button mat-stroked-button (click)="reenviarConfirmacion(r)" matTooltip="Reenviar el email con los datos de la reserva">
-                <mat-icon>mail</mat-icon> Reenviar
-            </button>
-        </div>
-
-        <!-- Solo los cambios de estado válidos desde el estado actual -->
-        <div class="card-estado-acciones">
-            <button *ngFor="let a of accionesEstado(r)" mat-stroked-button
-                [class.btn-peligro]="a.peligro" (click)="cambiarEstado(r, a.estado)">
-                <mat-icon>{{ a.icono }}</mat-icon> {{ a.etiqueta }}
-            </button>
-            <span class="estado-final" *ngIf="accionesEstado(r).length === 0">
-                <mat-icon>lock</mat-icon> Estado final
+        <!-- La fecha concreta, no "N días antes": es lo que hay que mirar para atender una queja -->
+        @if (r.tipo_tarifa === 'cancelable') {
+          <div class="detail-row">
+            <span>Cancelable hasta</span>
+            <span>
+              {{ fechaLimiteCancelacion(r) | date:'dd/MM/yyyy' }} (incluido)
+              @if (plazoCancelacionPasado(r)) {
+                <span class="plazo-pasado">· plazo pasado</span>
+              }
             </span>
+          </div>
+        }
+        <div class="detail-row">
+          <span>Creada</span><span>{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</span>
         </div>
+        <!-- Prueba de que se aceptaron las condiciones. Vacío en las reservas anteriores
+        a que existiera la casilla: no consta, y no se debe suponer. -->
+        <div class="detail-row">
+          <span>Condiciones aceptadas</span>
+          @if (r.condiciones_aceptadas) {
+            <span>{{ r.condiciones_aceptadas | date:'dd/MM/yyyy HH:mm' }}</span>
+          }
+          @if (!r.condiciones_aceptadas) {
+            <span class="sin-constancia">sin constancia</span>
+          }
+        </div>
+        @if (r.actualizado && r.actualizado !== r.fecha_creacion) {
+          <div class="detail-row">
+            <span>Actualizada</span><span>{{ r.actualizado | date:'dd/MM/yyyy' }}</span>
+          </div>
+        }
+      </div>
+      <!-- Price section -->
+      <div class="card-section">
+        <p class="section-title"><mat-icon>payments</mat-icon> Precio</p>
+        <div class="detail-row price-total">
+          <span>Total</span><span>{{ r.precio_total | number:'1.2-2' }} €</span>
+        </div>
+        @if (r.descuento_aplicado) {
+          <div class="detail-row discount-row">
+            <span>Descuento aplicado</span><span>-{{ r.descuento_aplicado }}%</span>
+          </div>
+        }
+        <!-- Reembolsada: junto al estado va lo devuelto, y aparte lo retenido, que es
+        lo que hay que cuadrar con lo que Stripe se quedó -->
+        @if (r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0) {
+          <div class="detail-row">
+            <span>Cobrado</span><span>{{ r.importe_pagado | number:'1.2-2' }} €</span>
+          </div>
+        }
+        @if (r.estado_pago === 'reembolsado' && gastosRetenidos(r) > 0) {
+          <div class="detail-row discount-row">
+            <span>Gastos de cancelación ({{ r.comision_cancelacion_pct }}%)</span>
+            <span>+{{ gastosRetenidos(r) | number:'1.2-2' }} €</span>
+          </div>
+        }
+        <div class="detail-row">
+          <span>Pago</span>
+          <span class="pago-badge" [ngClass]="'pago-' + (r.estado_pago || 'pendiente')">
+            {{ r.estado_pago === 'pagado' ? 'Pagado' : r.estado_pago === 'reembolsado' ? 'Reembolsado' : 'Pendiente' }}@if (r.importe_pagado) {
+            · {{ importeDelPago(r) | number:'1.2-2' }} €
+          }
+        </span>
+      </div>
+      @if (r.comision_stripe) {
+        <div class="detail-row">
+          <span>Comisión real de Stripe</span><span>{{ r.comision_stripe | number:'1.2-2' }} €</span>
+        </div>
+      }
     </div>
-
+  </div>
+  <!-- Note -->
+  @if (r.nota_adicional) {
+    <div class="card-note">
+      <mat-icon>sticky_note_2</mat-icon>
+      <span>{{ r.nota_adicional }}</span>
+    </div>
+  }
+  <!-- Nota interna del administrador -->
+  @if (r.nota_admin) {
+    <div class="card-note card-note--admin">
+      <mat-icon>lock</mat-icon>
+      <span>{{ r.nota_admin }}</span>
+    </div>
+  }
+  <!-- Card footer: acciones y cambio de estado -->
+  <div class="card-footer">
+    <div class="card-actions">
+      <button mat-stroked-button (click)="editarReserva(r)" matTooltip="Editar datos, fechas y nota interna">
+        <mat-icon>edit</mat-icon> Editar
+      </button>
+      <button mat-stroked-button (click)="copiarEnlace(r)" matTooltip="Copiar el enlace privado del huésped">
+        <mat-icon>link</mat-icon> Enlace
+      </button>
+      <button mat-stroked-button (click)="reenviarConfirmacion(r)" matTooltip="Reenviar el email con los datos de la reserva">
+        <mat-icon>mail</mat-icon> Reenviar
+      </button>
+    </div>
+    <!-- Solo los cambios de estado válidos desde el estado actual -->
+    <div class="card-estado-acciones">
+      @for (a of accionesEstado(r); track a) {
+        <button mat-stroked-button
+          [class.btn-peligro]="a.peligro" (click)="cambiarEstado(r, a.estado)">
+          <mat-icon>{{ a.icono }}</mat-icon> {{ a.etiqueta }}
+        </button>
+      }
+      @if (accionesEstado(r).length === 0) {
+        <span class="estado-final">
+          <mat-icon>lock</mat-icon> Estado final
+        </span>
+      }
+    </div>
+  </div>
 </div>
+}

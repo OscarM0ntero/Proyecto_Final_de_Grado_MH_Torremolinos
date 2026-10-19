@@ -1,23 +1,26 @@
 <!-- Componente de la sección galería, que muestra imágenes del apartamento, primero en thumbnail para que carguen más rapido,
- y si se hace click sobre la imagen ya carga la versión a resolución completa -->
+y si se hace click sobre la imagen ya carga la versión a resolución completa -->
 <div class="content-gallery">
-    <div class="spacer-big"></div>
-    <div *ngIf="this.images && this.images.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div *ngFor="let image of this.images; let index = index" class="col-span-1">
-            <div>
-                <img [src]="image.url_thumbnail" [alt]="image.alt" class="cursor-pointer w-full h-auto"
-                    (click)="imageClick(index)" />
+  <div class="spacer-big"></div>
+  @if (this.images && this.images.length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      @for (image of this.images; track image; let index = $index) {
+        <div class="col-span-1">
+          <div>
+            <img [src]="image.url_thumbnail" [alt]="image.alt" class="cursor-pointer w-full h-auto"
+              (click)="imageClick(index)" />
             </div>
-
-        </div>
-    </div>
+          </div>
+        }
+      </div>
+    }
 
     <p-galleria [value]="this.images" [(visible)]="displayCustom" [(activeIndex)]="activeIndex"
-        [containerStyle]="{ 'max-width': '40%' }" [numVisible]="7" [circular]="true" [fullScreen]="true"
-        [showItemNavigators]="true" [showThumbnails]="false">
-        <ng-template #item let-item>
-            <img [src]="item.url" style="width: 100%; display: block;" />
-        </ng-template>
+      [containerStyle]="{ 'max-width': '40%' }" [numVisible]="7" [circular]="true" [fullScreen]="true"
+      [showItemNavigators]="true" [showThumbnails]="false">
+      <ng-template #item let-item>
+        <img [src]="item.url" style="width: 100%; display: block;" />
+      </ng-template>
     </p-galleria>
     <div class="spacer-big"></div>
-</div>
+  </div>

@@ -4,7 +4,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { MaterialModule } from '../../../../../../material/material.module';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -16,14 +16,16 @@ import { TranslateModule } from '@ngx-translate/core';
         <h2 class="pc-titulo">{{ 'BOOKING.PAYMENT-OK-TITLE' | translate }}</h2>
         <p class="pc-texto">{{ 'BOOKING.PAYMENT-OK-TEXT' | translate }}</p>
         <mat-dialog-actions class="pc-acciones">
-          <a *ngIf="data?.token" mat-raised-button class="pc-principal"
-             [routerLink]="['/reserva', data.token]" mat-dialog-close>
-            {{ 'BOOKING.VIEW-BOOKING' | translate }}
-          </a>
+          @if (data?.token) {
+            <a mat-raised-button class="pc-principal"
+              [routerLink]="['/reserva', data.token]" mat-dialog-close>
+              {{ 'BOOKING.VIEW-BOOKING' | translate }}
+            </a>
+          }
           <button mat-stroked-button mat-dialog-close>{{ 'BOOKING.CLOSE' | translate }}</button>
         </mat-dialog-actions>
       </div>
-  `,
+      `,
 	styles: [`
     /* El ancho lo fija dialog.open({ width }): desde aquí no se puede, porque el host del
        componente no tiene ancho propio. Con el ancho natural los dos botones sumaban más
@@ -82,7 +84,7 @@ import { TranslateModule } from '@ngx-translate/core';
       .pc-acciones a { width: 100%; }
     }
   `],
-	imports: [MaterialModule, TranslateModule, RouterModule, CommonModule]
+	imports: [MaterialModule, TranslateModule, RouterModule]
 })
 export class PagoCompletadoComponent {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: { token: string | null }) { }

@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, PLATFORM_ID } from '@angular/core';
+import { LOCALE_ID, NgModule, PLATFORM_ID, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +30,12 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 		// hechas durante el SSR se transfieren al cliente y no se repiten al hidratar.
 		// withInterceptorsFromDi() mantiene vivo el TokenInterceptor declarado abajo.
 		provideHttpClient(withFetch(), withInterceptorsFromDi()),
+		// Angular 21 deja de dar por defecto el scheduler de deteccion de cambios con
+		// Zone.js. Va aqui, y no en main.ts, para que tambien lo reciba el arranque del
+		// SSR (AppServerModule importa este modulo); si solo estuviera en main.ts, el
+		// render del servidor se quedaria sin el. eventCoalescing era antes el
+		// ngZoneEventCoalescing de las BootstrapOptions, ya deprecadas.
+		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideClientHydration(withEventReplay()),
 		provideAnimations(),
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

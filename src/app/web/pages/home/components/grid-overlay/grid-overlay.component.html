@@ -1,21 +1,20 @@
 <!-- Subcomponente del inicio, que contiene un grid para posicionar la segunda sección de imagen y texto -->
-<div class="grid-overlay" *ngIf="contenido">
+@if (contenido) {
+  <div class="grid-overlay">
     <div class="grid-title">
-        <h2>{{ contenido.titulo}}</h2>
+      <h2>{{ contenido.titulo}}</h2>
     </div>
-
     <div class="grid-text">
-        <div [innerHTML]="contenido.texto"></div>
+      <div [innerHTML]="contenido.texto"></div>
     </div>
-
     <div class="grid-image">
-        <img [src]="imagen">
+      <img [src]="imagen">
     </div>
-
     <div class="spacer-big tablet-show" style="order: 2"></div>
-
     <div class="spacer tablet-show" style="order: 4"></div>
-
-    <div class="tablet-hide" *ngFor="let _ of cells"></div>
-</div>
+    @for (_ of cells; track _) {
+      <div class="tablet-hide"></div>
+    }
+  </div>
+}
 
