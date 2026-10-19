@@ -1,5 +1,6 @@
 // Componente base de todos los componentes que permitan cargar imágenes o texto desde la base de datos
-import { OnInit, OnDestroy, Directive } from '@angular/core';
+import { OnInit, OnDestroy, Directive, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ContenidoWebService } from '../services/contenido-web.service';
 import { Contenido, ContenidoService } from '../services/contenido.service';
@@ -14,6 +15,7 @@ export abstract class ContenidoBaseComponent implements OnInit, OnDestroy {
   lang: string = 'es';
 
   private subs: Subscription[] = [];
+  private readonly plataforma = inject(PLATFORM_ID);
 
   constructor(
     private readonly contenido: ContenidoService,
@@ -43,8 +45,11 @@ export abstract class ContenidoBaseComponent implements OnInit, OnDestroy {
       })
     );
 
-    const lang = localStorage.getItem('lang');
-    if (lang) this.lang = lang;
+    // En el servidor no hay localStorage: se queda con 'es', que es el idioma que pinta el SSR.
+    if (isPlatformBrowser(this.plataforma)) {
+      const lang = localStorage.getItem('lang');
+      if (lang) this.lang = lang;
+    }
   }
 
   ngOnDestroy(): void {
