@@ -3,7 +3,7 @@ import { BrowserModule, provideClientHydration, withEventReplay } from '@angular
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { createTranslateLoader } from './translate-loader';
 import { TokenInterceptor } from './interceptors/token.interceptor';
@@ -16,7 +16,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
-		HttpClientModule,
 		TranslateModule.forRoot({
 			loader: {
 				provide: TranslateLoader,
@@ -26,6 +25,11 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 		}),
 	],
 	providers: [
+		// withFetch(): con SSR, HttpClient sobre XHR no comparte las respuestas con el
+		// render del servidor y Angular avisa de ello (NG02801). Con fetch, las peticiones
+		// hechas durante el SSR se transfieren al cliente y no se repiten al hidratar.
+		// withInterceptorsFromDi() mantiene vivo el TokenInterceptor declarado abajo.
+		provideHttpClient(withFetch(), withInterceptorsFromDi()),
 		provideClientHydration(withEventReplay()),
 		provideAnimations(),
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

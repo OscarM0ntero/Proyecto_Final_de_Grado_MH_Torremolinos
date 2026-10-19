@@ -1,7 +1,7 @@
 import { NgModule, PLATFORM_ID } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -62,8 +62,9 @@ registerLocaleData(localeEs);
         MatTooltipModule,
         MatSlideToggleModule,
         FormsModule,
+        // HttpClientModule se quita a proposito: volvia a proveer HttpClient en el
+        // inyector de este modulo y pisaba el provideHttpClient(withFetch()) de la raiz.
         PrimeNgModule,
-        HttpClientModule,
         MatDialogModule,
         RecaptchaModule,
         TranslateModule.forRoot({
