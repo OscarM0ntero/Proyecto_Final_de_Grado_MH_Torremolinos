@@ -55,6 +55,14 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
+            },
+            "security": {
+              "allowedHosts": [
+                "mhtorremolinos.com",
+                "www.mhtorremolinos.com",
+                "localhost",
+                "127.0.0.1"
+              ]
             }
           },
           "configurations": {

@@ -4,8 +4,11 @@ h3 {
     text-align: center;
 }
 
+/* Nada de justificado: sin guionado, en columnas estrechas el navegador reparte el
+   sobrante abriendo huecos enormes entre palabras (se veia sobre todo en el parrafo
+   del lema y en las tarjetas de resenas). */
 p {
-    text-align: justify;
+    text-align: left;
 }
 
 .vid {
@@ -56,11 +59,33 @@ p {
 }
 
 .hero-cta {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     z-index: 3;
+    text-align: center;
+}
+
+/* Scrim local. El velo global (.vid-opacity::before) entra progresivamente desde
+   transparente, asi que durante los primeros segundos no hay contraste ninguno y el
+   texto blanco se pierde sobre los fotogramas claros del video. Esta elipse oscura
+   muy difuminada vive solo detras del bloque del CTA: da contraste desde el primer
+   fotograma sin tocar el fundido del velo ni oscurecer el video entero. */
+.hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: -70px -120px;
+    /* Las paradas llegan a transparente antes del borde de la caja: con el degradado
+       por defecto la elipse se recorta en los lados y deja una banda tenue visible. */
+    background: radial-gradient(ellipse at center,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.38) 32%,
+            rgba(0, 0, 0, 0.16) 52%,
+            rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .precio-desde {
@@ -70,8 +95,7 @@ p {
     letter-spacing: 0.04em;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
     opacity: 0;
-    animation: fadeInButton 5s ease forwards;
-    animation-delay: 4s;
+    animation: fadeInButton 0.8s ease 0.45s forwards;
 }
 
 /* El verde claro se perdía sobre el vídeo (fondo luminoso y con mucho detalle).
@@ -87,8 +111,9 @@ p {
     color: #fff;
     font-weight: 600;
     letter-spacing: 0.06em;
-    animation: fadeInButton 5s ease forwards;
-    animation-delay: 2s;
+    /* El CTA principal no puede estar invisible mientras el visitante decide si se
+       queda: antes tardaba 7s en verse del todo (2s de espera + 5s de fundido). */
+    animation: fadeInButton 0.8s ease 0.3s forwards;
     cursor: pointer;
     text-decoration: none;
     font-size: 16px;
@@ -185,7 +210,7 @@ p {
     .intro-content {
         display: flex;
         flex-direction: column;
-        text-align: justify;
+        text-align: left;
         padding-left: 50px;
         width: 45%;
     }
@@ -231,7 +256,38 @@ p {
 .resenas-section {
     margin: 0 var(--desktop-margin);
 
+    /* PrimeNG estira todos los huecos del carrusel a la altura de la resena mas larga,
+       pero la tarjeta se quedaba con su altura natural: por debajo asomaba el crema del
+       fondo y parecia que unas tarjetas tenian otro color que otras. Con el hueco en
+       flex la tarjeta ocupa todo el alto y las tres quedan iguales. */
+    ::ng-deep .p-carousel-item {
+        display: flex;
+    }
+
+    /* Las flechas por defecto son de 14px y en gris claro: no se ven sobre el crema. */
+    ::ng-deep .p-carousel-prev-button .p-button,
+    ::ng-deep .p-carousel-next-button .p-button {
+        width: 44px;
+        height: 44px;
+        color: var(--color-primary);
+        background-color: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(63, 75, 58, 0.18);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        &:hover {
+            background-color: #fff;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+        }
+    }
+
     .resena-card {
+        flex: 1;
         background-color: var(--color-tertiary);
         border-radius: 16px;
         padding: 28px;
@@ -358,6 +414,10 @@ p {
 }
 
 @media (max-width: 768px) {
+    .hero-cta::before {
+        inset: -55px -80px;
+    }
+
     .capacity-section {
         font-size: 18px;
     }

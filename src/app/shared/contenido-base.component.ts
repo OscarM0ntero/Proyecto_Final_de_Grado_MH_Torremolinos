@@ -45,10 +45,9 @@ export abstract class ContenidoBaseComponent implements OnInit, OnDestroy {
       })
     );
 
-    // localStorage no existe en el servidor. Sin esta guarda el ngOnInit lanzaba
-    // "localStorage is not defined" durante el SSR y la pagina se quedaba a medio
-    // renderizar. Hasta ahora no se notaba porque @angular/ssr rechazaba la cabecera Host
-    // y caia a renderizado en cliente antes de llegar aqui (ver allowedHosts en server.ts).
+    // En el servidor no hay localStorage: se queda con 'es', que es el idioma que
+    // pinta el SSR. Sin esta guarda el ngOnInit lanzaba "localStorage is not defined"
+    // durante el render y la pagina se quedaba a medias.
     if (isPlatformBrowser(this.plataforma)) {
       const lang = localStorage.getItem('lang');
       if (lang) this.lang = lang;

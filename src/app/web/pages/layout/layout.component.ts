@@ -75,10 +75,11 @@ export class LayoutComponent implements OnInit {
 	ngOnInit(): void {
 		if (isPlatformBrowser(this.platformId)) {
 			// Prioridad: idioma elegido manualmente > idioma del navegador > inglés
+			// El SSR ya ha pintado la pagina en espanol y sus traducciones viajan en el HTML,
+			// asi que aqui no hay nada que esconder: si el idioma elegido es otro, el visitante
+			// ve un instante de espanol mientras se descarga su .json y luego cambia.
 			const lang = localStorage.getItem('lang') || this.detectarIdiomaNavegador();
-			this.translate.use(lang).subscribe(() => {
-				document.body.classList.remove('hide-until-translate-loaded');
-			});
+			this.translate.use(lang);
 			this.selectedLang = lang;
 		}
 	}

@@ -23,6 +23,7 @@ import icalRouter from './api/ical.routes.js';
 import configuracionRouter from './api/configuracion.routes.js';
 import resenasRouter from './api/resenas.routes.js';
 import stripeRouter, { reconciliarReservasPendientes } from './api/stripe.routes.js';
+import { registrarLectorTraducciones } from './app/traducciones-ssr.js';
 
 const app = express();
 
@@ -32,25 +33,46 @@ const app = express();
 // "Header host ... is not allowed" — el SSR se apaga en silencio y, según avisa el propio
 // mensaje, en un major futuro pasará a devolver un 400.
 //
-// Se añaden también los nombres locales para que `npm start` y las pruebas en local sigan
-// renderizando en servidor. NG_ALLOWED_HOSTS permite ampliar la lista desde el .env sin
-// tocar el código (por ejemplo para un dominio de pruebas).
-const HOSTS_PERMITIDOS = [
-	'www.mhtorremolinos.com',
-	'mhtorremolinos.com',
-	'localhost',
-	'127.0.0.1',
-	...(process.env['NG_ALLOWED_HOSTS'] ?? '').split(',').map(h => h.trim()).filter(Boolean),
-];
-
+// Los hosts van declarados en angular.json (architect > build > options > security >
+// allowedHosts) y viajan en el manifiesto de la build, así que aquí no hay que repetirlos:
+// el motor une esa lista con la variable de entorno NG_ALLOWED_HOSTS, que sirve para añadir
+// un dominio de pruebas desde el .env sin recompilar.
+//
 // Apache hace de proxy inverso delante de este proceso. El valor por defecto de
 // trustProxyHeaders ya acepta x-forwarded-host y x-forwarded-proto, y ese host reenviado
-// se valida contra la misma lista de arriba, así que no hace falta tocarlo.
-const angularApp = new AngularNodeAppEngine({ allowedHosts: HOSTS_PERMITIDOS });
+// se valida contra la misma lista, así que no hace falta tocarlo.
+const angularApp = new AngularNodeAppEngine();
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const rootFolder = path.resolve(serverDistFolder, '..');
 const browserDistFolder = resolve(serverDistFolder, '../browser');
+
+// Traducciones para el SSR: se leen del disco, no por HTTP.
+//
+// Antes el render del servidor pedía los .json a https://www.mhtorremolinos.com/assets/i18n/,
+// o sea que el servidor salía a la red pública contra sí mismo en cada página: lento, y si el
+// dominio no respondía el HTML salía sin traducir. Los ficheros están aquí al lado, en
+// dist/web-apartamento/browser/assets/i18n/, así que se leen de disco y se cachean en memoria.
+const carpetaTraducciones = path.join(browserDistFolder, 'assets/i18n');
+const traduccionesEnMemoria = new Map<string, Record<string, unknown> | null>();
+
+registrarLectorTraducciones((idioma) => {
+	// El idioma lo decide la aplicación ('es', 'en', 'de', 'no'), pero nunca se construye una
+	// ruta con algo que no sea un código de dos letras.
+	if (!/^[a-z]{2}$/.test(idioma)) return null;
+
+	if (!traduccionesEnMemoria.has(idioma)) {
+		const fichero = path.join(carpetaTraducciones, `${idioma}.json`);
+		try {
+			traduccionesEnMemoria.set(idioma, JSON.parse(fs.readFileSync(fichero, 'utf-8')));
+		} catch (error) {
+			console.error(`[SSR] No se pudo leer ${fichero}:`, error);
+			traduccionesEnMemoria.set(idioma, null);
+		}
+	}
+
+	return traduccionesEnMemoria.get(idioma) ?? null;
+});
 
 // Si se pide un thumbnail .jpg/.png y existe la versión .webp, la sirve en su lugar
 const uploadsDir = path.join(process.cwd(), 'uploads');

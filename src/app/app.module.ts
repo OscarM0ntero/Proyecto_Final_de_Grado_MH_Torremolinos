@@ -34,7 +34,10 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 		// render del servidor se quedaria sin el. eventCoalescing era antes el
 		// ngZoneEventCoalescing de las BootstrapOptions, ya deprecadas.
 		provideZoneChangeDetection({ eventCoalescing: true }),
-		provideTranslateService(),
+		// lang: carga el idioma; fallbackLang: a donde caen las claves que falten. En la v16
+		// el defaultLanguage hacia las dos cosas a la vez; en la v18 son dos opciones y, sin
+		// lang, el servidor no llega a pedir ningun fichero y el SSR pinta las claves en crudo.
+		provideTranslateService({ lang: 'es', fallbackLang: 'es' }),
 		...provideCargadorTraducciones(),
 		provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
 		provideAnimations(),

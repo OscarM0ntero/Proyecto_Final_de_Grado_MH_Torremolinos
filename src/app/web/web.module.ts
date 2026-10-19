@@ -12,6 +12,7 @@ import localeEs from '@angular/common/locales/es';
 import { MaterialModule } from '../material/material.module';
 import { PrimeNgModule } from '../common/primeng.module';
 import { WebRoutingModule } from './web-routing.module';
+import { provideCargadorTraducciones } from '../translate-loader';
 
 // Páginas públicas
 import { HomeComponent } from './pages/home/home.component';
@@ -73,7 +74,13 @@ registerLocaleData(localeEs);
         // CalendarModule eliminado del bundle principal → está en AdminModule (lazy)
     ],
     providers: [
-        provideTranslateService({ fallbackLang: 'es' }),
+        // OJO: provideTranslateService() al que no se le pasa un loader registra un
+        // TranslateNoOpLoader en ESTE inyector, que tapa el cargador de la raiz. El
+        // servicio de este modulo se quedaba entonces sin traducciones y el SSR pintaba
+        // las claves en crudo (NAVBAR.HOME...). Por eso el cargador se vuelve a declarar
+        // aqui detras: al ir despues en el array, gana sobre el no-op.
+        provideTranslateService({ lang: 'es', fallbackLang: 'es' }),
+        ...provideCargadorTraducciones(),
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })

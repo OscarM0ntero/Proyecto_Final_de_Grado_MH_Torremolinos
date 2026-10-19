@@ -75,6 +75,13 @@ export class HomeComponent extends ContenidoBaseComponent {
 		this.metaService.updateTag({ property: 'og:type', content: 'website' });
 	}
 
+	/* Algunas resenas traen "-" o "- -" como texto negativo: es relleno de Booking, no
+	   un comentario, pero el *ngIf lo daba por bueno porque la cadena existe. Se pinta
+	   solo lo que tenga alguna letra o algun numero. */
+	esTextoReal(texto: string | null | undefined): boolean {
+		return !!texto && /[\p{L}\p{N}]/u.test(texto);
+	}
+
 	protected actualizarContenido(): void {
 		this.itemLema = this.getTexto(1);
 		this.itemCamaDoble = this.getTexto(2);
