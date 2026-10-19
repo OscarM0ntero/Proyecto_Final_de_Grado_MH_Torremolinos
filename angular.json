@@ -33,7 +33,17 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets",
+                "ignore": [
+                  "img/**",
+                  "VIDEO_02_silent.mp4",
+                  "VIDEO_03_silent.mp4",
+                  "VIDEO_04_silent.mp4"
+                ]
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
