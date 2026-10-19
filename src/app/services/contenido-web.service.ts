@@ -37,14 +37,14 @@ export class ContenidoWebService implements OnInit {
 	}
 
 	getTexto(id_contenido: number, pagina: string): string {
-		const lang = this.translate.currentLang || this.lang;
+		const lang = this.translate.currentLang() || this.lang;
 		const lista = this.contenidosPorPagina.get(pagina);
 		const item = lista?.find(c => c.id_contenido === id_contenido);
 		return (item as any)?.[`texto_${lang}`] ?? '';
 	}
 
 	getTitulo(id_contenido: number, pagina: string): string {
-		const lang = this.translate.currentLang || this.lang;
+		const lang = this.translate.currentLang() || this.lang;
 		const lista = this.contenidosPorPagina.get(pagina);
 		const item = lista?.find(c => c.id_contenido === id_contenido);
 		return (item as any)?.[`titulo_${lang}`] ?? '';

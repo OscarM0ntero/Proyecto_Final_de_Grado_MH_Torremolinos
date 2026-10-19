@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Usuario, UsuariosService } from '../../../../../services/usuarios.service';
@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 	selector: 'app-admin-users-manager',
 	standalone: false,
 	templateUrl: './admin-users-manager.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './admin-users-manager.component.scss'
 })
 export class AdminUsersManagerComponent implements OnInit {

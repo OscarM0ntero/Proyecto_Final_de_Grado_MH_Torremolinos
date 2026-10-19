@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { PREFIJOS_TELEFONO } from '../../../shared/prefijos';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsuariosService, UsuarioPerfil } from '../../../services/usuarios.service';
@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 	standalone: false,
 	templateUrl: './account.component.html',
 	styleUrls: ['./account.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	encapsulation: ViewEncapsulation.None
 })
 export class AccountComponent implements OnInit {

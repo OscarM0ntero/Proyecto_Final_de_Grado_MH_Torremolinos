@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Contenido, ContenidoService } from '../../../../../services/contenido.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 	selector: 'app-content-editor',
 	standalone: false,
 	templateUrl: './content-editor.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './content-editor.component.scss'
 })
 export class ContentEditorComponent implements OnInit {

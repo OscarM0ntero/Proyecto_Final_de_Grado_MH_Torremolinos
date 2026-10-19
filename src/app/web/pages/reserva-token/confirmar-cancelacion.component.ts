@@ -1,10 +1,10 @@
 // Diálogo de confirmación antes de cancelar una reserva desde el enlace mágico.
 // Los importes se presentan como un desglose (pagado → gastos → devolución) en vez de
 // sueltos en frases distintas: es el último momento para entender cuánto se recupera.
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from '../../../material/material.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -130,7 +130,8 @@ import { CommonModule } from '@angular/common';
       .cc-acciones button { width: 100%; }
     }
   `],
-	imports: [MaterialModule, TranslateModule, CommonModule]
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [MaterialModule, TranslatePipe, CommonModule]
 })
 export class ConfirmarCancelacionComponent {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: {

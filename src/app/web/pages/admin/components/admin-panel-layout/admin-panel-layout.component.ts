@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../../../services/auth.service';
 import { LogoutConfirmDialogComponent } from '../../../../shared/logout-confirm-dialog.component';
@@ -7,6 +7,7 @@ import { LogoutConfirmDialogComponent } from '../../../../shared/logout-confirm-
   selector: 'app-admin-panel-layout',
   standalone: false,
   templateUrl: './admin-panel-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-panel-layout.component.scss'
 })
 export class AdminPanelLayoutComponent {

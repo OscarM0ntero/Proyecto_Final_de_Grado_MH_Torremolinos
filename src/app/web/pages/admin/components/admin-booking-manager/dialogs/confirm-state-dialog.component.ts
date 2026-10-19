@@ -1,7 +1,7 @@
 // Confirmación antes de cambiar el estado de una reserva.
 // El mensaje explica la consecuencia real (reembolso, días liberados...), porque desde
 // aquí se mueve dinero de verdad y antes solo se decía el nombre del estado.
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from '../../../../../../material/material.module';
@@ -51,6 +51,7 @@ export interface ConfirmStateData {
     }
     .confirm-aviso mat-icon { color: var(--color-warn); flex-shrink: 0; }
   `],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MaterialModule]
 })
 export class ConfirmStateDialogComponent {

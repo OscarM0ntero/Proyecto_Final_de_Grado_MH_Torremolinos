@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,7 @@ import { ContenidoService } from '../../../services/contenido.service';
 	selector: 'app-apartment',
 	standalone: false,
 	templateUrl: './apartment.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './apartment.component.scss'
 })
 export class ApartmentComponent extends ContenidoBaseComponent {

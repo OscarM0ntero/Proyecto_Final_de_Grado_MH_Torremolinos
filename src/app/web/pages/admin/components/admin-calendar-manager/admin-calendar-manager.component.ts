@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { CalendarEvent, CalendarMonthViewDay, CalendarView } from 'angular-calendar';
 import { DisponibilidadService } from '../../../../../services/disponibilidad.service';
 import { startOfDay } from 'date-fns';
@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 	standalone: false,
 	templateUrl: './admin-calendar-manager.component.html',
 	styleUrls: ['./admin-calendar-manager.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	encapsulation: ViewEncapsulation.None
 })
 export class AdminCalendarManagerComponent implements OnInit {

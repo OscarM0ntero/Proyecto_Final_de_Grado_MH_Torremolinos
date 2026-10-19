@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { Contenido, ContenidoService } from '../../../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import { LayoutComponent } from '../layout/layout.component';
 	selector: 'app-contact',
 	standalone: false,
 	templateUrl: './contact.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './contact.component.scss'
 })
 export class ContactComponent extends ContenidoBaseComponent implements OnInit {

@@ -1,19 +1,17 @@
-import { NgModule, PLATFORM_ID } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslatePipe, provideTranslateService } from '@ngx-translate/core';
 import { RecaptchaModule } from 'ng-recaptcha-2';
 import localeEs from '@angular/common/locales/es';
 
 import { MaterialModule } from '../material/material.module';
 import { PrimeNgModule } from '../common/primeng.module';
 import { WebRoutingModule } from './web-routing.module';
-import { createTranslateLoader } from '../translate-loader';
 
 // Páginas públicas
 import { HomeComponent } from './pages/home/home.component';
@@ -63,21 +61,19 @@ registerLocaleData(localeEs);
         MatSlideToggleModule,
         FormsModule,
         // HttpClientModule se quita a proposito: volvia a proveer HttpClient en el
-        // inyector de este modulo y pisaba el provideHttpClient(withFetch()) de la raiz.
+        // inyector de este modulo y pisaba el provideHttpClient() de la raiz.
         PrimeNgModule,
         MatDialogModule,
         RecaptchaModule,
-        TranslateModule.forRoot({
-            defaultLanguage: 'es',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient, PLATFORM_ID]
-            }
-        }),
+        // En @ngx-translate 18 ya no hay TranslateModule: el pipe es standalone y se
+        // importa, y el servicio se registra abajo en providers. Este modulo es lazy y
+        // antes llamaba a forRoot(), que en un modulo hijo creaba una instancia propia de
+        // TranslateService; provideTranslateService() aqui mantiene esa misma separacion.
+        TranslatePipe,
         // CalendarModule eliminado del bundle principal → está en AdminModule (lazy)
     ],
     providers: [
+        provideTranslateService({ fallbackLang: 'es' }),
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
     ]
 })

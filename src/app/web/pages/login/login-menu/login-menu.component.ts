@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import { LayoutComponent } from '../../layout/layout.component';
 	selector: 'app-login-menu',
 	standalone: false,
 	templateUrl: './login-menu.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './login-menu.component.scss'
 })
 export class LoginMenuComponent implements OnInit, OnDestroy {

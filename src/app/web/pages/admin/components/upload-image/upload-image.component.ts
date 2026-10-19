@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 	selector: 'app-upload-image',
 	standalone: false,
 	templateUrl: './upload-image.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './upload-image.component.scss'
 })
 export class UploadImageComponent {

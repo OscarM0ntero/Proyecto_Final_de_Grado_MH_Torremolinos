@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { ConfiguracionService } from '../../../../../services/configuracion.serv
 	standalone: false,
 	templateUrl: './disponibilidad.component.html',
 	styleUrls: ['./disponibilidad.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	encapsulation: ViewEncapsulation.None
 })
 export class DisponibilidadComponent implements OnInit {
@@ -275,7 +276,7 @@ export class DisponibilidadComponent implements OnInit {
 
 		const payload = {
 			...this.reserva,
-			idioma: this.translate.currentLang || 'en',
+			idioma: this.translate.currentLang() || 'en',
 			fechaInicio: this.formatearFechaLocal(this.fechaInicio),
 			fechaFin: this.formatearFechaLocal(this.fechaFin),
 			numeroNoches: this.numeroNoches,

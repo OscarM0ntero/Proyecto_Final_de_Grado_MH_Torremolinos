@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ResenasService, Resena } from '../../../../../services/resenas.service';
 
@@ -6,6 +6,7 @@ import { ResenasService, Resena } from '../../../../../services/resenas.service'
 	selector: 'app-admin-resenas-manager',
 	standalone: false,
 	templateUrl: './admin-resenas-manager.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './admin-resenas-manager.component.scss'
 })
 export class AdminResenasManagerComponent implements OnInit {

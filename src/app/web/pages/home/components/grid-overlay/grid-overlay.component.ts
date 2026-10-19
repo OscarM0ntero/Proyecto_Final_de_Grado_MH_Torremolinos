@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
 	selector: 'app-grid-overlay',
 	standalone: false,
 	templateUrl: './grid-overlay.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrls: ['./grid-overlay.component.scss']
 })
 export class GridOverlayComponent {

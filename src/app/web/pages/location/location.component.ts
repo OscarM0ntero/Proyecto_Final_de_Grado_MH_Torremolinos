@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
 import { ContenidoService } from '../../../services/contenido.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,7 @@ import { ContenidoWebService } from '../../../services/contenido-web.service';
 	selector: 'app-location',
 	standalone: false,
 	templateUrl: './location.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './location.component.scss'
 })
 export class LocationComponent extends ContenidoBaseComponent {

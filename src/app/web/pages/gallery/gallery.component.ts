@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
@@ -10,6 +10,7 @@ import { ContenidoService } from '../../../services/contenido.service';
 	selector: 'app-gallery',
 	standalone: false,
 	templateUrl: './gallery.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './gallery.component.scss',
 })
 export class GalleryComponent extends ContenidoBaseComponent {

@@ -1,5 +1,5 @@
 // Dialog para confirmar el cierre de sesión
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MaterialModule } from '../../material/material.module';
 
 @Component({
@@ -14,6 +14,7 @@ import { MaterialModule } from '../../material/material.module';
       </mat-dialog-actions>
     </div>
   `,
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [MaterialModule]
 
 })

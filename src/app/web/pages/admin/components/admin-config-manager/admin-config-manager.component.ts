@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ConfiguracionService } from '../../../../../services/configuracion.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'app-admin-config-manager',
     standalone: false,
     templateUrl: './admin-config-manager.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './admin-config-manager.component.scss'
 })
 export class AdminConfigManagerComponent implements OnInit {

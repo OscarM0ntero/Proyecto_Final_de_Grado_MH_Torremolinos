@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ContenidoWebService } from '../../../services/contenido-web.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
@@ -15,6 +15,7 @@ import { ResenasService, Resena } from '../../../services/resenas.service';
 	standalone: false,
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	host: { ngSkipHydration: 'true' },
 })
 export class HomeComponent extends ContenidoBaseComponent {

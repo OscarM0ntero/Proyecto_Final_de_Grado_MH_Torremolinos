@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UsuariosService } from '../../../../services/usuarios.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 	selector: 'app-recover-password',
 	standalone: false,
 	templateUrl: './recover-password.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrls: ['./recover-password.component.scss']
 })
 export class RecoverPasswordComponent {

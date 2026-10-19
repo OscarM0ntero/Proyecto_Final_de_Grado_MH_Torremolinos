@@ -60,19 +60,19 @@ export abstract class ContenidoBaseComponent implements OnInit, OnDestroy {
   }
 
   protected getTexto(id: number): string {
-    const lang = this.translate.currentLang || this.lang;
+    const lang = this.translate.currentLang() || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return (item as any)?.[`texto_${lang}`] ?? '';
   }
 
   protected getTitulo(id: number): string {
-    const lang = this.translate.currentLang || this.lang;
+    const lang = this.translate.currentLang() || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return (item as any)?.[`titulo_${lang}`] ?? '';
   }
 
   protected getContenido(id: number): { titulo: string; texto: string } {
-    const lang = this.translate.currentLang || this.lang;
+    const lang = this.translate.currentLang() || this.lang;
     const item = this.contenidos.find(c => c.id_contenido === id);
     return {
       titulo: (item as any)?.[`titulo_${lang}`] ?? '',

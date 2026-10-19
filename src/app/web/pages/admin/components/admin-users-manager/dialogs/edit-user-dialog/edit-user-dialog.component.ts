@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Usuario } from '../../../../../../../services/usuarios.service';
 import { PREFIJOS_TELEFONO } from '../../../../../../../shared/prefijos';
@@ -7,6 +7,7 @@ import { PREFIJOS_TELEFONO } from '../../../../../../../shared/prefijos';
   selector: 'app-edit-user-dialog',
   standalone: false,
   templateUrl: './edit-user-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './edit-user-dialog.component.scss'
 })
 export class EditUserDialogComponent {

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
@@ -53,7 +53,7 @@ import { AddUserDialogComponent } from './components/admin-users-manager/dialogs
         MatTooltipModule,
         MatSlideToggleModule,
         MatDialogModule,
-        TranslateModule,
+        TranslatePipe,
         AccountModule,
         AdminRoutingModule,
         CalendarModule.forRoot({

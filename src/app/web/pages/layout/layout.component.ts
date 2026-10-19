@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, Inject, ViewEncapsulation, ViewChild, OnInit } from '@angular/core';
+import { Component, PLATFORM_ID, Inject, ViewEncapsulation, ViewChild, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 	standalone: false,
 	templateUrl: './layout.component.html',
 	styleUrls: ['./layout.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	encapsulation: ViewEncapsulation.None
 })
 export class LayoutComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Reserva, ReservasService } from '../../../../../services/reservas.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 	standalone: false,
 	templateUrl: './admin-booking-manager.component.html',
 	styleUrl: './admin-booking-manager.component.scss',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	encapsulation: ViewEncapsulation.None
 })
 export class AdminBookingManagerComponent implements OnInit {

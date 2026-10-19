@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MaterialModule } from '../../material/material.module';
 import { AccountComponent } from './account/account.component';
 
@@ -15,7 +15,7 @@ import { AccountComponent } from './account/account.component';
         CommonModule,
         FormsModule,
         MaterialModule,
-        TranslateModule,
+        TranslatePipe,
     ],
     exports: [AccountComponent],
 })

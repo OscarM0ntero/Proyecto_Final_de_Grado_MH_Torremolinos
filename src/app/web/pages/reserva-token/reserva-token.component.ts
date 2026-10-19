@@ -1,6 +1,6 @@
 // Página pública de gestión de una reserva mediante enlace mágico (/reserva/:token).
 // No requiere cuenta: el token del email es la credencial.
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +13,7 @@ import { ConfirmarCancelacionComponent } from './confirmar-cancelacion.component
 	selector: 'app-reserva-token',
 	standalone: false,
 	templateUrl: './reserva-token.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './reserva-token.component.scss'
 })
 export class ReservaTokenComponent implements OnInit {

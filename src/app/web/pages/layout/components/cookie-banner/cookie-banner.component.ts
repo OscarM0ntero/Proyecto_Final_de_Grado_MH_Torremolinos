@@ -3,7 +3,7 @@
 // Aceptar y Rechazar tienen el mismo peso visual y cuestan lo mismo (un clic): la AEPD
 // exige que rechazar sea tan fácil como aceptar, y prohíbe los muros que obligan a aceptar
 // para poder usar la web. Por eso no se bloquea la navegación ni el scroll.
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ConsentimientoService } from '../../../../../services/consentimiento.service';
 
@@ -11,6 +11,7 @@ import { ConsentimientoService } from '../../../../../services/consentimiento.se
 	selector: 'app-cookie-banner',
 	standalone: false,
 	templateUrl: './cookie-banner.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './cookie-banner.component.scss'
 })
 export class CookieBannerComponent implements OnInit {

@@ -1,11 +1,11 @@
-import { LOCALE_ID, NgModule, PLATFORM_ID, provideZoneChangeDetection } from '@angular/core';
-import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { LOCALE_ID, NgModule, provideZoneChangeDetection } from '@angular/core';
+import { BrowserModule, provideClientHydration, withEventReplay, withNoIncrementalHydration } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { createTranslateLoader } from './translate-loader';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideCargadorTraducciones } from './translate-loader';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
@@ -16,27 +16,27 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
-		TranslateModule.forRoot({
-			loader: {
-				provide: TranslateLoader,
-				useFactory: createTranslateLoader,
-				deps: [HttpClient, PLATFORM_ID]
-			}
-		}),
+		// TranslateModule desaparece en @ngx-translate 18: el servicio se registra con
+		// provideTranslateService() en los providers y el pipe se importa donde se use.
+		// AppComponent no traduce nada, asi que aqui no hace falta TranslatePipe.
 	],
 	providers: [
-		// withFetch(): con SSR, HttpClient sobre XHR no comparte las respuestas con el
-		// render del servidor y Angular avisa de ello (NG02801). Con fetch, las peticiones
-		// hechas durante el SSR se transfieren al cliente y no se repiten al hidratar.
-		// withInterceptorsFromDi() mantiene vivo el TokenInterceptor declarado abajo.
-		provideHttpClient(withFetch(), withInterceptorsFromDi()),
+		// Con SSR, HttpClient sobre XHR no comparte las respuestas con el render del
+		// servidor y Angular avisa de ello (NG02801); sobre fetch, las peticiones hechas
+		// durante el SSR se transfieren al cliente y no se repiten al hidratar. Hasta
+		// Angular 21 eso se pedia con withFetch(); en la 22 fetch ya es el backend por
+		// defecto y withFetch() quedo deprecado, asi que se quita y el comportamiento es
+		// el mismo. withInterceptorsFromDi() mantiene vivo el TokenInterceptor de abajo.
+		provideHttpClient(withInterceptorsFromDi()),
 		// Angular 21 deja de dar por defecto el scheduler de deteccion de cambios con
 		// Zone.js. Va aqui, y no en main.ts, para que tambien lo reciba el arranque del
 		// SSR (AppServerModule importa este modulo); si solo estuviera en main.ts, el
 		// render del servidor se quedaria sin el. eventCoalescing era antes el
 		// ngZoneEventCoalescing de las BootstrapOptions, ya deprecadas.
 		provideZoneChangeDetection({ eventCoalescing: true }),
-		provideClientHydration(withEventReplay()),
+		provideTranslateService(),
+		...provideCargadorTraducciones(),
+		provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
 		provideAnimations(),
 		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
 		{ provide: LOCALE_ID, useValue: 'es' },

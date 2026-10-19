@@ -1,5 +1,5 @@
 import { ViewportScroller } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContenidoBaseComponent } from '../../../shared/contenido-base.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,6 +11,7 @@ import { ImagenesService } from '../../../services/imagenes.service';
 	selector: 'app-legal',
 	standalone: false,
 	templateUrl: './legal.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './legal.component.scss'
 })
 export class LegalComponent extends ContenidoBaseComponent {

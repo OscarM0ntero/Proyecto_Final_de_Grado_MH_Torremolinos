@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImagenesService } from '../../../../../services/imagenes.service';
 
@@ -6,6 +6,7 @@ import { ImagenesService } from '../../../../../services/imagenes.service';
   selector: 'app-images-list',
   standalone: false,
   templateUrl: './images-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './images-list.component.scss'
 })
 export class ImagesListComponent {

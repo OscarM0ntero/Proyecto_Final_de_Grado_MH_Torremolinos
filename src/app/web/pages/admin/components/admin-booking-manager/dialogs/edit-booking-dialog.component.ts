@@ -1,7 +1,7 @@
 // Diálogo de edición de una reserva desde el panel de administración.
 // Solo expone lo que es seguro cambiar: el precio y el estado del pago no se tocan aquí,
 // porque deben reflejar siempre lo ocurrido en Stripe.
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Reserva } from '../../../../../../services/reservas.service';
 import { PREFIJOS_TELEFONO } from '../../../../../../shared/prefijos';
@@ -10,6 +10,7 @@ import { PREFIJOS_TELEFONO } from '../../../../../../shared/prefijos';
 	selector: 'app-edit-booking-dialog',
 	standalone: false,
 	templateUrl: './edit-booking-dialog.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './edit-booking-dialog.component.scss'
 })
 export class EditBookingDialogComponent {

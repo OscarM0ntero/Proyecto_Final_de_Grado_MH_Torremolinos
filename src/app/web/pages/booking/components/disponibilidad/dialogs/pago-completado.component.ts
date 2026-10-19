@@ -1,12 +1,12 @@
 // Dialog mostrado al volver de Stripe con el pago completado.
 // El enlace a la reserva solo aparece si el token sigue en sessionStorage (la misma pestaña que
 // hizo el pago). Si no está, el correo de confirmación lleva igualmente ese mismo enlace.
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 
 import { MaterialModule } from '../../../../../../material/material.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-pago-completado',
@@ -84,7 +84,8 @@ import { TranslateModule } from '@ngx-translate/core';
       .pc-acciones a { width: 100%; }
     }
   `],
-	imports: [MaterialModule, TranslateModule, RouterModule]
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [MaterialModule, TranslatePipe, RouterModule]
 })
 export class PagoCompletadoComponent {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: { token: string | null }) { }
