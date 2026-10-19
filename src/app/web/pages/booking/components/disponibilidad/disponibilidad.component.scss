@@ -5,9 +5,26 @@
     background-color: var(--color-primary) !important;
 }
 
+/* Dias no seleccionables: tachados, no solo atenuados. La linea va en un ::after
+   porque .mat-calendar-body-cell-content es flex y text-decoration no llega al texto. */
 .mat-calendar-body-disabled>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    position: relative;
+    opacity: 1 !important;
+    color: rgba(0, 0, 0, 0.42) !important;
     text-decoration: none !important;
-    opacity: 0.35;
+}
+
+.mat-calendar-body-disabled>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    right: 20%;
+    height: 1.5px;
+    border-radius: 1px;
+    background-color: currentColor;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 /* ============================================================
